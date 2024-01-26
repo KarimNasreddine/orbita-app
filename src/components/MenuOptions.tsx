@@ -43,7 +43,7 @@ const MenuOptions = () => {
         {menuItems2.map((item) => (
           <Link
             // href={`/dashboard/${item.toLowerCase()}`}
-            href={`/dashboard`}
+            href={`/dashboard/safefi-disputes`}
             key={item}
             onClick={() => handleButtonClick(item)}
             className={`py-2 px-4 rounded-md transition duration-300 text-center ${
