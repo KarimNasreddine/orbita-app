@@ -28,14 +28,14 @@ const DisputeCardClient: FC<DisputeCardClientProps> = ({
       <button className="font-semibold text-sm bg-[#f2a904] w-[80%] rounded-md p-2">
         Cancel Dispute
       </button>
-      <div className="w-full flex text-sm overflow-hidden rounded-b-[1rem] mt-2">
+      <div className="w-full flex text-sm overflow-hidden rounded-b-[1rem] mt-2 font-bold">
         <div className="w-[50%] flex flex-col justify-center items-center p-3">
           <p>INITIATED</p>
           <p>2024 - 05 - 23</p>
         </div>
         <div className="w-[50%] flex flex-col justify-center items-center bg-[#0000002e] p-3">
-          <p>INITIATED</p>
-          <p>2024 - 05 - 23</p>
+          <p>VERDICT</p>
+          <p>3 DAYS LEFT</p>
         </div>
       </div>
     </div>
