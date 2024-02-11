@@ -1,10 +1,20 @@
 /* eslint-disable react/no-unescaped-entities */
 import { FC } from "react";
 import { Space_Grotesk } from "next/font/google";
+import ChatInput from "./ChatInput";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 interface ChatLayoutProps {}
+
+const chatPartner: User = {
+  name: "John Doe",
+  publicAddress: "0x1234567890",
+  image: "",
+  id: "2",
+};
+
+const chatId = "1";
 
 const ChatLayout: FC<ChatLayoutProps> = ({}) => {
   return (
@@ -87,18 +97,7 @@ const ChatLayout: FC<ChatLayoutProps> = ({}) => {
           isn't right. I paid for a product I never received.
         </p>
       </div>
-      <div className="sticky bottom-0 w-full">
-        <div className="flex gap-4">
-          <input
-            type="text"
-            placeholder="Type your message here..."
-            className="w-full rounded-2xl border-2 border-gray-300 p-4 shadow-[0px_0px_50px_20px_#00000024]"
-          />
-          <button className="bg-[#21252b] text-white rounded-2xl p-4">
-            Send
-          </button>
-        </div>
-      </div>
+      <ChatInput chatPartner={chatPartner} chatId={chatId} />
     </div>
   );
 };
