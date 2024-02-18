@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Client } from "../../../ts-client";
+import { Client } from "../../ts-client";
 import { env } from "../env";
 
 const useClientInstance = () => {
