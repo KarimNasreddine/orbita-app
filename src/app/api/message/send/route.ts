@@ -1,23 +1,42 @@
+import { db } from "@/lib/db";
+import { pusherServer } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
+import { Message, messageValidator } from "@/lib/validations/message";
+import { nanoid } from "nanoid";
+
 export async function POST(req: Request) {
   try {
     const { text, chatId }: { text: string; chatId: string } = await req.json();
 
-    console.log("text", text);
-    console.log("chatId", chatId);
+    // FOR TESTING PURPOSES UNTIL KEPLR IS INTEGRATED
+    const clientId = "12345";
+    const merchantId = "67890";
 
-    // const session = await getServerSession(authOptions);
+    const timestamp = Date.now();
 
-    // if (!session) {
-    //   return new Response("Unauthorized", { status: 401 });
-    // }
+    const messageData: Message = {
+      id: nanoid(),
+      senderId: clientId,
+      text,
+      timestamp,
+    };
 
-    // const [userId1, userId2] = chatId.split("--");
+    const message = messageValidator.parse(messageData);
 
-    // if (userId1 !== session.user.id && userId2 !== session.user.id) {
-    //     return new Response("Unauthorized", { status: 401 });
-    // }
+    pusherServer.trigger(
+      toPusherKey(`chat:${chatId}`),
+      "incoming-message",
+      message
+    );
 
-    // const friendId = userId1 === session.user.id ? userId2 : userId1;
+    const data = await db.zadd(`chat:${chatId}:messages`, {
+      score: timestamp,
+      member: JSON.stringify(message),
+    });
+
+    console.log("data", data);
+
+    return new Response("OK");
   } catch (error) {
     console.error(error);
     return new Response("Something went wrong", { status: 500 });

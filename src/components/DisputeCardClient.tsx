@@ -1,30 +1,24 @@
 import { Montserrat } from "next/font/google";
-import { Dispatch, FC, SetStateAction } from "react";
+import Link from "next/link";
+import { FC } from "react";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
-interface DisputeCardClientProps {
-  setHideViewDispute: Dispatch<SetStateAction<boolean>>;
-}
+interface DisputeCardClientProps {}
 
-const DisputeCardClient: FC<DisputeCardClientProps> = ({
-  setHideViewDispute,
-}) => {
-  const handleClick = () => {
-    setHideViewDispute(false);
-  };
+const DisputeCardClient: FC<DisputeCardClientProps> = ({}) => {
   return (
     <div
       className={`${montserrat.className} min-w-64 max-w-72 flex flex-col bg-[#fe14bf] text-white items-center rounded-[1rem] pt-5 gap-2`}
     >
       <h3 className="text-2xl">GYMSHARK.COM</h3>
       <h4 className="font-bold text-lg">50 ATOM</h4>
-      <button
-        onClick={handleClick}
-        className="font-semibold text-sm bg-[#0000002e] w-[80%] rounded-md py-2"
+      <Link
+        href="/dashboard/safefi-disputes/view-dispute"
+        className="font-semibold text-sm bg-[#0000002e] w-[80%] rounded-md py-2 text-center"
       >
         View Dispute
-      </button>
+      </Link>
       <button className="font-semibold text-sm bg-[#f2a904] w-[80%] rounded-md p-2">
         Cancel Dispute
       </button>

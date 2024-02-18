@@ -1,101 +1,136 @@
 /* eslint-disable react/no-unescaped-entities */
-import { FC } from "react";
+"use client";
+
+import { FC, useEffect, useRef, useState } from "react";
 import { Space_Grotesk } from "next/font/google";
 import ChatInput from "./ChatInput";
+import { notFound } from "next/navigation";
+import { Message, messageArrayValidator } from "@/lib/validations/message";
+import { fetchRedis } from "@/helpers/redis";
+import { cn, toPusherKey } from "@/lib/utils";
+import { format } from "date-fns";
+import { pusherClient } from "@/lib/pusher";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 interface ChatLayoutProps {}
 
-const chatPartner: User = {
-  name: "John Doe",
-  publicAddress: "0x1234567890",
-  image: "",
-  id: "2",
-};
+// FOR TESTING PURPOSES UNTIL KEPLR IS INTEGRATED
+// CURRENT USER ID: 12345
+// MERCHANT ID: 67890
 
-const chatId = "1";
+// Fetches messages from Redis
+async function getChatMessages(chatId: string) {
+  try {
+    const results: string[] = await fetchRedis(
+      "zrange",
+      `chat:${chatId}:messages`,
+      0,
+      -1
+    );
+
+    const dbMessages = results.map((message) => JSON.parse(message) as Message);
+
+    const reversedDbMessages = dbMessages.reverse();
+
+    const messages = messageArrayValidator.parse(reversedDbMessages);
+
+    return messages.reverse();
+  } catch (error) {
+    notFound();
+  }
+}
 
 const ChatLayout: FC<ChatLayoutProps> = ({}) => {
+  const initialMessages: Message[] = [];
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+
+  const chatId = "1";
+
+  const chatPartner: User = {
+    name: "John Doe",
+    publicAddress: "0x1234567890",
+    image: "",
+    id: "2",
+  };
+
+  // Ref to scroll to bottom of chat
+  const scrollDownRef = useRef<HTMLDivElement | null>(null);
+
+  // Format timestamp to HH:mm
+  const formatTimestamp = (timestamp: number) => {
+    return format(timestamp, "HH:mm");
+  };
+
+  // Fetch messages from Redis
+  useEffect(() => {
+    getChatMessages(chatId).then((messages) => {
+      setMessages(messages);
+    });
+  }, []);
+
+  // Handler for incoming messages
+  const messageHandler = (message: Message) => {
+    setMessages((prev) => [...prev, message]);
+    scrollDownRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
+
+  // Subscribe to the chat channel
+  useEffect(() => {
+    pusherClient.subscribe(toPusherKey(`chat:${chatId}`)!);
+
+    pusherClient.bind("incoming-message", messageHandler);
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`)!);
+      pusherClient.unbind("incoming-message", messageHandler);
+    };
+  }, [chatId]);
+
   return (
     <div
-      className={`flex relative p-4 flex-col text-sm w-full bg-[#f2f2f2] shadow-[inset_0px_0px_10px_0px_#00000024] rounded-2xl shadow-custom-one-side overflow-x-auto ${spaceGrotesk.className}`}
+      className={`flex justify-between overflow-x-auto relative p-4 flex-col text-sm w-full bg-[#f2f2f2] shadow-[inset_0px_0px_10px_0px_#00000024] rounded-2xl shadow-custom-one-side ${spaceGrotesk.className}`}
     >
-      <div className="mb-2 w-[50%] self-end p-4 bg-white rounded-xl">
-        <p>
-          <span className="font-bold">Client: </span>
-          Hi, I ordered a product from your store two weeks ago and it still
-          hasn't arrived. Can you please check on this?
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] p-4 bg-[#6038d1] text-white rounded-xl">
-        <p>
-          <span className="font-bold">Merchant: </span>
-          Hello, I checked our records and your order was shipped the next day.
-          It should have arrived by now.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] self-end p-4 bg-white rounded-xl">
-        <p>
-          <span className="font-bold">Client: </span>I understand, but I haven't
-          received anything. Can I request a refund or a replacement?
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] p-4 bg-[#6038d1] text-white rounded-xl">
-        <p>
-          <span className="font-bold">Merchant: </span>
-          I'm sorry, but our policy is clear that we are not responsible for
-          items once they are shipped. We cannot offer a refund or replacement.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] self-end p-4 bg-white rounded-xl">
-        <p>
-          <span className="font-bold">Client: </span>
-          That seems unfair. I paid for the item but never received it. There
-          must be something we can do here.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] p-4 bg-[#6038d1] text-white rounded-xl">
-        <p>
-          <span className="font-bold">Merchant: </span>
-          Our hands are tied once the item is with the shipping service. You
-          might want to check with them.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] self-end p-4 bg-white rounded-xl">
-        <p>
-          <span className="font-bold">Client: </span>I already did, and they
-          said they delivered it. But I never got it. Can you please reconsider?
-          This is a lot of money for me.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] p-4 bg-[#6038d1] text-white rounded-xl">
-        <p>
-          <span className="font-bold">Merchant: </span>
-          Unfortunately, our policy doesn't cover lost or stolen items after
-          delivery. We can't issue a refund.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] self-end p-4 bg-white rounded-xl">
-        <p>
-          <span className="font-bold">Client: </span>
-          This is really disappointing. I thought online shopping was supposed
-          to be secure and customer-friendly.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] p-4 bg-[#6038d1] text-white rounded-xl">
-        <p>
-          <span className="font-bold">Merchant: </span>I understand your
-          frustration, but we follow standard industry practices. There's
-          nothing more we can do on our end.
-        </p>
-      </div>
-      <div className="mb-2 w-[50%] self-end p-4 bg-white rounded-xl">
-        <p>
-          <span className="font-bold">Client: </span>
-          I'll have to file a complaint then and continue the dispute. This
-          isn't right. I paid for a product I never received.
-        </p>
+      <div className="flex flex-col">
+        {messages.map((message, index) => {
+          const isCurrentUser = message.senderId === "12345";
+          const hasNextMessageFromSameUser =
+            messages[index - 1]?.senderId === messages[index]?.senderId;
+
+          return (
+            <div
+              className="flex flex-col"
+              key={`${message.id}-${message.timestamp}`}
+            >
+              <div
+                className={cn(
+                  "flex justify-between mb-2 p-4 rounded-xl lg:max-w-[50%] w-fit",
+                  {
+                    "self-end bg-white text-black": isCurrentUser,
+                    "bg-[#6038d1] text-white": !isCurrentUser,
+                  }
+                )}
+              >
+                <p>
+                  <span className="font-bold">
+                    {isCurrentUser ? "Client: " : "Merchant: "}
+                  </span>
+                  {message.text}
+                </p>
+                {/* If timestamp is needed, uncomment the following line */}
+                {/* <span
+                  className={cn("ml-2 text-xs text-gray-400 self-center pl-1", {
+                    "text-gray-700": isCurrentUser,
+                    "text-gray-300": !isCurrentUser,
+                  })}
+                >
+                  {formatTimestamp(message.timestamp)}
+                </span> */}
+              </div>
+            </div>
+          );
+        })}
+        <div ref={scrollDownRef} />
       </div>
       <ChatInput chatPartner={chatPartner} chatId={chatId} />
     </div>

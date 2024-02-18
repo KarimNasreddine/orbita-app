@@ -1,40 +1,31 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import { Montserrat } from "next/font/google";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/custom-button";
 import { Space_Grotesk } from "next/font/google";
 import ChatLayout from "@/components/ChatLayout";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
-interface ViewDisputeProps {
-  hideViewDispute: boolean;
-  setHideViewDispute: Dispatch<SetStateAction<boolean>>;
-}
+interface ViewDisputeProps {}
 
-const ViewDispute: FC<ViewDisputeProps> = ({
-  hideViewDispute,
-  setHideViewDispute,
-}) => {
-  const handleClick = () => {
-    setHideViewDispute(true);
-  };
-
+const ViewDispute: FC<ViewDisputeProps> = ({}) => {
   return (
-    <div className={cn("flex flex-col gap-12", hideViewDispute && "hidden")}>
+    <div className={cn("flex flex-col gap-12")}>
       <div className={`${montserrat.className} flex gap-8 h-[25rem]`}>
         <div className="w-[40%] h-full flex flex-col justify-between">
           <div>
-            <button onClick={handleClick}>
+            <Link href="/dashboard/safefi-disputes">
               <X
                 size={54}
                 strokeWidth={2}
                 color="#b2b2b2"
                 className="-ml-3 hover:transition-all hover:scale-105 hover:duration-150"
               />
-            </button>
+            </Link>
             <h2 className="font-bold text-xl xl:text-2xl leading-tight xl:leading-loose mb-4">
               GYM SHARK DISPUTE <br /> TX ID - #1001
             </h2>
