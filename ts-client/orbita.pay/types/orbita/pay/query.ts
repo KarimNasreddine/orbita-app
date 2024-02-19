@@ -6,9 +6,9 @@ import { Contract } from "./contract";
 import { Dispute } from "./dispute";
 import { Params } from "./params";
 import { Payment } from "./payment";
-import { Subscription } from "./subscription";
+import { SubscriptionPayment } from "./subscription_payment";
 
-export const protobufPackage = "subscription.subscription";
+export const protobufPackage = "orbita.pay";
 
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
 export interface QueryParamsRequest {
@@ -20,31 +20,31 @@ export interface QueryParamsResponse {
   params: Params | undefined;
 }
 
-export interface QueryGetSubscriptionRequest {
+export interface QueryGetPaymentRequest {
   id: number;
 }
 
-export interface QueryGetSubscriptionResponse {
-  Subscription: Subscription | undefined;
+export interface QueryGetPaymentResponse {
+  Payment: Payment | undefined;
 }
 
-export interface QueryAllSubscriptionRequest {
+export interface QueryAllPaymentRequest {
   pagination: PageRequest | undefined;
 }
 
-export interface QueryAllSubscriptionResponse {
-  Subscription: Subscription[];
+export interface QueryAllPaymentResponse {
+  Payment: Payment[];
   pagination: PageResponse | undefined;
 }
 
-export interface QuerySubscriptionsRequest {
+export interface QueryPaymentsRequest {
   merchantAddress: string;
   /** Add pagination to request */
   pagination: PageRequest | undefined;
 }
 
-export interface QuerySubscriptionsResponse {
-  Subscription: Subscription[];
+export interface QueryPaymentsResponse {
+  Payment: Payment[];
   /** Add pagination to response */
   pagination: PageResponse | undefined;
 }
@@ -64,43 +64,43 @@ export interface QueryAllContractRequest {
 
 export interface QueryAllContractResponse {
   /** repeated Contract Contract = 1 [(gogoproto.nullable) = false]; */
-  Subscription: Subscription[];
+  Contracts: Payment[];
   pagination: PageResponse | undefined;
 }
 
 export interface QueryContractsRequest {
   id: string;
-  /** "subid" or "address" */
+  /** "payment" or "address". */
   querytype: string;
   pagination: PageRequest | undefined;
 }
 
 export interface QueryContractsResponse {
   /** Subscription Subscription = 1; */
-  Subscription: Subscription[];
+  Contracts: Payment[];
   /** Return a list of contracts */
   Contract: Contract[];
   pagination: PageResponse | undefined;
 }
 
-export interface QueryGetPaymentRequest {
+export interface QueryGetSubscriptionPaymentRequest {
   id: number;
 }
 
-export interface QueryGetPaymentResponse {
-  Payment: Payment | undefined;
+export interface QueryGetSubscriptionPaymentResponse {
+  SubscriptionPayment: SubscriptionPayment | undefined;
 }
 
-export interface QueryAllPaymentRequest {
-  /** Query by contractID */
+export interface QueryAllSubscriptionPaymentRequest {
+  /** Query by contractID. */
   id: number;
-  /** "contract" or "all" */
+  /** "contract" or "all". */
   querytype: string;
   pagination: PageRequest | undefined;
 }
 
-export interface QueryAllPaymentResponse {
-  Payment: Payment[];
+export interface QueryAllSubscriptionPaymentResponse {
+  SubscriptionPayment: SubscriptionPayment[];
   pagination: PageResponse | undefined;
 }
 
@@ -114,6 +114,7 @@ export interface QueryGetDisputeResponse {
 }
 
 export interface QueryAllDisputeRequest {
+  address: string;
   pagination: PageRequest | undefined;
 }
 
@@ -210,22 +211,22 @@ export const QueryParamsResponse = {
   },
 };
 
-function createBaseQueryGetSubscriptionRequest(): QueryGetSubscriptionRequest {
+function createBaseQueryGetPaymentRequest(): QueryGetPaymentRequest {
   return { id: 0 };
 }
 
-export const QueryGetSubscriptionRequest = {
-  encode(message: QueryGetSubscriptionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const QueryGetPaymentRequest = {
+  encode(message: QueryGetPaymentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSubscriptionRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetPaymentRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryGetSubscriptionRequest();
+    const message = createBaseQueryGetPaymentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -240,44 +241,44 @@ export const QueryGetSubscriptionRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetSubscriptionRequest {
+  fromJSON(object: any): QueryGetPaymentRequest {
     return { id: isSet(object.id) ? Number(object.id) : 0 };
   },
 
-  toJSON(message: QueryGetSubscriptionRequest): unknown {
+  toJSON(message: QueryGetPaymentRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryGetSubscriptionRequest>, I>>(object: I): QueryGetSubscriptionRequest {
-    const message = createBaseQueryGetSubscriptionRequest();
+  fromPartial<I extends Exact<DeepPartial<QueryGetPaymentRequest>, I>>(object: I): QueryGetPaymentRequest {
+    const message = createBaseQueryGetPaymentRequest();
     message.id = object.id ?? 0;
     return message;
   },
 };
 
-function createBaseQueryGetSubscriptionResponse(): QueryGetSubscriptionResponse {
-  return { Subscription: undefined };
+function createBaseQueryGetPaymentResponse(): QueryGetPaymentResponse {
+  return { Payment: undefined };
 }
 
-export const QueryGetSubscriptionResponse = {
-  encode(message: QueryGetSubscriptionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.Subscription !== undefined) {
-      Subscription.encode(message.Subscription, writer.uint32(10).fork()).ldelim();
+export const QueryGetPaymentResponse = {
+  encode(message: QueryGetPaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.Payment !== undefined) {
+      Payment.encode(message.Payment, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSubscriptionResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetPaymentResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryGetSubscriptionResponse();
+    const message = createBaseQueryGetPaymentResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Subscription = Subscription.decode(reader, reader.uint32());
+          message.Payment = Payment.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -287,42 +288,41 @@ export const QueryGetSubscriptionResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetSubscriptionResponse {
-    return { Subscription: isSet(object.Subscription) ? Subscription.fromJSON(object.Subscription) : undefined };
+  fromJSON(object: any): QueryGetPaymentResponse {
+    return { Payment: isSet(object.Payment) ? Payment.fromJSON(object.Payment) : undefined };
   },
 
-  toJSON(message: QueryGetSubscriptionResponse): unknown {
+  toJSON(message: QueryGetPaymentResponse): unknown {
     const obj: any = {};
-    message.Subscription !== undefined
-      && (obj.Subscription = message.Subscription ? Subscription.toJSON(message.Subscription) : undefined);
+    message.Payment !== undefined && (obj.Payment = message.Payment ? Payment.toJSON(message.Payment) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryGetSubscriptionResponse>, I>>(object: I): QueryGetSubscriptionResponse {
-    const message = createBaseQueryGetSubscriptionResponse();
-    message.Subscription = (object.Subscription !== undefined && object.Subscription !== null)
-      ? Subscription.fromPartial(object.Subscription)
+  fromPartial<I extends Exact<DeepPartial<QueryGetPaymentResponse>, I>>(object: I): QueryGetPaymentResponse {
+    const message = createBaseQueryGetPaymentResponse();
+    message.Payment = (object.Payment !== undefined && object.Payment !== null)
+      ? Payment.fromPartial(object.Payment)
       : undefined;
     return message;
   },
 };
 
-function createBaseQueryAllSubscriptionRequest(): QueryAllSubscriptionRequest {
+function createBaseQueryAllPaymentRequest(): QueryAllPaymentRequest {
   return { pagination: undefined };
 }
 
-export const QueryAllSubscriptionRequest = {
-  encode(message: QueryAllSubscriptionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const QueryAllPaymentRequest = {
+  encode(message: QueryAllPaymentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSubscriptionRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllPaymentRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllSubscriptionRequest();
+    const message = createBaseQueryAllPaymentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -337,19 +337,19 @@ export const QueryAllSubscriptionRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllSubscriptionRequest {
+  fromJSON(object: any): QueryAllPaymentRequest {
     return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
-  toJSON(message: QueryAllSubscriptionRequest): unknown {
+  toJSON(message: QueryAllPaymentRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined
       && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllSubscriptionRequest>, I>>(object: I): QueryAllSubscriptionRequest {
-    const message = createBaseQueryAllSubscriptionRequest();
+  fromPartial<I extends Exact<DeepPartial<QueryAllPaymentRequest>, I>>(object: I): QueryAllPaymentRequest {
+    const message = createBaseQueryAllPaymentRequest();
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageRequest.fromPartial(object.pagination)
       : undefined;
@@ -357,14 +357,14 @@ export const QueryAllSubscriptionRequest = {
   },
 };
 
-function createBaseQueryAllSubscriptionResponse(): QueryAllSubscriptionResponse {
-  return { Subscription: [], pagination: undefined };
+function createBaseQueryAllPaymentResponse(): QueryAllPaymentResponse {
+  return { Payment: [], pagination: undefined };
 }
 
-export const QueryAllSubscriptionResponse = {
-  encode(message: QueryAllSubscriptionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.Subscription) {
-      Subscription.encode(v!, writer.uint32(10).fork()).ldelim();
+export const QueryAllPaymentResponse = {
+  encode(message: QueryAllPaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.Payment) {
+      Payment.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
@@ -372,15 +372,15 @@ export const QueryAllSubscriptionResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSubscriptionResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllPaymentResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllSubscriptionResponse();
+    const message = createBaseQueryAllPaymentResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Subscription.push(Subscription.decode(reader, reader.uint32()));
+          message.Payment.push(Payment.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -393,30 +393,28 @@ export const QueryAllSubscriptionResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllSubscriptionResponse {
+  fromJSON(object: any): QueryAllPaymentResponse {
     return {
-      Subscription: Array.isArray(object?.Subscription)
-        ? object.Subscription.map((e: any) => Subscription.fromJSON(e))
-        : [],
+      Payment: Array.isArray(object?.Payment) ? object.Payment.map((e: any) => Payment.fromJSON(e)) : [],
       pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
-  toJSON(message: QueryAllSubscriptionResponse): unknown {
+  toJSON(message: QueryAllPaymentResponse): unknown {
     const obj: any = {};
-    if (message.Subscription) {
-      obj.Subscription = message.Subscription.map((e) => e ? Subscription.toJSON(e) : undefined);
+    if (message.Payment) {
+      obj.Payment = message.Payment.map((e) => e ? Payment.toJSON(e) : undefined);
     } else {
-      obj.Subscription = [];
+      obj.Payment = [];
     }
     message.pagination !== undefined
       && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllSubscriptionResponse>, I>>(object: I): QueryAllSubscriptionResponse {
-    const message = createBaseQueryAllSubscriptionResponse();
-    message.Subscription = object.Subscription?.map((e) => Subscription.fromPartial(e)) || [];
+  fromPartial<I extends Exact<DeepPartial<QueryAllPaymentResponse>, I>>(object: I): QueryAllPaymentResponse {
+    const message = createBaseQueryAllPaymentResponse();
+    message.Payment = object.Payment?.map((e) => Payment.fromPartial(e)) || [];
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageResponse.fromPartial(object.pagination)
       : undefined;
@@ -424,12 +422,12 @@ export const QueryAllSubscriptionResponse = {
   },
 };
 
-function createBaseQuerySubscriptionsRequest(): QuerySubscriptionsRequest {
+function createBaseQueryPaymentsRequest(): QueryPaymentsRequest {
   return { merchantAddress: "", pagination: undefined };
 }
 
-export const QuerySubscriptionsRequest = {
-  encode(message: QuerySubscriptionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const QueryPaymentsRequest = {
+  encode(message: QueryPaymentsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.merchantAddress !== "") {
       writer.uint32(10).string(message.merchantAddress);
     }
@@ -439,10 +437,10 @@ export const QuerySubscriptionsRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySubscriptionsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryPaymentsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQuerySubscriptionsRequest();
+    const message = createBaseQueryPaymentsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -460,14 +458,14 @@ export const QuerySubscriptionsRequest = {
     return message;
   },
 
-  fromJSON(object: any): QuerySubscriptionsRequest {
+  fromJSON(object: any): QueryPaymentsRequest {
     return {
       merchantAddress: isSet(object.merchantAddress) ? String(object.merchantAddress) : "",
       pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
     };
   },
 
-  toJSON(message: QuerySubscriptionsRequest): unknown {
+  toJSON(message: QueryPaymentsRequest): unknown {
     const obj: any = {};
     message.merchantAddress !== undefined && (obj.merchantAddress = message.merchantAddress);
     message.pagination !== undefined
@@ -475,8 +473,8 @@ export const QuerySubscriptionsRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QuerySubscriptionsRequest>, I>>(object: I): QuerySubscriptionsRequest {
-    const message = createBaseQuerySubscriptionsRequest();
+  fromPartial<I extends Exact<DeepPartial<QueryPaymentsRequest>, I>>(object: I): QueryPaymentsRequest {
+    const message = createBaseQueryPaymentsRequest();
     message.merchantAddress = object.merchantAddress ?? "";
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageRequest.fromPartial(object.pagination)
@@ -485,14 +483,14 @@ export const QuerySubscriptionsRequest = {
   },
 };
 
-function createBaseQuerySubscriptionsResponse(): QuerySubscriptionsResponse {
-  return { Subscription: [], pagination: undefined };
+function createBaseQueryPaymentsResponse(): QueryPaymentsResponse {
+  return { Payment: [], pagination: undefined };
 }
 
-export const QuerySubscriptionsResponse = {
-  encode(message: QuerySubscriptionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.Subscription) {
-      Subscription.encode(v!, writer.uint32(10).fork()).ldelim();
+export const QueryPaymentsResponse = {
+  encode(message: QueryPaymentsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.Payment) {
+      Payment.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
@@ -500,15 +498,15 @@ export const QuerySubscriptionsResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySubscriptionsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryPaymentsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQuerySubscriptionsResponse();
+    const message = createBaseQueryPaymentsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Subscription.push(Subscription.decode(reader, reader.uint32()));
+          message.Payment.push(Payment.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -521,30 +519,28 @@ export const QuerySubscriptionsResponse = {
     return message;
   },
 
-  fromJSON(object: any): QuerySubscriptionsResponse {
+  fromJSON(object: any): QueryPaymentsResponse {
     return {
-      Subscription: Array.isArray(object?.Subscription)
-        ? object.Subscription.map((e: any) => Subscription.fromJSON(e))
-        : [],
+      Payment: Array.isArray(object?.Payment) ? object.Payment.map((e: any) => Payment.fromJSON(e)) : [],
       pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
-  toJSON(message: QuerySubscriptionsResponse): unknown {
+  toJSON(message: QueryPaymentsResponse): unknown {
     const obj: any = {};
-    if (message.Subscription) {
-      obj.Subscription = message.Subscription.map((e) => e ? Subscription.toJSON(e) : undefined);
+    if (message.Payment) {
+      obj.Payment = message.Payment.map((e) => e ? Payment.toJSON(e) : undefined);
     } else {
-      obj.Subscription = [];
+      obj.Payment = [];
     }
     message.pagination !== undefined
       && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QuerySubscriptionsResponse>, I>>(object: I): QuerySubscriptionsResponse {
-    const message = createBaseQuerySubscriptionsResponse();
-    message.Subscription = object.Subscription?.map((e) => Subscription.fromPartial(e)) || [];
+  fromPartial<I extends Exact<DeepPartial<QueryPaymentsResponse>, I>>(object: I): QueryPaymentsResponse {
+    const message = createBaseQueryPaymentsResponse();
+    message.Payment = object.Payment?.map((e) => Payment.fromPartial(e)) || [];
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageResponse.fromPartial(object.pagination)
       : undefined;
@@ -710,13 +706,13 @@ export const QueryAllContractRequest = {
 };
 
 function createBaseQueryAllContractResponse(): QueryAllContractResponse {
-  return { Subscription: [], pagination: undefined };
+  return { Contracts: [], pagination: undefined };
 }
 
 export const QueryAllContractResponse = {
   encode(message: QueryAllContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.Subscription) {
-      Subscription.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.Contracts) {
+      Payment.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
@@ -732,7 +728,7 @@ export const QueryAllContractResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Subscription.push(Subscription.decode(reader, reader.uint32()));
+          message.Contracts.push(Payment.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -747,19 +743,17 @@ export const QueryAllContractResponse = {
 
   fromJSON(object: any): QueryAllContractResponse {
     return {
-      Subscription: Array.isArray(object?.Subscription)
-        ? object.Subscription.map((e: any) => Subscription.fromJSON(e))
-        : [],
+      Contracts: Array.isArray(object?.Contracts) ? object.Contracts.map((e: any) => Payment.fromJSON(e)) : [],
       pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
   toJSON(message: QueryAllContractResponse): unknown {
     const obj: any = {};
-    if (message.Subscription) {
-      obj.Subscription = message.Subscription.map((e) => e ? Subscription.toJSON(e) : undefined);
+    if (message.Contracts) {
+      obj.Contracts = message.Contracts.map((e) => e ? Payment.toJSON(e) : undefined);
     } else {
-      obj.Subscription = [];
+      obj.Contracts = [];
     }
     message.pagination !== undefined
       && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
@@ -768,7 +762,7 @@ export const QueryAllContractResponse = {
 
   fromPartial<I extends Exact<DeepPartial<QueryAllContractResponse>, I>>(object: I): QueryAllContractResponse {
     const message = createBaseQueryAllContractResponse();
-    message.Subscription = object.Subscription?.map((e) => Subscription.fromPartial(e)) || [];
+    message.Contracts = object.Contracts?.map((e) => Payment.fromPartial(e)) || [];
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageResponse.fromPartial(object.pagination)
       : undefined;
@@ -847,13 +841,13 @@ export const QueryContractsRequest = {
 };
 
 function createBaseQueryContractsResponse(): QueryContractsResponse {
-  return { Subscription: [], Contract: [], pagination: undefined };
+  return { Contracts: [], Contract: [], pagination: undefined };
 }
 
 export const QueryContractsResponse = {
   encode(message: QueryContractsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.Subscription) {
-      Subscription.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.Contracts) {
+      Payment.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.Contract) {
       Contract.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -872,7 +866,7 @@ export const QueryContractsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Subscription.push(Subscription.decode(reader, reader.uint32()));
+          message.Contracts.push(Payment.decode(reader, reader.uint32()));
           break;
         case 2:
           message.Contract.push(Contract.decode(reader, reader.uint32()));
@@ -890,9 +884,7 @@ export const QueryContractsResponse = {
 
   fromJSON(object: any): QueryContractsResponse {
     return {
-      Subscription: Array.isArray(object?.Subscription)
-        ? object.Subscription.map((e: any) => Subscription.fromJSON(e))
-        : [],
+      Contracts: Array.isArray(object?.Contracts) ? object.Contracts.map((e: any) => Payment.fromJSON(e)) : [],
       Contract: Array.isArray(object?.Contract) ? object.Contract.map((e: any) => Contract.fromJSON(e)) : [],
       pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
@@ -900,10 +892,10 @@ export const QueryContractsResponse = {
 
   toJSON(message: QueryContractsResponse): unknown {
     const obj: any = {};
-    if (message.Subscription) {
-      obj.Subscription = message.Subscription.map((e) => e ? Subscription.toJSON(e) : undefined);
+    if (message.Contracts) {
+      obj.Contracts = message.Contracts.map((e) => e ? Payment.toJSON(e) : undefined);
     } else {
-      obj.Subscription = [];
+      obj.Contracts = [];
     }
     if (message.Contract) {
       obj.Contract = message.Contract.map((e) => e ? Contract.toJSON(e) : undefined);
@@ -917,7 +909,7 @@ export const QueryContractsResponse = {
 
   fromPartial<I extends Exact<DeepPartial<QueryContractsResponse>, I>>(object: I): QueryContractsResponse {
     const message = createBaseQueryContractsResponse();
-    message.Subscription = object.Subscription?.map((e) => Subscription.fromPartial(e)) || [];
+    message.Contracts = object.Contracts?.map((e) => Payment.fromPartial(e)) || [];
     message.Contract = object.Contract?.map((e) => Contract.fromPartial(e)) || [];
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageResponse.fromPartial(object.pagination)
@@ -926,22 +918,22 @@ export const QueryContractsResponse = {
   },
 };
 
-function createBaseQueryGetPaymentRequest(): QueryGetPaymentRequest {
+function createBaseQueryGetSubscriptionPaymentRequest(): QueryGetSubscriptionPaymentRequest {
   return { id: 0 };
 }
 
-export const QueryGetPaymentRequest = {
-  encode(message: QueryGetPaymentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const QueryGetSubscriptionPaymentRequest = {
+  encode(message: QueryGetSubscriptionPaymentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetPaymentRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSubscriptionPaymentRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryGetPaymentRequest();
+    const message = createBaseQueryGetSubscriptionPaymentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -956,44 +948,46 @@ export const QueryGetPaymentRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetPaymentRequest {
+  fromJSON(object: any): QueryGetSubscriptionPaymentRequest {
     return { id: isSet(object.id) ? Number(object.id) : 0 };
   },
 
-  toJSON(message: QueryGetPaymentRequest): unknown {
+  toJSON(message: QueryGetSubscriptionPaymentRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryGetPaymentRequest>, I>>(object: I): QueryGetPaymentRequest {
-    const message = createBaseQueryGetPaymentRequest();
+  fromPartial<I extends Exact<DeepPartial<QueryGetSubscriptionPaymentRequest>, I>>(
+    object: I,
+  ): QueryGetSubscriptionPaymentRequest {
+    const message = createBaseQueryGetSubscriptionPaymentRequest();
     message.id = object.id ?? 0;
     return message;
   },
 };
 
-function createBaseQueryGetPaymentResponse(): QueryGetPaymentResponse {
-  return { Payment: undefined };
+function createBaseQueryGetSubscriptionPaymentResponse(): QueryGetSubscriptionPaymentResponse {
+  return { SubscriptionPayment: undefined };
 }
 
-export const QueryGetPaymentResponse = {
-  encode(message: QueryGetPaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.Payment !== undefined) {
-      Payment.encode(message.Payment, writer.uint32(10).fork()).ldelim();
+export const QueryGetSubscriptionPaymentResponse = {
+  encode(message: QueryGetSubscriptionPaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.SubscriptionPayment !== undefined) {
+      SubscriptionPayment.encode(message.SubscriptionPayment, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetPaymentResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetSubscriptionPaymentResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryGetPaymentResponse();
+    const message = createBaseQueryGetSubscriptionPaymentResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Payment = Payment.decode(reader, reader.uint32());
+          message.SubscriptionPayment = SubscriptionPayment.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1003,31 +997,39 @@ export const QueryGetPaymentResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetPaymentResponse {
-    return { Payment: isSet(object.Payment) ? Payment.fromJSON(object.Payment) : undefined };
+  fromJSON(object: any): QueryGetSubscriptionPaymentResponse {
+    return {
+      SubscriptionPayment: isSet(object.SubscriptionPayment)
+        ? SubscriptionPayment.fromJSON(object.SubscriptionPayment)
+        : undefined,
+    };
   },
 
-  toJSON(message: QueryGetPaymentResponse): unknown {
+  toJSON(message: QueryGetSubscriptionPaymentResponse): unknown {
     const obj: any = {};
-    message.Payment !== undefined && (obj.Payment = message.Payment ? Payment.toJSON(message.Payment) : undefined);
+    message.SubscriptionPayment !== undefined && (obj.SubscriptionPayment = message.SubscriptionPayment
+      ? SubscriptionPayment.toJSON(message.SubscriptionPayment)
+      : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryGetPaymentResponse>, I>>(object: I): QueryGetPaymentResponse {
-    const message = createBaseQueryGetPaymentResponse();
-    message.Payment = (object.Payment !== undefined && object.Payment !== null)
-      ? Payment.fromPartial(object.Payment)
+  fromPartial<I extends Exact<DeepPartial<QueryGetSubscriptionPaymentResponse>, I>>(
+    object: I,
+  ): QueryGetSubscriptionPaymentResponse {
+    const message = createBaseQueryGetSubscriptionPaymentResponse();
+    message.SubscriptionPayment = (object.SubscriptionPayment !== undefined && object.SubscriptionPayment !== null)
+      ? SubscriptionPayment.fromPartial(object.SubscriptionPayment)
       : undefined;
     return message;
   },
 };
 
-function createBaseQueryAllPaymentRequest(): QueryAllPaymentRequest {
+function createBaseQueryAllSubscriptionPaymentRequest(): QueryAllSubscriptionPaymentRequest {
   return { id: 0, querytype: "", pagination: undefined };
 }
 
-export const QueryAllPaymentRequest = {
-  encode(message: QueryAllPaymentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const QueryAllSubscriptionPaymentRequest = {
+  encode(message: QueryAllSubscriptionPaymentRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
@@ -1040,10 +1042,10 @@ export const QueryAllPaymentRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllPaymentRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSubscriptionPaymentRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllPaymentRequest();
+    const message = createBaseQueryAllSubscriptionPaymentRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1064,7 +1066,7 @@ export const QueryAllPaymentRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPaymentRequest {
+  fromJSON(object: any): QueryAllSubscriptionPaymentRequest {
     return {
       id: isSet(object.id) ? Number(object.id) : 0,
       querytype: isSet(object.querytype) ? String(object.querytype) : "",
@@ -1072,7 +1074,7 @@ export const QueryAllPaymentRequest = {
     };
   },
 
-  toJSON(message: QueryAllPaymentRequest): unknown {
+  toJSON(message: QueryAllSubscriptionPaymentRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.querytype !== undefined && (obj.querytype = message.querytype);
@@ -1081,8 +1083,10 @@ export const QueryAllPaymentRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllPaymentRequest>, I>>(object: I): QueryAllPaymentRequest {
-    const message = createBaseQueryAllPaymentRequest();
+  fromPartial<I extends Exact<DeepPartial<QueryAllSubscriptionPaymentRequest>, I>>(
+    object: I,
+  ): QueryAllSubscriptionPaymentRequest {
+    const message = createBaseQueryAllSubscriptionPaymentRequest();
     message.id = object.id ?? 0;
     message.querytype = object.querytype ?? "";
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
@@ -1092,14 +1096,14 @@ export const QueryAllPaymentRequest = {
   },
 };
 
-function createBaseQueryAllPaymentResponse(): QueryAllPaymentResponse {
-  return { Payment: [], pagination: undefined };
+function createBaseQueryAllSubscriptionPaymentResponse(): QueryAllSubscriptionPaymentResponse {
+  return { SubscriptionPayment: [], pagination: undefined };
 }
 
-export const QueryAllPaymentResponse = {
-  encode(message: QueryAllPaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.Payment) {
-      Payment.encode(v!, writer.uint32(10).fork()).ldelim();
+export const QueryAllSubscriptionPaymentResponse = {
+  encode(message: QueryAllSubscriptionPaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.SubscriptionPayment) {
+      SubscriptionPayment.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
@@ -1107,15 +1111,15 @@ export const QueryAllPaymentResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllPaymentResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllSubscriptionPaymentResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllPaymentResponse();
+    const message = createBaseQueryAllSubscriptionPaymentResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Payment.push(Payment.decode(reader, reader.uint32()));
+          message.SubscriptionPayment.push(SubscriptionPayment.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -1128,28 +1132,32 @@ export const QueryAllPaymentResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPaymentResponse {
+  fromJSON(object: any): QueryAllSubscriptionPaymentResponse {
     return {
-      Payment: Array.isArray(object?.Payment) ? object.Payment.map((e: any) => Payment.fromJSON(e)) : [],
+      SubscriptionPayment: Array.isArray(object?.SubscriptionPayment)
+        ? object.SubscriptionPayment.map((e: any) => SubscriptionPayment.fromJSON(e))
+        : [],
       pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
-  toJSON(message: QueryAllPaymentResponse): unknown {
+  toJSON(message: QueryAllSubscriptionPaymentResponse): unknown {
     const obj: any = {};
-    if (message.Payment) {
-      obj.Payment = message.Payment.map((e) => e ? Payment.toJSON(e) : undefined);
+    if (message.SubscriptionPayment) {
+      obj.SubscriptionPayment = message.SubscriptionPayment.map((e) => e ? SubscriptionPayment.toJSON(e) : undefined);
     } else {
-      obj.Payment = [];
+      obj.SubscriptionPayment = [];
     }
     message.pagination !== undefined
       && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllPaymentResponse>, I>>(object: I): QueryAllPaymentResponse {
-    const message = createBaseQueryAllPaymentResponse();
-    message.Payment = object.Payment?.map((e) => Payment.fromPartial(e)) || [];
+  fromPartial<I extends Exact<DeepPartial<QueryAllSubscriptionPaymentResponse>, I>>(
+    object: I,
+  ): QueryAllSubscriptionPaymentResponse {
+    const message = createBaseQueryAllSubscriptionPaymentResponse();
+    message.SubscriptionPayment = object.SubscriptionPayment?.map((e) => SubscriptionPayment.fromPartial(e)) || [];
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageResponse.fromPartial(object.pagination)
       : undefined;
@@ -1254,13 +1262,16 @@ export const QueryGetDisputeResponse = {
 };
 
 function createBaseQueryAllDisputeRequest(): QueryAllDisputeRequest {
-  return { pagination: undefined };
+  return { address: "", pagination: undefined };
 }
 
 export const QueryAllDisputeRequest = {
   encode(message: QueryAllDisputeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
     if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -1273,6 +1284,9 @@ export const QueryAllDisputeRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.address = reader.string();
+          break;
+        case 2:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
@@ -1284,11 +1298,15 @@ export const QueryAllDisputeRequest = {
   },
 
   fromJSON(object: any): QueryAllDisputeRequest {
-    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllDisputeRequest): unknown {
     const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
     message.pagination !== undefined
       && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
@@ -1296,6 +1314,7 @@ export const QueryAllDisputeRequest = {
 
   fromPartial<I extends Exact<DeepPartial<QueryAllDisputeRequest>, I>>(object: I): QueryAllDisputeRequest {
     const message = createBaseQueryAllDisputeRequest();
+    message.address = object.address ?? "";
     message.pagination = (object.pagination !== undefined && object.pagination !== null)
       ? PageRequest.fromPartial(object.pagination)
       : undefined;
@@ -1372,24 +1391,25 @@ export const QueryAllDisputeResponse = {
 export interface Query {
   /** Parameters queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  /** Queries a Subscription by id. */
-  Subscription(request: QueryGetSubscriptionRequest): Promise<QueryGetSubscriptionResponse>;
-  /** Queries a list of Subscription items. */
-  SubscriptionAll(request: QueryAllSubscriptionRequest): Promise<QueryAllSubscriptionResponse>;
-  /** Queries a list of Subscriptions items by merchant address */
-  Subscriptions(request: QuerySubscriptionsRequest): Promise<QuerySubscriptionsResponse>;
+  /** Queries a Payment by id. */
+  Payment(request: QueryGetPaymentRequest): Promise<QueryGetPaymentResponse>;
+  /** Queries a list of Payment items. */
+  PaymentAll(request: QueryAllPaymentRequest): Promise<QueryAllPaymentResponse>;
+  /** Queries a list of Payments items by merchant address */
+  Payments(request: QueryPaymentsRequest): Promise<QueryPaymentsResponse>;
   /** Queries a Contract by id. */
   Contract(request: QueryGetContractRequest): Promise<QueryGetContractResponse>;
   /** Queries a list of Contract items by contract creator */
   ContractAll(request: QueryAllContractRequest): Promise<QueryAllContractResponse>;
   /** Queries a list of Contracts items by SubscriptionID or contract contract creator */
   Contracts(request: QueryContractsRequest): Promise<QueryContractsResponse>;
-  /** Queries a Payment by id. */
-  Payment(request: QueryGetPaymentRequest): Promise<QueryGetPaymentResponse>;
-  /** Queries a list of Payment items. */
-  PaymentAll(request: QueryAllPaymentRequest): Promise<QueryAllPaymentResponse>;
-  /** Queries a list of Dispute items. */
+  /** Queries a SubscriptionPayment by id. */
+  SubscriptionPayment(request: QueryGetSubscriptionPaymentRequest): Promise<QueryGetSubscriptionPaymentResponse>;
+  /** Queries a list of SubscriptionPayment items. */
+  SubscriptionPaymentAll(request: QueryAllSubscriptionPaymentRequest): Promise<QueryAllSubscriptionPaymentResponse>;
+  /** Queries a dispute item details. */
   Dispute(request: QueryGetDisputeRequest): Promise<QueryGetDisputeResponse>;
+  /** Queries a list of Dispute items by a creator or merchant */
   DisputeAll(request: QueryAllDisputeRequest): Promise<QueryAllDisputeResponse>;
 }
 
@@ -1398,80 +1418,80 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
-    this.Subscription = this.Subscription.bind(this);
-    this.SubscriptionAll = this.SubscriptionAll.bind(this);
-    this.Subscriptions = this.Subscriptions.bind(this);
+    this.Payment = this.Payment.bind(this);
+    this.PaymentAll = this.PaymentAll.bind(this);
+    this.Payments = this.Payments.bind(this);
     this.Contract = this.Contract.bind(this);
     this.ContractAll = this.ContractAll.bind(this);
     this.Contracts = this.Contracts.bind(this);
-    this.Payment = this.Payment.bind(this);
-    this.PaymentAll = this.PaymentAll.bind(this);
+    this.SubscriptionPayment = this.SubscriptionPayment.bind(this);
+    this.SubscriptionPaymentAll = this.SubscriptionPaymentAll.bind(this);
     this.Dispute = this.Dispute.bind(this);
     this.DisputeAll = this.DisputeAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "Params", data);
+    const promise = this.rpc.request("orbita.pay.Query", "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
-  }
-
-  Subscription(request: QueryGetSubscriptionRequest): Promise<QueryGetSubscriptionResponse> {
-    const data = QueryGetSubscriptionRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "Subscription", data);
-    return promise.then((data) => QueryGetSubscriptionResponse.decode(new _m0.Reader(data)));
-  }
-
-  SubscriptionAll(request: QueryAllSubscriptionRequest): Promise<QueryAllSubscriptionResponse> {
-    const data = QueryAllSubscriptionRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "SubscriptionAll", data);
-    return promise.then((data) => QueryAllSubscriptionResponse.decode(new _m0.Reader(data)));
-  }
-
-  Subscriptions(request: QuerySubscriptionsRequest): Promise<QuerySubscriptionsResponse> {
-    const data = QuerySubscriptionsRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "Subscriptions", data);
-    return promise.then((data) => QuerySubscriptionsResponse.decode(new _m0.Reader(data)));
-  }
-
-  Contract(request: QueryGetContractRequest): Promise<QueryGetContractResponse> {
-    const data = QueryGetContractRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "Contract", data);
-    return promise.then((data) => QueryGetContractResponse.decode(new _m0.Reader(data)));
-  }
-
-  ContractAll(request: QueryAllContractRequest): Promise<QueryAllContractResponse> {
-    const data = QueryAllContractRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "ContractAll", data);
-    return promise.then((data) => QueryAllContractResponse.decode(new _m0.Reader(data)));
-  }
-
-  Contracts(request: QueryContractsRequest): Promise<QueryContractsResponse> {
-    const data = QueryContractsRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "Contracts", data);
-    return promise.then((data) => QueryContractsResponse.decode(new _m0.Reader(data)));
   }
 
   Payment(request: QueryGetPaymentRequest): Promise<QueryGetPaymentResponse> {
     const data = QueryGetPaymentRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "Payment", data);
+    const promise = this.rpc.request("orbita.pay.Query", "Payment", data);
     return promise.then((data) => QueryGetPaymentResponse.decode(new _m0.Reader(data)));
   }
 
   PaymentAll(request: QueryAllPaymentRequest): Promise<QueryAllPaymentResponse> {
     const data = QueryAllPaymentRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "PaymentAll", data);
+    const promise = this.rpc.request("orbita.pay.Query", "PaymentAll", data);
     return promise.then((data) => QueryAllPaymentResponse.decode(new _m0.Reader(data)));
+  }
+
+  Payments(request: QueryPaymentsRequest): Promise<QueryPaymentsResponse> {
+    const data = QueryPaymentsRequest.encode(request).finish();
+    const promise = this.rpc.request("orbita.pay.Query", "Payments", data);
+    return promise.then((data) => QueryPaymentsResponse.decode(new _m0.Reader(data)));
+  }
+
+  Contract(request: QueryGetContractRequest): Promise<QueryGetContractResponse> {
+    const data = QueryGetContractRequest.encode(request).finish();
+    const promise = this.rpc.request("orbita.pay.Query", "Contract", data);
+    return promise.then((data) => QueryGetContractResponse.decode(new _m0.Reader(data)));
+  }
+
+  ContractAll(request: QueryAllContractRequest): Promise<QueryAllContractResponse> {
+    const data = QueryAllContractRequest.encode(request).finish();
+    const promise = this.rpc.request("orbita.pay.Query", "ContractAll", data);
+    return promise.then((data) => QueryAllContractResponse.decode(new _m0.Reader(data)));
+  }
+
+  Contracts(request: QueryContractsRequest): Promise<QueryContractsResponse> {
+    const data = QueryContractsRequest.encode(request).finish();
+    const promise = this.rpc.request("orbita.pay.Query", "Contracts", data);
+    return promise.then((data) => QueryContractsResponse.decode(new _m0.Reader(data)));
+  }
+
+  SubscriptionPayment(request: QueryGetSubscriptionPaymentRequest): Promise<QueryGetSubscriptionPaymentResponse> {
+    const data = QueryGetSubscriptionPaymentRequest.encode(request).finish();
+    const promise = this.rpc.request("orbita.pay.Query", "SubscriptionPayment", data);
+    return promise.then((data) => QueryGetSubscriptionPaymentResponse.decode(new _m0.Reader(data)));
+  }
+
+  SubscriptionPaymentAll(request: QueryAllSubscriptionPaymentRequest): Promise<QueryAllSubscriptionPaymentResponse> {
+    const data = QueryAllSubscriptionPaymentRequest.encode(request).finish();
+    const promise = this.rpc.request("orbita.pay.Query", "SubscriptionPaymentAll", data);
+    return promise.then((data) => QueryAllSubscriptionPaymentResponse.decode(new _m0.Reader(data)));
   }
 
   Dispute(request: QueryGetDisputeRequest): Promise<QueryGetDisputeResponse> {
     const data = QueryGetDisputeRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "Dispute", data);
+    const promise = this.rpc.request("orbita.pay.Query", "Dispute", data);
     return promise.then((data) => QueryGetDisputeResponse.decode(new _m0.Reader(data)));
   }
 
   DisputeAll(request: QueryAllDisputeRequest): Promise<QueryAllDisputeResponse> {
     const data = QueryAllDisputeRequest.encode(request).finish();
-    const promise = this.rpc.request("subscription.subscription.Query", "DisputeAll", data);
+    const promise = this.rpc.request("orbita.pay.Query", "DisputeAll", data);
     return promise.then((data) => QueryAllDisputeResponse.decode(new _m0.Reader(data)));
   }
 }

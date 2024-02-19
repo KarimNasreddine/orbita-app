@@ -3,14 +3,14 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../../google/protobuf/timestamp";
 
-export const protobufPackage = "subscription.subscription";
+export const protobufPackage = "orbita.pay";
 
 export interface Contract {
   id: number;
   creator: string;
   clientWalletAddress: string;
   status: string;
-  subscriptionID: number;
+  paymentID: number;
   createdAt: Date | undefined;
   payWithCurrency: string;
   paymentLeniencyCounter: number;
@@ -26,7 +26,7 @@ function createBaseContract(): Contract {
     creator: "",
     clientWalletAddress: "",
     status: "",
-    subscriptionID: 0,
+    paymentID: 0,
     createdAt: undefined,
     payWithCurrency: "",
     paymentLeniencyCounter: 0,
@@ -51,8 +51,8 @@ export const Contract = {
     if (message.status !== "") {
       writer.uint32(34).string(message.status);
     }
-    if (message.subscriptionID !== 0) {
-      writer.uint32(40).uint64(message.subscriptionID);
+    if (message.paymentID !== 0) {
+      writer.uint32(40).uint64(message.paymentID);
     }
     if (message.createdAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(50).fork()).ldelim();
@@ -98,7 +98,7 @@ export const Contract = {
           message.status = reader.string();
           break;
         case 5:
-          message.subscriptionID = longToNumber(reader.uint64() as Long);
+          message.paymentID = longToNumber(reader.uint64() as Long);
           break;
         case 6:
           message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
@@ -135,7 +135,7 @@ export const Contract = {
       creator: isSet(object.creator) ? String(object.creator) : "",
       clientWalletAddress: isSet(object.clientWalletAddress) ? String(object.clientWalletAddress) : "",
       status: isSet(object.status) ? String(object.status) : "",
-      subscriptionID: isSet(object.subscriptionID) ? Number(object.subscriptionID) : 0,
+      paymentID: isSet(object.paymentID) ? Number(object.paymentID) : 0,
       createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
       payWithCurrency: isSet(object.payWithCurrency) ? String(object.payWithCurrency) : "",
       paymentLeniencyCounter: isSet(object.paymentLeniencyCounter) ? Number(object.paymentLeniencyCounter) : 0,
@@ -152,7 +152,7 @@ export const Contract = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.clientWalletAddress !== undefined && (obj.clientWalletAddress = message.clientWalletAddress);
     message.status !== undefined && (obj.status = message.status);
-    message.subscriptionID !== undefined && (obj.subscriptionID = Math.round(message.subscriptionID));
+    message.paymentID !== undefined && (obj.paymentID = Math.round(message.paymentID));
     message.createdAt !== undefined && (obj.createdAt = message.createdAt.toISOString());
     message.payWithCurrency !== undefined && (obj.payWithCurrency = message.payWithCurrency);
     message.paymentLeniencyCounter !== undefined
@@ -170,7 +170,7 @@ export const Contract = {
     message.creator = object.creator ?? "";
     message.clientWalletAddress = object.clientWalletAddress ?? "";
     message.status = object.status ?? "";
-    message.subscriptionID = object.subscriptionID ?? 0;
+    message.paymentID = object.paymentID ?? 0;
     message.createdAt = object.createdAt ?? undefined;
     message.payWithCurrency = object.payWithCurrency ?? "";
     message.paymentLeniencyCounter = object.paymentLeniencyCounter ?? 0;

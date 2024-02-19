@@ -7,9 +7,9 @@ import { Contract } from "./contract";
 import { Dispute } from "./dispute";
 import { Params } from "./params";
 import { Payment } from "./payment";
-import { Subscription } from "./subscription";
+import { SubscriptionPayment } from "./subscription_payment";
 
-export const protobufPackage = "subscription.subscription";
+export const protobufPackage = "orbita.pay";
 
 export interface EpochInfo {
   identifier: string;
@@ -24,12 +24,12 @@ export interface EpochInfo {
 /** GenesisState defines the subscription module's genesis state. */
 export interface GenesisState {
   params: Params | undefined;
-  subscriptionList: Subscription[];
-  subscriptionCount: number;
-  contractList: Contract[];
-  contractCount: number;
   paymentList: Payment[];
   paymentCount: number;
+  contractList: Contract[];
+  contractCount: number;
+  subscriptionPaymentList: SubscriptionPayment[];
+  subscriptionPaymentCount: number;
   epochs: EpochInfo[];
   /** this line is used by starport scaffolding # genesis/proto/state */
   disputeList: Dispute[];
@@ -156,12 +156,12 @@ export const EpochInfo = {
 function createBaseGenesisState(): GenesisState {
   return {
     params: undefined,
-    subscriptionList: [],
-    subscriptionCount: 0,
-    contractList: [],
-    contractCount: 0,
     paymentList: [],
     paymentCount: 0,
+    contractList: [],
+    contractCount: 0,
+    subscriptionPaymentList: [],
+    subscriptionPaymentCount: 0,
     epochs: [],
     disputeList: [],
     disputeCount: 0,
@@ -173,11 +173,11 @@ export const GenesisState = {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
-    for (const v of message.subscriptionList) {
-      Subscription.encode(v!, writer.uint32(18).fork()).ldelim();
+    for (const v of message.paymentList) {
+      Payment.encode(v!, writer.uint32(18).fork()).ldelim();
     }
-    if (message.subscriptionCount !== 0) {
-      writer.uint32(24).uint64(message.subscriptionCount);
+    if (message.paymentCount !== 0) {
+      writer.uint32(24).uint64(message.paymentCount);
     }
     for (const v of message.contractList) {
       Contract.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -185,11 +185,11 @@ export const GenesisState = {
     if (message.contractCount !== 0) {
       writer.uint32(40).uint64(message.contractCount);
     }
-    for (const v of message.paymentList) {
-      Payment.encode(v!, writer.uint32(50).fork()).ldelim();
+    for (const v of message.subscriptionPaymentList) {
+      SubscriptionPayment.encode(v!, writer.uint32(50).fork()).ldelim();
     }
-    if (message.paymentCount !== 0) {
-      writer.uint32(56).uint64(message.paymentCount);
+    if (message.subscriptionPaymentCount !== 0) {
+      writer.uint32(56).uint64(message.subscriptionPaymentCount);
     }
     for (const v of message.epochs) {
       EpochInfo.encode(v!, writer.uint32(66).fork()).ldelim();
@@ -214,10 +214,10 @@ export const GenesisState = {
           message.params = Params.decode(reader, reader.uint32());
           break;
         case 2:
-          message.subscriptionList.push(Subscription.decode(reader, reader.uint32()));
+          message.paymentList.push(Payment.decode(reader, reader.uint32()));
           break;
         case 3:
-          message.subscriptionCount = longToNumber(reader.uint64() as Long);
+          message.paymentCount = longToNumber(reader.uint64() as Long);
           break;
         case 4:
           message.contractList.push(Contract.decode(reader, reader.uint32()));
@@ -226,10 +226,10 @@ export const GenesisState = {
           message.contractCount = longToNumber(reader.uint64() as Long);
           break;
         case 6:
-          message.paymentList.push(Payment.decode(reader, reader.uint32()));
+          message.subscriptionPaymentList.push(SubscriptionPayment.decode(reader, reader.uint32()));
           break;
         case 7:
-          message.paymentCount = longToNumber(reader.uint64() as Long);
+          message.subscriptionPaymentCount = longToNumber(reader.uint64() as Long);
           break;
         case 8:
           message.epochs.push(EpochInfo.decode(reader, reader.uint32()));
@@ -251,16 +251,16 @@ export const GenesisState = {
   fromJSON(object: any): GenesisState {
     return {
       params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
-      subscriptionList: Array.isArray(object?.subscriptionList)
-        ? object.subscriptionList.map((e: any) => Subscription.fromJSON(e))
-        : [],
-      subscriptionCount: isSet(object.subscriptionCount) ? Number(object.subscriptionCount) : 0,
+      paymentList: Array.isArray(object?.paymentList) ? object.paymentList.map((e: any) => Payment.fromJSON(e)) : [],
+      paymentCount: isSet(object.paymentCount) ? Number(object.paymentCount) : 0,
       contractList: Array.isArray(object?.contractList)
         ? object.contractList.map((e: any) => Contract.fromJSON(e))
         : [],
       contractCount: isSet(object.contractCount) ? Number(object.contractCount) : 0,
-      paymentList: Array.isArray(object?.paymentList) ? object.paymentList.map((e: any) => Payment.fromJSON(e)) : [],
-      paymentCount: isSet(object.paymentCount) ? Number(object.paymentCount) : 0,
+      subscriptionPaymentList: Array.isArray(object?.subscriptionPaymentList)
+        ? object.subscriptionPaymentList.map((e: any) => SubscriptionPayment.fromJSON(e))
+        : [],
+      subscriptionPaymentCount: isSet(object.subscriptionPaymentCount) ? Number(object.subscriptionPaymentCount) : 0,
       epochs: Array.isArray(object?.epochs) ? object.epochs.map((e: any) => EpochInfo.fromJSON(e)) : [],
       disputeList: Array.isArray(object?.disputeList) ? object.disputeList.map((e: any) => Dispute.fromJSON(e)) : [],
       disputeCount: isSet(object.disputeCount) ? Number(object.disputeCount) : 0,
@@ -270,24 +270,27 @@ export const GenesisState = {
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
     message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
-    if (message.subscriptionList) {
-      obj.subscriptionList = message.subscriptionList.map((e) => e ? Subscription.toJSON(e) : undefined);
-    } else {
-      obj.subscriptionList = [];
-    }
-    message.subscriptionCount !== undefined && (obj.subscriptionCount = Math.round(message.subscriptionCount));
-    if (message.contractList) {
-      obj.contractList = message.contractList.map((e) => e ? Contract.toJSON(e) : undefined);
-    } else {
-      obj.contractList = [];
-    }
-    message.contractCount !== undefined && (obj.contractCount = Math.round(message.contractCount));
     if (message.paymentList) {
       obj.paymentList = message.paymentList.map((e) => e ? Payment.toJSON(e) : undefined);
     } else {
       obj.paymentList = [];
     }
     message.paymentCount !== undefined && (obj.paymentCount = Math.round(message.paymentCount));
+    if (message.contractList) {
+      obj.contractList = message.contractList.map((e) => e ? Contract.toJSON(e) : undefined);
+    } else {
+      obj.contractList = [];
+    }
+    message.contractCount !== undefined && (obj.contractCount = Math.round(message.contractCount));
+    if (message.subscriptionPaymentList) {
+      obj.subscriptionPaymentList = message.subscriptionPaymentList.map((e) =>
+        e ? SubscriptionPayment.toJSON(e) : undefined
+      );
+    } else {
+      obj.subscriptionPaymentList = [];
+    }
+    message.subscriptionPaymentCount !== undefined
+      && (obj.subscriptionPaymentCount = Math.round(message.subscriptionPaymentCount));
     if (message.epochs) {
       obj.epochs = message.epochs.map((e) => e ? EpochInfo.toJSON(e) : undefined);
     } else {
@@ -307,12 +310,13 @@ export const GenesisState = {
     message.params = (object.params !== undefined && object.params !== null)
       ? Params.fromPartial(object.params)
       : undefined;
-    message.subscriptionList = object.subscriptionList?.map((e) => Subscription.fromPartial(e)) || [];
-    message.subscriptionCount = object.subscriptionCount ?? 0;
-    message.contractList = object.contractList?.map((e) => Contract.fromPartial(e)) || [];
-    message.contractCount = object.contractCount ?? 0;
     message.paymentList = object.paymentList?.map((e) => Payment.fromPartial(e)) || [];
     message.paymentCount = object.paymentCount ?? 0;
+    message.contractList = object.contractList?.map((e) => Contract.fromPartial(e)) || [];
+    message.contractCount = object.contractCount ?? 0;
+    message.subscriptionPaymentList = object.subscriptionPaymentList?.map((e) => SubscriptionPayment.fromPartial(e))
+      || [];
+    message.subscriptionPaymentCount = object.subscriptionPaymentCount ?? 0;
     message.epochs = object.epochs?.map((e) => EpochInfo.fromPartial(e)) || [];
     message.disputeList = object.disputeList?.map((e) => Dispute.fromPartial(e)) || [];
     message.disputeCount = object.disputeCount ?? 0;

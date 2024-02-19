@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../../google/protobuf/timestamp";
 
-export const protobufPackage = "subscription.subscription";
+export const protobufPackage = "orbita.pay";
 
 export interface Dispute {
   id: number;

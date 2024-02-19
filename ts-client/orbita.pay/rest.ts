@@ -9,170 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-export interface ProtobufAny {
-  "@type"?: string;
-}
-
-export interface RpcStatus {
-  /** @format int32 */
-  code?: number;
-  message?: string;
-  details?: ProtobufAny[];
-}
-
-export type SubscriptionMsgCancelDisputeResponse = object;
-
-export interface SubscriptionMsgCreateContractResponse {
-  /** @format uint64 */
-  id?: string;
-}
-
-export interface SubscriptionMsgCreateDisputeResponse {
-  /** @format uint64 */
-  id?: string;
-}
-
-export interface SubscriptionMsgCreatePaymentResponse {
-  /** @format uint64 */
-  id?: string;
-}
-
-export interface SubscriptionMsgCreateSubscriptionResponse {
-  /** @format uint64 */
-  id?: string;
-}
-
-export interface SubscriptionMsgDeleteContractResponse {
-  /** @format uint64 */
-  id?: string;
-}
-
-export interface SubscriptionMsgUpdateDisputeResponse {
-  /** @format uint64 */
-  id?: string;
-}
-
-export interface SubscriptionQueryAllContractResponse {
-  /** repeated Contract Contract = 1 [(gogoproto.nullable) = false]; */
-  Subscription?: SubscriptionsubscriptionSubscription[];
-
-  /**
-   * PageResponse is to be embedded in gRPC response messages where the
-   * corresponding request message has used PageRequest.
-   *
-   *  message SomeResponse {
-   *          repeated Bar results = 1;
-   *          PageResponse page = 2;
-   *  }
-   */
-  pagination?: V1Beta1PageResponse;
-}
-
-export interface SubscriptionQueryAllDisputeResponse {
-  Dispute?: SubscriptionsubscriptionDispute[];
-
-  /**
-   * PageResponse is to be embedded in gRPC response messages where the
-   * corresponding request message has used PageRequest.
-   *
-   *  message SomeResponse {
-   *          repeated Bar results = 1;
-   *          PageResponse page = 2;
-   *  }
-   */
-  pagination?: V1Beta1PageResponse;
-}
-
-export interface SubscriptionQueryAllPaymentResponse {
-  Payment?: SubscriptionsubscriptionPayment[];
-
-  /**
-   * PageResponse is to be embedded in gRPC response messages where the
-   * corresponding request message has used PageRequest.
-   *
-   *  message SomeResponse {
-   *          repeated Bar results = 1;
-   *          PageResponse page = 2;
-   *  }
-   */
-  pagination?: V1Beta1PageResponse;
-}
-
-export interface SubscriptionQueryAllSubscriptionResponse {
-  Subscription?: SubscriptionsubscriptionSubscription[];
-
-  /**
-   * PageResponse is to be embedded in gRPC response messages where the
-   * corresponding request message has used PageRequest.
-   *
-   *  message SomeResponse {
-   *          repeated Bar results = 1;
-   *          PageResponse page = 2;
-   *  }
-   */
-  pagination?: V1Beta1PageResponse;
-}
-
-export interface SubscriptionQueryContractsResponse {
-  /** Subscription Subscription = 1; */
-  Subscription?: SubscriptionsubscriptionSubscription[];
-
-  /** Return a list of contracts */
-  Contract?: SubscriptionsubscriptionContract[];
-
-  /**
-   * PageResponse is to be embedded in gRPC response messages where the
-   * corresponding request message has used PageRequest.
-   *
-   *  message SomeResponse {
-   *          repeated Bar results = 1;
-   *          PageResponse page = 2;
-   *  }
-   */
-  pagination?: V1Beta1PageResponse;
-}
-
-export interface SubscriptionQueryGetContractResponse {
-  Contract?: SubscriptionsubscriptionContract;
-}
-
-export interface SubscriptionQueryGetDisputeResponse {
-  Dispute?: SubscriptionsubscriptionDispute;
-}
-
-export interface SubscriptionQueryGetPaymentResponse {
-  Payment?: SubscriptionsubscriptionPayment;
-}
-
-export interface SubscriptionQueryGetSubscriptionResponse {
-  Subscription?: SubscriptionsubscriptionSubscription;
-}
-
-/**
- * QueryParamsResponse is response type for the Query/Params RPC method.
- */
-export interface SubscriptionQueryParamsResponse {
-  /** params holds all the parameters of this module. */
-  params?: SubscriptionsubscriptionParams;
-}
-
-export interface SubscriptionQuerySubscriptionsResponse {
-  Subscription?: SubscriptionsubscriptionSubscription[];
-
-  /**
-   * Add pagination to response
-   * PageResponse is to be embedded in gRPC response messages where the
-   * corresponding request message has used PageRequest.
-   *
-   *  message SomeResponse {
-   *          repeated Bar results = 1;
-   *          PageResponse page = 2;
-   *  }
-   */
-  pagination?: V1Beta1PageResponse;
-}
-
-export interface SubscriptionsubscriptionContract {
+export interface OrbitapayContract {
   /** @format uint64 */
   id?: string;
   creator?: string;
@@ -180,7 +17,7 @@ export interface SubscriptionsubscriptionContract {
   status?: string;
 
   /** @format uint64 */
-  subscriptionID?: string;
+  paymentID?: string;
 
   /** @format date-time */
   createdAt?: string;
@@ -194,13 +31,11 @@ export interface SubscriptionsubscriptionContract {
   totalAmountCurrency?: string;
 }
 
-export interface SubscriptionsubscriptionDispute {
+export interface OrbitapayDispute {
   /** @format uint64 */
   id?: string;
   creator?: string;
   merchant?: string;
-
-  /** @format uint64 */
   amount?: string;
   status?: string;
   verdict?: string;
@@ -218,12 +53,42 @@ export interface SubscriptionsubscriptionDispute {
 /**
  * Params defines the parameters for the module.
  */
-export interface SubscriptionsubscriptionParams {
+export interface OrbitapayParams {
   /** subscription epoch identifier */
   epoch_identifier?: string;
 }
 
-export interface SubscriptionsubscriptionPayment {
+export interface OrbitapayPayment {
+  /** @format uint64 */
+  id?: string;
+  creator?: string;
+  subscriptionType?: string;
+  acceptedPaymentType?: string;
+  name?: string;
+  priceAmount?: string;
+  priceCurrency?: string;
+  recurringTimeFrame?: string;
+
+  /** @format uint64 */
+  recurringTimeFrameAmount?: string;
+  merchantPayoutAddress?: string;
+
+  /** @format int64 */
+  paymentLeniency?: number;
+
+  /** @format int64 */
+  clientCounts?: number;
+  paymentMode?: string;
+  paymentType?: string;
+
+  /** @format int64 */
+  safetyPeriod?: number;
+
+  /** @format date-time */
+  createdAt?: string;
+}
+
+export interface OrbitapaySubscriptionPayment {
   /** @format uint64 */
   id?: string;
   creator?: string;
@@ -238,34 +103,167 @@ export interface SubscriptionsubscriptionPayment {
   contractID?: string;
 }
 
-export interface SubscriptionsubscriptionSubscription {
+export type PayMsgCancelDisputeResponse = object;
+
+export interface PayMsgCreateContractResponse {
   /** @format uint64 */
   id?: string;
-  creator?: string;
-  subscriptionType?: string;
-  acceptedPaymentType?: string;
-  subscriptionName?: string;
-  subscriptionPriceAmount?: string;
-  subscriptionPriceCurrency?: string;
-  recurringTimeFrame?: string;
+}
 
+export interface PayMsgCreateDisputeResponse {
   /** @format uint64 */
-  recurringTimeFrameAmount?: string;
-  merchantPayoutAddress?: string;
+  id?: string;
+}
 
-  /** @format int64 */
-  paymentLeniency?: number;
+export interface PayMsgCreatePaymentResponse {
+  /** @format uint64 */
+  id?: string;
+}
 
-  /** @format int64 */
-  counts?: number;
-  paymentMode?: string;
-  paymentType?: string;
+export interface PayMsgCreateSubscriptionPaymentResponse {
+  /** @format uint64 */
+  id?: string;
+}
 
-  /** @format int64 */
-  safetyPeriod?: number;
+export interface PayMsgDeleteContractResponse {
+  /** @format uint64 */
+  id?: string;
+}
 
-  /** @format date-time */
-  createdAt?: string;
+export interface PayMsgUpdateDisputeResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface PayQueryAllContractResponse {
+  /** repeated Contract Contract = 1 [(gogoproto.nullable) = false]; */
+  Contracts?: OrbitapayPayment[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface PayQueryAllDisputeResponse {
+  Dispute?: OrbitapayDispute[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface PayQueryAllPaymentResponse {
+  Payment?: OrbitapayPayment[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface PayQueryAllSubscriptionPaymentResponse {
+  SubscriptionPayment?: OrbitapaySubscriptionPayment[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface PayQueryContractsResponse {
+  /** Subscription Subscription = 1; */
+  Contracts?: OrbitapayPayment[];
+
+  /** Return a list of contracts */
+  Contract?: OrbitapayContract[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface PayQueryGetContractResponse {
+  Contract?: OrbitapayContract;
+}
+
+export interface PayQueryGetDisputeResponse {
+  Dispute?: OrbitapayDispute;
+}
+
+export interface PayQueryGetPaymentResponse {
+  Payment?: OrbitapayPayment;
+}
+
+export interface PayQueryGetSubscriptionPaymentResponse {
+  SubscriptionPayment?: OrbitapaySubscriptionPayment;
+}
+
+/**
+ * QueryParamsResponse is response type for the Query/Params RPC method.
+ */
+export interface PayQueryParamsResponse {
+  /** params holds all the parameters of this module. */
+  params?: OrbitapayParams;
+}
+
+export interface PayQueryPaymentsResponse {
+  Payment?: OrbitapayPayment[];
+
+  /**
+   * Add pagination to response
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface ProtobufAny {
+  "@type"?: string;
+}
+
+export interface RpcStatus {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+  details?: ProtobufAny[];
 }
 
 /**
@@ -461,7 +459,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title subscription/subscription/contract.proto
+ * @title orbita/pay/contract.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
@@ -471,11 +469,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryContract
    * @summary Queries a Contract by id.
-   * @request GET:/subscription/subscription/contract/{id}
+   * @request GET:/orbita/pay/contract/{id}
    */
   queryContract = (id: string, params: RequestParams = {}) =>
-    this.request<SubscriptionQueryGetContractResponse, RpcStatus>({
-      path: `/subscription/subscription/contract/${id}`,
+    this.request<PayQueryGetContractResponse, RpcStatus>({
+      path: `/orbita/pay/contract/${id}`,
       method: "GET",
       format: "json",
       ...params,
@@ -487,7 +485,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryContractAll
    * @summary Queries a list of Contract items by contract creator
-   * @request GET:/subscription/subscription/contracts/{address}
+   * @request GET:/orbita/pay/contracts/{address}
    */
   queryContractAll = (
     address: string,
@@ -500,8 +498,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     },
     params: RequestParams = {},
   ) =>
-    this.request<SubscriptionQueryAllContractResponse, RpcStatus>({
-      path: `/subscription/subscription/contracts/${address}`,
+    this.request<PayQueryAllContractResponse, RpcStatus>({
+      path: `/orbita/pay/contracts/${address}`,
       method: "GET",
       query: query,
       format: "json",
@@ -514,7 +512,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryContracts
    * @summary Queries a list of Contracts items by SubscriptionID or contract contract creator
-   * @request GET:/subscription/subscription/contracts/{id}/{querytype}
+   * @request GET:/orbita/pay/contracts/{id}/{querytype}
    */
   queryContracts = (
     id: string,
@@ -528,8 +526,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     },
     params: RequestParams = {},
   ) =>
-    this.request<SubscriptionQueryContractsResponse, RpcStatus>({
-      path: `/subscription/subscription/contracts/${id}/${querytype}`,
+    this.request<PayQueryContractsResponse, RpcStatus>({
+      path: `/orbita/pay/contracts/${id}/${querytype}`,
       method: "GET",
       query: query,
       format: "json",
@@ -542,7 +540,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryDisputeAll
    * @summary Queries a list of Dispute items by a creator or merchant
-   * @request GET:/subscription/subscription/dispute
+   * @request GET:/orbita/pay/dispute
    */
   queryDisputeAll = (
     query?: {
@@ -555,8 +553,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     },
     params: RequestParams = {},
   ) =>
-    this.request<SubscriptionQueryAllDisputeResponse, RpcStatus>({
-      path: `/subscription/subscription/dispute`,
+    this.request<PayQueryAllDisputeResponse, RpcStatus>({
+      path: `/orbita/pay/dispute`,
       method: "GET",
       query: query,
       format: "json",
@@ -569,11 +567,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryDispute
    * @summary Queries a dispute item details.
-   * @request GET:/subscription/subscription/dispute/{id}
+   * @request GET:/orbita/pay/dispute/{id}
    */
   queryDispute = (id: string, params: RequestParams = {}) =>
-    this.request<SubscriptionQueryGetDisputeResponse, RpcStatus>({
-      path: `/subscription/subscription/dispute/${id}`,
+    this.request<PayQueryGetDisputeResponse, RpcStatus>({
+      path: `/orbita/pay/dispute/${id}`,
       method: "GET",
       format: "json",
       ...params,
@@ -585,27 +583,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryParams
    * @summary Parameters queries the parameters of the module.
-   * @request GET:/subscription/subscription/params
+   * @request GET:/orbita/pay/params
    */
   queryParams = (params: RequestParams = {}) =>
-    this.request<SubscriptionQueryParamsResponse, RpcStatus>({
-      path: `/subscription/subscription/params`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
-
-  /**
-   * No description
-   *
-   * @tags Query
-   * @name QueryPayment
-   * @summary Queries a Payment by id.
-   * @request GET:/subscription/subscription/payment/{id}
-   */
-  queryPayment = (id: string, params: RequestParams = {}) =>
-    this.request<SubscriptionQueryGetPaymentResponse, RpcStatus>({
-      path: `/subscription/subscription/payment/${id}`,
+    this.request<PayQueryParamsResponse, RpcStatus>({
+      path: `/orbita/pay/params`,
       method: "GET",
       format: "json",
       ...params,
@@ -617,9 +599,94 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryPaymentAll
    * @summary Queries a list of Payment items.
-   * @request GET:/subscription/subscription/payment/{id}/{querytype}
+   * @request GET:/orbita/pay/payment
    */
   queryPaymentAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<PayQueryAllPaymentResponse, RpcStatus>({
+      path: `/orbita/pay/payment`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPayment
+   * @summary Queries a Payment by id.
+   * @request GET:/orbita/pay/payment/{id}
+   */
+  queryPayment = (id: string, params: RequestParams = {}) =>
+    this.request<PayQueryGetPaymentResponse, RpcStatus>({
+      path: `/orbita/pay/payment/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPayments
+   * @summary Queries a list of Payments items by merchant address
+   * @request GET:/orbita/pay/payments/{merchantAddress}
+   */
+  queryPayments = (
+    merchantAddress: string,
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<PayQueryPaymentsResponse, RpcStatus>({
+      path: `/orbita/pay/payments/${merchantAddress}`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySubscriptionPayment
+   * @summary Queries a SubscriptionPayment by id.
+   * @request GET:/orbita/pay/subscription_payment/{id}
+   */
+  querySubscriptionPayment = (id: string, params: RequestParams = {}) =>
+    this.request<PayQueryGetSubscriptionPaymentResponse, RpcStatus>({
+      path: `/orbita/pay/subscription_payment/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySubscriptionPaymentAll
+   * @summary Queries a list of SubscriptionPayment items.
+   * @request GET:/orbita/pay/subscription_payment/{id}/{querytype}
+   */
+  querySubscriptionPaymentAll = (
     id: string,
     querytype: string,
     query?: {
@@ -631,77 +698,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     },
     params: RequestParams = {},
   ) =>
-    this.request<SubscriptionQueryAllPaymentResponse, RpcStatus>({
-      path: `/subscription/subscription/payment/${id}/${querytype}`,
-      method: "GET",
-      query: query,
-      format: "json",
-      ...params,
-    });
-
-  /**
-   * No description
-   *
-   * @tags Query
-   * @name QuerySubscriptionAll
-   * @summary Queries a list of Subscription items.
-   * @request GET:/subscription/subscription/subscription
-   */
-  querySubscriptionAll = (
-    query?: {
-      "pagination.key"?: string;
-      "pagination.offset"?: string;
-      "pagination.limit"?: string;
-      "pagination.count_total"?: boolean;
-      "pagination.reverse"?: boolean;
-    },
-    params: RequestParams = {},
-  ) =>
-    this.request<SubscriptionQueryAllSubscriptionResponse, RpcStatus>({
-      path: `/subscription/subscription/subscription`,
-      method: "GET",
-      query: query,
-      format: "json",
-      ...params,
-    });
-
-  /**
-   * No description
-   *
-   * @tags Query
-   * @name QuerySubscription
-   * @summary Queries a Subscription by id.
-   * @request GET:/subscription/subscription/subscription/{id}
-   */
-  querySubscription = (id: string, params: RequestParams = {}) =>
-    this.request<SubscriptionQueryGetSubscriptionResponse, RpcStatus>({
-      path: `/subscription/subscription/subscription/${id}`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
-
-  /**
-   * No description
-   *
-   * @tags Query
-   * @name QuerySubscriptions
-   * @summary Queries a list of Subscriptions items by merchant address
-   * @request GET:/subscription/subscription/subscriptions/{merchantAddress}
-   */
-  querySubscriptions = (
-    merchantAddress: string,
-    query?: {
-      "pagination.key"?: string;
-      "pagination.offset"?: string;
-      "pagination.limit"?: string;
-      "pagination.count_total"?: boolean;
-      "pagination.reverse"?: boolean;
-    },
-    params: RequestParams = {},
-  ) =>
-    this.request<SubscriptionQuerySubscriptionsResponse, RpcStatus>({
-      path: `/subscription/subscription/subscriptions/${merchantAddress}`,
+    this.request<PayQueryAllSubscriptionPaymentResponse, RpcStatus>({
+      path: `/orbita/pay/subscription_payment/${id}/${querytype}`,
       method: "GET",
       query: query,
       format: "json",

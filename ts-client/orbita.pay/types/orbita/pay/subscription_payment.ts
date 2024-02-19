@@ -3,9 +3,9 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../../google/protobuf/timestamp";
 
-export const protobufPackage = "subscription.subscription";
+export const protobufPackage = "orbita.pay";
 
-export interface Payment {
+export interface SubscriptionPayment {
   id: number;
   creator: string;
   createdAt: Date | undefined;
@@ -13,12 +13,12 @@ export interface Payment {
   contractID: number;
 }
 
-function createBasePayment(): Payment {
+function createBaseSubscriptionPayment(): SubscriptionPayment {
   return { id: 0, creator: "", createdAt: undefined, nextPaymentAt: undefined, contractID: 0 };
 }
 
-export const Payment = {
-  encode(message: Payment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const SubscriptionPayment = {
+  encode(message: SubscriptionPayment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
@@ -37,10 +37,10 @@ export const Payment = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Payment {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SubscriptionPayment {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePayment();
+    const message = createBaseSubscriptionPayment();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -67,7 +67,7 @@ export const Payment = {
     return message;
   },
 
-  fromJSON(object: any): Payment {
+  fromJSON(object: any): SubscriptionPayment {
     return {
       id: isSet(object.id) ? Number(object.id) : 0,
       creator: isSet(object.creator) ? String(object.creator) : "",
@@ -77,7 +77,7 @@ export const Payment = {
     };
   },
 
-  toJSON(message: Payment): unknown {
+  toJSON(message: SubscriptionPayment): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.creator !== undefined && (obj.creator = message.creator);
@@ -87,8 +87,8 @@ export const Payment = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Payment>, I>>(object: I): Payment {
-    const message = createBasePayment();
+  fromPartial<I extends Exact<DeepPartial<SubscriptionPayment>, I>>(object: I): SubscriptionPayment {
+    const message = createBaseSubscriptionPayment();
     message.id = object.id ?? 0;
     message.creator = object.creator ?? "";
     message.createdAt = object.createdAt ?? undefined;
