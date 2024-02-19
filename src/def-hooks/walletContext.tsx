@@ -10,7 +10,8 @@ interface Props {
 }
 const initState = {
   wallets:
-    (JSON.parse(
+    (
+      typeof window !== 'undefined' && JSON.parse(
       window.localStorage.getItem("wallets") ?? "null"
     ) as Array<EncodedWallet>) || ([] as Array<EncodedWallet>),
   activeWallet: null as Nullable<Wallet>,
@@ -48,8 +49,8 @@ export default function WalletProvider({ children }: Props) {
       const [account] = (await client.signer?.getAccounts()) || [];
       wallet.accounts.push({ address: account.address, pathIncrement: null });
 
-      setActiveWallet(wallet);
-      window.localStorage.setItem("lastWallet", wallet.name);
+      setActiveWallet(wallet);     
+      window?.localStorage.setItem("lastWallet", wallet.name);
       if (activeWallet && activeWallet.name && activeWallet.password) {
         setWallets([
           ...wallets,

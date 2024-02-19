@@ -21,13 +21,13 @@ export default function () {
     }
   };
 
-  const isKeplrAvailable = !!window.keplr;
-
+  const isKeplrAvailable = (typeof window !== 'undefined') ? !!window.keplr : false;
+  
   const getOfflineSigner = (chainId: string) =>
-    window.keplr?.getOfflineSigner(chainId);
+    window?.keplr?.getOfflineSigner(chainId);
 
   const getKeplrAccParams = async (chainId: string) =>
-    await window.keplr?.getKey(chainId);
+    await window?.keplr?.getKey(chainId);
 
   const listenToAccChange = (cb: EventListener) => {
     client.on("signer-changed", cb);

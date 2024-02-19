@@ -30,12 +30,14 @@ export const useAddress = () => {
       return oldAddress.address != newAddress.address ? newAddress : oldAddress;
     });
   });
-  window.addEventListener("keplr_keystorechange", async () => {
-    const newAddress = await getAddress();
-    setAddress((oldAddress) => {
-      return oldAddress.address != newAddress.address ? newAddress : oldAddress;
+  if (typeof window !== 'undefined') {
+    window.addEventListener("keplr_keystorechange", async () => {
+      const newAddress = await getAddress();
+      setAddress((oldAddress) => {
+        return oldAddress.address != newAddress.address ? newAddress : oldAddress;
+      });
     });
-  });
+  }
 
   (async () => {
     const newAddress = await getAddress();
