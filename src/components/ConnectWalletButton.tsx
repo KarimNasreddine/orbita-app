@@ -3,7 +3,8 @@
 // Full Keplr implementation not done yet
 
 import useKeplr from "@/def-hooks/useKeplr";
-import { FC, useEffect } from "react";
+import IgntAcc from "./IgntAcc";
+import { FC } from "react";
 
 interface ConnectWalletButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
@@ -30,14 +31,18 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = (props) => {
   }, []);
  */
   return (
-    <button
-      className="bg-gradient-to-t from-[#fe1cbb] to-[#f3a41c] text-white w-full max-w-[80%] py-2 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none font-bold"
-      {...rest}     
-      onClick={tryToConnectToKeplr}
-    >
-      Connect Wallet
-    </button>
-    // <IgntAcc />
+   <div >
+    {/* <button
+        className="bg-gradient-to-t from-[#fe1cbb] to-[#f3a41c] text-white w-full max-w-[80%] py-2 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none font-bold"
+        {...rest}     
+        onClick={tryToConnectToKeplr}
+      >
+        Connect Wallet
+    </button> */}
+   {/*  <div className="mt-6 mx-4 text-black">
+      <IgntAcc />    
+    </div> */}
+   </div>
   );
 };
 
