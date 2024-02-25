@@ -16,7 +16,7 @@ export const useTransactions = () => {
   >;
   const allSent =
     sentQuery.data?.pages.reduce(
-      (txs: string | any[], page: { tx_responses: any }) => {
+      (txs: HelperTxs, page: { tx_responses?: HelperTxs }) => {
         if (page.tx_responses) {
           return txs.concat(page.tx_responses);
         } else {
@@ -28,7 +28,7 @@ export const useTransactions = () => {
 
   const allReceived =
     receivedQuery.data?.pages.reduce(
-      (txs: string | any[], page: { tx_responses: any }) => {
+      (txs: HelperTxs, page: { tx_responses?: HelperTxs }) => {
         if (page.tx_responses) {
           return txs.concat(page.tx_responses);
         } else {

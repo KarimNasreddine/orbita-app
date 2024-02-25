@@ -29,7 +29,7 @@ export default function useCosmosSlashingV1Beta1() {
       query['pagination.count_total']= true;
       return  client.CosmosSlashingV1Beta1.query.querySigningInfos(query ?? undefined).then( res => ({...res.data,pageParam}) );
     }, {...options,
-      getNextPageParam: (lastPage, allPages) => { if ((lastPage.pagination?.total ?? 0) >((lastPage.pageParam ?? 0) * perPage)) {return lastPage.pageParam+1 } else {return undefined}},
+      getNextPageParam: (lastPage, allPages) => { if ((Number(lastPage.pagination?.total) ?? 0) >((lastPage.pageParam ?? 0) * perPage)) {return lastPage.pageParam+1 } else {return undefined}},
       getPreviousPageParam: (firstPage, allPages) => { if (firstPage.pageParam==1) { return undefined } else { return firstPage.pageParam-1}}
     }
     );

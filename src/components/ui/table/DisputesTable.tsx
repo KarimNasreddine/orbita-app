@@ -6,11 +6,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table/table";
 
 import { Montserrat } from "next/font/google";
 
-import { Button } from "@/components/ui/custom-button";
+import { Button } from "@/components/ui/button/CustomButton";
 
 interface DisputesTableProps {}
 

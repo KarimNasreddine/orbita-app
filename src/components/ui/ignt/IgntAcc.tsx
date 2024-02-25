@@ -1,16 +1,16 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { useEffect, useState } from "react";
-import useKeplr from "../def-hooks/useKeplr";
-import { useAddressContext } from "../def-hooks/addressContext";
+import useKeplr from "../../../def-hooks/useKeplr";
+import { useAddressContext } from "../../../def-hooks/addressContext";
 import {
   useDispatchWalletContext,
   useWalletContext,
-} from "../def-hooks/walletContext";
-import { useClient } from "../hooks/useClient";
+} from "../../../def-hooks/walletContext";
+import { useClient } from "../../../hooks/useClient";
 
-import useCosmosBaseTendermintV1Beta1 from "../hooks/useCosmosBaseTendermintV1Beta1";
-import { Wallet } from "../utils/interfaces";
+import useCosmosBaseTendermintV1Beta1 from "../../../hooks/useCosmosBaseTendermintV1Beta1";
+import { Wallet } from "../../../utils/interfaces";
 import {
   IgntProfileIcon,
   IgntWarningIcon,

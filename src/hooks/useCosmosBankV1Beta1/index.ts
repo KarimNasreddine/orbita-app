@@ -46,7 +46,7 @@ export default function useCosmosBankV1Beta1() {
         ...options,
         getNextPageParam: (lastPage, allPages) => {
           if (
-            (lastPage.pagination?.total ?? 0) >
+            (Number(lastPage.pagination?.total) ?? 0) >
             (lastPage.pageParam ?? 0) * perPage
           ) {
             return lastPage.pageParam + 1;
@@ -88,7 +88,7 @@ export default function useCosmosBankV1Beta1() {
         ...options,
         getNextPageParam: (lastPage, allPages) => {
           if (
-            (lastPage.pagination?.total ?? 0) >
+            (Number(lastPage.pagination?.total) ?? 0) >
             (lastPage.pageParam ?? 0) * perPage
           ) {
             return lastPage.pageParam + 1;
@@ -125,7 +125,7 @@ export default function useCosmosBankV1Beta1() {
         ...options,
         getNextPageParam: (lastPage, allPages) => {
           if (
-            (lastPage.pagination?.total ?? 0) >
+            (Number(lastPage.pagination?.total) ?? 0) >
             (lastPage.pageParam ?? 0) * perPage
           ) {
             return lastPage.pageParam + 1;
@@ -203,7 +203,7 @@ export default function useCosmosBankV1Beta1() {
         ...options,
         getNextPageParam: (lastPage, allPages) => {
           if (
-            (lastPage.pagination?.total ?? 0) >
+            (Number(lastPage.pagination?.total) ?? 0) >
             (lastPage.pageParam ?? 0) * perPage
           ) {
             return lastPage.pageParam + 1;
@@ -245,7 +245,7 @@ export default function useCosmosBankV1Beta1() {
         ...options,
         getNextPageParam: (lastPage, allPages) => {
           if (
-            (lastPage.pagination?.total ?? 0) >
+            (Number(lastPage.pagination?.total) ?? 0) >
             (lastPage.pageParam ?? 0) * perPage
           ) {
             return lastPage.pageParam + 1;

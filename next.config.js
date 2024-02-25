@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
+  eslint: {
+    dirs: ["./src"],
   },
+  reactStrictMode: true,
 };
 
 module.exports = nextConfig;
