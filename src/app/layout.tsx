@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Orbita",
-  description: "A revolutionary Web3 payment processor.",
+  description: "Decentralizing Payment Processing",
 };
 
 export default function RootLayout({

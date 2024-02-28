@@ -2,7 +2,7 @@
 
 /* eslint-disable import/no-anonymous-default-export */
 import { useClient } from "../hooks/useClient";
-import { useDispatchWalletContext } from "../def-hooks/walletContext";
+import { useDispatchWalletContext } from "./walletContext";
 
 export default function () {
   const client = useClient();
@@ -21,8 +21,9 @@ export default function () {
     }
   };
 
-  const isKeplrAvailable = (typeof window !== 'undefined') ? !!window.keplr : false;
-  
+  const isKeplrAvailable =
+    typeof window !== "undefined" ? !!window.keplr : false;
+
   const getOfflineSigner = (chainId: string) =>
     window?.keplr?.getOfflineSigner(chainId);
 

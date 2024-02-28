@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { Montserrat } from "next/font/google";
 import { X } from "lucide-react";
-import { Button } from "@/components/ui/custom-button";
+import { Button } from "@/components/ui/button/CustomButton";
 import { Space_Grotesk } from "next/font/google";
-import ChatLayout from "@/components/ChatLayout";
+import ChatLayout from "@/components/ui/chat/ChatLayout";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 

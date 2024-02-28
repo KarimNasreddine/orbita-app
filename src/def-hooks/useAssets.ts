@@ -16,7 +16,7 @@ export const useAssets = (perPage: number) => {
   >;
 
   const balancesRaw = query.data?.pages.reduce(
-    (bals: string | any[], page: { balances: any }) => {
+    (bals: string | any[], page: { balances?: any }) => {
       if (page.balances) {
         return bals.concat(page.balances);
       } else {

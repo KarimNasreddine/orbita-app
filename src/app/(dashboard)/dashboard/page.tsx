@@ -1,12 +1,7 @@
 import { FC } from "react";
-import { ReactNode } from "react";
 
-interface layoutProps {
-  children: ReactNode;
-}
-
-const page: FC<layoutProps> = ({ children }: layoutProps) => {
+const Page: FC = () => {
   return <div>Dashboard Page</div>;
 };
 
-export default page;
+export default Page;

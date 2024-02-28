@@ -2,9 +2,9 @@
 
 import { FC } from "react";
 import { Montserrat } from "next/font/google";
-import DisputeCardClient from "@/components/DisputeCardClient";
-import DisputeCardMerchant from "@/components/DisputeCardMerchant";
-import { DataTable } from "@/components/DataTable";
+import DisputeCardClient from "@/components/ui/card/DisputeCardClient";
+import DisputeCardMerchant from "@/components/ui/card/DisputeCardMerchant";
+import { DataTable } from "@/components/ui/table/DataTable";
 import { columns } from "./(disputesTable)/columns";
 import { data } from "./(disputesTable)/data";
 

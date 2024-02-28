@@ -83,3 +83,7 @@
 .btn-in-your-favour {
   @apply bg-green-500 rounded-full hover:scale-105 transition-transform duration-150 w-full  hover:!bg-green-500;
 }
+
+.bg-custom-gradient {
+  @apply bg-gradient-to-t from-custom-pink to-custom-orange;
+}
