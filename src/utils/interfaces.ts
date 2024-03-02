@@ -134,3 +134,146 @@ export type AmountWithMeta = Amount & {
   coinMinimalDenom: string;
   coinDecimals: number;
 };
+
+// New interfaces
+
+// Payment Interfaces
+
+export enum UI_STATE_PAYMENT {
+  "FRESH" = 1,
+
+  "BOOTSTRAPED" = 2,
+
+  "WALLET_LOCKED" = 3,
+
+  "SEND" = 100,
+  "SEND_ADD_TOKEN" = 101,
+
+  "TX_SIGNING" = 300,
+  "TX_SUCCESS" = 301,
+  "TX_ERROR" = 302,
+}
+
+export interface TxData_CreatePayment {
+  acceptedPaymentType: string;
+  subscriptionType: string;
+  name: string;
+  priceAmount: string;
+  priceCurrency: string;
+  recurringtimeframe: string;
+  recurringTimeFrameAmount: string;
+  merchantPayoutAddress: string;
+  paymentLeniency: string;
+  paymentMode: string;
+  paymentType: string;
+  safetyPeriod: string;
+  memo: string;
+  fees: Array<Amount>;
+}
+
+export interface State_CreatePayment {
+  tx: TxData_CreatePayment;
+  currentUIState: UI_STATE_PAYMENT;
+  modalOpen: boolean;
+}
+
+export interface TxData_QueryPayment {
+  paymentID: string;
+  memo: string;
+  fees: Array<Amount>;
+}
+
+export interface State_QueryPayment {
+  tx: TxData_QueryPayment;
+  currentUIState: UI_STATE_PAYMENT;
+  modalOpen: boolean;
+  selectedPaymentID: string;
+  selectedPaymentName: string;
+  selectedPriceAmount: string;
+  selectedPriceCurrency: string;
+  selectedRecurringAmount: string;
+  selectedRecurringTimeFrame: string;
+}
+
+// Contract Interfaces
+
+export enum UI_STATE_CONTRACT {
+  "SEND" = 100,
+  "TX_SIGNING" = 300,
+  "TX_SUCCESS" = 301,
+  "TX_ERROR" = 302,
+}
+
+export interface TxData_CreateContract {
+  acceptedPaymentType: string;
+  paymentID: string;
+  clientWalletAddress: string;
+  paymentLeniencyCounter: string;
+  memo: string;
+  fees: Array<Amount>;
+}
+
+export interface State_CreateContract {
+  tx: TxData_CreateContract;
+  currentUIState: UI_STATE_CONTRACT;
+  modalOpen: boolean;
+  notification: boolean;
+}
+
+export interface TxData_QueryContract {
+  contractID: string;
+  memo: string;
+  fees: Array<Amount>;
+}
+
+// Dispute Interfaces
+
+export enum UI_STATE_DISPUTE {
+  "SEND" = 100,
+  "TX_SIGNING" = 300,
+  "TX_SUCCESS" = 301,
+  "TX_ERROR" = 302,
+}
+
+export interface TxData_CreateDispute {
+  creator: string;
+  merchant: string;
+  amount: string;
+  contractID: string;
+  memo: string;
+  fees: Array<Amount>;
+}
+
+export interface State_Dispute {
+  tx: TxData_CreateDispute;
+  currentUIState: UI_STATE_DISPUTE;
+  modalOpen: boolean;
+  notification: boolean;
+}
+
+export interface TxData_QueryDispute {
+  disputeID: string;
+  memo: string;
+  fees: Array<Amount>;
+}
+
+export interface TxData_UpdateDispute {
+  creator: string;
+  disputeID: string;
+  verdict: string;
+  memo: string;
+  fees: Array<Amount>;
+}
+
+export interface State_UpdateDispute {
+  tx: TxData_UpdateDispute;
+  currentUIState: UI_STATE_DISPUTE;
+  modalOpen: boolean;
+  notification: boolean;
+}
+
+export interface TxData_CancelDispute {
+  disputeID: string;
+  memo: string;
+  fees: Array<Amount>;
+}

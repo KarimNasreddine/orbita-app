@@ -15,7 +15,7 @@ const NEXT_PUBLIC_PUSHER_APP_KEY = "f38157df5d76fcef07c6";
 const PUSHER_APP_SECRET = "957262143ffba2e8a42e";
 const NEXT_PUBLIC_PUSHER_APP_CLUSTER = "ap2";
 
-const OPENAI_API_KEY = "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";
+const OPENAI_API_KEY = "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";
 
 export const env = {
   apiURL,
