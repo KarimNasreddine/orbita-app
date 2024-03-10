@@ -4,20 +4,9 @@ import { FC } from "react";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
-interface DisputeCardMerchantProps {
-  disputesOpened: {
-    creator: string | undefined;
-    contractName: string | undefined;
-    transactionID: string | undefined;
-    amount: string | undefined;
-    initiatedDate: string | undefined;
-    daysLeft: string | undefined;
-  };
-}
+interface DisputeCardMerchantProps {}
 
-const DisputeCardMerchant: FC<DisputeCardMerchantProps> = ({
-  disputesOpened,
-}) => {
+const DisputeCardMerchant: FC<DisputeCardMerchantProps> = ({}) => {
   return (
     <div
       className={`${montserrat.className} min-w-64 max-w-72 flex flex-col bg-[#6138d1] text-white justify-center items-center rounded-[1rem] gap-2 py-5`}

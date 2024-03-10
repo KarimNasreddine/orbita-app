@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Dispute = {
-  merchantName: string;
+  contractName: string;
   transactionID: number;
   amount: string;
   resolvedDate: string;
@@ -15,12 +15,12 @@ export type Dispute = {
 
 export const columns: ColumnDef<Dispute>[] = [
   {
-    id: "merchantName",
-    header: "Merchant Name",
+    id: "contractName",
+    header: "Contract Name",
     cell: ({ row }) => {
       const dispute = row.original;
 
-      return <span>{dispute.merchantName}</span>;
+      return <span>{dispute.contractName}</span>;
     },
   },
   {

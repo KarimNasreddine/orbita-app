@@ -6,20 +6,23 @@ import { nanoid } from "nanoid";
 
 export async function POST(req: Request) {
   try {
-    const { text, chatId }: { text: string; chatId: string } = await req.json();
-
-    // FOR TESTING PURPOSES UNTIL KEPLR IS INTEGRATED
-    const clientId = "12345";
-    const merchantId = "67890";
+    const {
+      text,
+      chatId,
+      senderAddress,
+    }: { text: string; chatId: string; senderAddress: string } =
+      await req.json();
 
     const timestamp = Date.now();
 
     const messageData: Message = {
       id: nanoid(),
-      senderId: clientId,
+      senderAddress: senderAddress,
       text,
       timestamp,
     };
+
+    console.log(messageData);
 
     const message = messageValidator.parse(messageData);
 

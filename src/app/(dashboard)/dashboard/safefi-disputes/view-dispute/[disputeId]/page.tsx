@@ -1,3 +1,5 @@
+"use client";
+
 import { FC } from "react";
 import { Montserrat } from "next/font/google";
 import { X } from "lucide-react";
@@ -6,28 +8,56 @@ import { Space_Grotesk } from "next/font/google";
 import ChatLayout from "@/components/ui/chat/ChatLayout";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useAddressContext } from "@/def-hooks/addressContext";
+import { useClientDisputesInfo } from "@/def-hooks/useClientDisputesInfo";
+import { notFound } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
-interface ViewDisputeProps {}
+interface PageProps {
+  params: {
+    disputeId: string;
+  };
+}
 
-const ViewDispute: FC<ViewDisputeProps> = ({}) => {
+const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
+  const { disputeId } = params;
+  const { address } = useAddressContext();
+  const { disputesOpened } = useClientDisputesInfo();
+
+  console.log("disputeId:", disputeId);
+
+  const [transactionID, merchant, client] = disputeId.split("--");
+
+  if (merchant !== address && client !== address) {
+    return notFound();
+  }
+
+  const dispute = disputesOpened.find(
+    (dispute) =>
+      dispute.transactionID === transactionID &&
+      dispute.merchant === merchant &&
+      dispute.creator === client
+  );
+
+  console.log("disputeeee:", dispute);
+
   return (
     <div className={cn("flex flex-col gap-12")}>
       <div className={`${montserrat.className} flex gap-8 h-[25rem]`}>
         <div className="w-[40%] h-full flex flex-col justify-between">
           <div>
-            <Link href="/dashboard/safefi-disputes">
-              <X
-                size={54}
-                strokeWidth={2}
-                color="#b2b2b2"
+            <div className="flex">
+              <Link
+                href="/dashboard/safefi-disputes"
                 className="-ml-3 hover:transition-all hover:scale-105 hover:duration-150"
-              />
-            </Link>
-            <h2 className="font-bold text-xl xl:text-2xl leading-tight xl:leading-loose mb-4">
-              GYM SHARK DISPUTE <br /> TX ID - #1001
+              >
+                <X size={54} strokeWidth={2} color="#b2b2b2" />
+              </Link>
+            </div>
+            <h2 className="font-bold text-xl xl:text-[1.4rem] leading-tight xl:leading-loose mb-4">
+              {dispute?.contractName} <br /> TX ID - #{dispute?.transactionID}
             </h2>
             <p className="text-xs xl:text-sm">
               The Chat will remain accessible after the 3 day grace period,
@@ -44,7 +74,7 @@ const ViewDispute: FC<ViewDisputeProps> = ({}) => {
             </div>
           </div>
         </div>
-        <ChatLayout />
+        {dispute?.transactionID && <ChatLayout dispute={dispute} />}
       </div>
       <div className="flex gap-12 shadow-[inset_0px_0px_10px_0px_#00000024] rounded-2xl p-8 items-center opacity-65">
         <div className="w-[25%] flex flex-col gap-4">

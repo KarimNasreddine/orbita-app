@@ -1,17 +1,30 @@
-import { FC } from "react";
+// components/ui/MenuOption.tsx
+import React from "react";
+import Link from "next/link";
 
-interface MenuOptionProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+interface MenuOptionProps {
+  href: string;
+  onClick: () => void;
+  isSelected: boolean;
+  children: React.ReactNode;
+}
 
-const MenuOption: FC<MenuOptionProps> = (props) => {
-  const { ...rest } = props;
+const MenuOption: React.FC<MenuOptionProps> = ({
+  href,
+  onClick,
+  isSelected,
+  children,
+}) => {
   return (
-    <button
-      className="text-white py-2 rounded-lg w-full max-w-[80%] bg-indigo-500"
-      {...rest}
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`py-2 px-4 rounded-md transition duration-300 text-center ${
+        isSelected ? "bg-[#6138d1] text-white" : "bg-white text-black"
+      }`}
     >
-      MENU ITEM
-    </button>
+      {children}
+    </Link>
   );
 };
 

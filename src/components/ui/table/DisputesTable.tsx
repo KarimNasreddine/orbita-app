@@ -25,7 +25,7 @@ const DisputesTable: FC<DisputesTableProps> = ({}) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Merchant Name</TableHead>
+              <TableHead>Contract Name</TableHead>
               <TableHead>Transaction ID</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Resolved Date</TableHead>

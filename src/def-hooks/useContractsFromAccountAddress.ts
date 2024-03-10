@@ -1,11 +1,9 @@
-// Get all contracts related to a paymentID
-
-import useOrbitaPay from "@/hooks/useOrbitaPay";
-import { useAddressContext } from "./addressContext";
 import { useMemo } from "react";
+import { useAddressContext } from "./addressContext";
+import useOrbitaPay from "@/hooks/useOrbitaPay";
 
-export const useContractsFromPaymentId = (
-  paymentID: string,
+export const useContractsFromAccountAddress = (
+  accountAddress: string,
   pageSize: number
 ) => {
   const { address } = useAddressContext();
@@ -13,17 +11,18 @@ export const useContractsFromPaymentId = (
   const enabled = useMemo(() => {
     return address != "";
   }, [address]);
-  const query = QueryContracts(paymentID, "payment", {}, { enabled }, pageSize);
+  const query = QueryContracts(
+    accountAddress,
+    "address",
+    {},
+    { enabled },
+    pageSize
+  );
+  // console.log("query merchant contracts", query.data?.pages[0]?.Contracts);
   type HelperContracts = NonNullable<
     NonNullable<Required<typeof query.data>>["pages"][0]["Contract"]
   >;
-  const contractsRaw = query.data?.pages.reduce((contracts, page) => {
-    if (page.Contract) {
-      return contracts.concat(page.Contract);
-    } else {
-      return contracts;
-    }
-  }, [] as HelperContracts);
+  const contractsRaw = query.data?.pages[0]?.Contracts as HelperContracts;
   const contracts = useMemo(() => {
     return {
       contracts: contractsRaw ?? [],

@@ -2,6 +2,7 @@ import { FC, useRef, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
+import { useAddressContext } from "@/def-hooks/addressContext";
 
 interface ChatInputProps {
   chatPartner: User;
@@ -9,6 +10,7 @@ interface ChatInputProps {
 }
 
 const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
+  const { address } = useAddressContext();
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
@@ -21,6 +23,7 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
       await axios.post("/api/message/send", {
         text: input,
         chatId: chatId,
+        senderAddress: address,
       });
       setInput("");
       textAreaRef.current?.focus();
