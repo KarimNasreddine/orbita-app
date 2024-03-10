@@ -2,7 +2,8 @@
 
 import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient, DeliverTxResponse } from "@cosmjs/stargate";
-import { EncodeObject, GeneratedType, OfflineSigner, Registry } from "@cosmjs/proto-signing";
+import { DirectSecp256k1Wallet, EncodeObject, GeneratedType, OfflineDirectSigner, OfflineSigner, Registry } from "@cosmjs/proto-signing";
+import { fromHex } from "@cosmjs/encoding"
 import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
@@ -120,23 +121,29 @@ const defaultFee = {
 };
 
 interface TxClientOptions {
-  addr: string
+  	addr: string
 	prefix: string
 	signer?: OfflineSigner
+	safefiPrivKey?: string
 }
 
-export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "http://localhost:26657", prefix: "cosmos" }) => {
+async function getSafeFiSignerFromPriKey(safefiPrivKey: string): Promise<OfflineDirectSigner> {
+	return DirectSecp256k1Wallet.fromKey(
+		 fromHex(safefiPrivKey),	 
+		 "orbita"
+	)
+}
+
+export const txClient = ({ signer, prefix, addr, safefiPrivKey }: TxClientOptions = { addr: "http://localhost:26657", prefix: "cosmos" }) => {
 
   return {
 		
 		async sendMsgCreateContract({ value, fee, memo }: sendMsgCreateContractParams): Promise<DeliverTxResponse> {
-			console.log("signer in sendMsgCreateContract", signer); 
 			if (!signer) {
 					throw new Error('TxClient:sendMsgCreateContract: Unable to sign Tx. Signer is not present.')
 			}
 			try {			
 				const { address } = (await signer.getAccounts())[0];
-				console.log("address in sendMsgCreateContract", address);
 				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
 				let msg = this.msgCreateContract({ value: MsgCreateContract.fromPartial(value) })
 				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
@@ -184,6 +191,18 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
 				throw new Error('TxClient:sendMsgUpdateDispute: Could not broadcast Tx: '+ e.message)
+			}
+		},
+
+		async sendMsgUpdateDisputeAutoSign({ value, fee, memo }: sendMsgUpdateDisputeParams): Promise<DeliverTxResponse> {
+			try {
+				const safefiSigner: OfflineDirectSigner = await getSafeFiSignerFromPriKey(safefiPrivKey);
+				const { address } = (await safefiSigner.getAccounts())[0];
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,safefiSigner,{registry, prefix});
+				let msg = this.msgUpdateDispute({ value: MsgUpdateDispute.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgUpdateDisputeAutoSign: Could not broadcast Tx: '+ e.message)
 			}
 		},
 		
@@ -329,6 +348,7 @@ class SDKModule {
         signer: client.signer,
         addr: client.env.rpcURL,
         prefix: client.env.prefix ?? "cosmos",
+		  safefiPrivKey: client.env.safefiPrivKey,
     })
 	
     this.tx = methods;
