@@ -1,3 +1,5 @@
+import { OrbitapayDispute } from "../../ts-client/orbita.pay/rest";
+
 export interface Account {
   address: string;
   pathIncrement: Nullable<number>;
@@ -273,4 +275,47 @@ export interface TxData_CancelDispute {
   disputeID: string;
   memo: string;
   fees: Array<Amount>;
+}
+
+export interface Contract {
+  id: string | undefined;
+  creator: string;
+  subscriptionType: string;
+  acceptedPaymentType: string;
+  name: string;
+  priceAmount: string;
+  priceCurrency: string;
+  recurringTimeFrame: string;
+  recurringTimeFrameAmount: string;
+  merchantPayoutAddress: string;
+  paymentLeniency: string;
+  clientCounts: number;
+  paymentMode: string;
+  paymentType: string;
+  safetyPeriod: string;
+  createdAt: string;
+}
+
+export interface DisputesInterface {
+  opened: {
+    creator: string | undefined;
+    merchant: string | undefined;
+    contractName: string | undefined;
+    transactionID: string | undefined;
+    amount: string | undefined;
+    initiatedDate: string | undefined;
+    daysLeft: string | undefined;
+  }[];
+  resolved: {
+    creator: string | undefined;
+    contractName: string | undefined;
+    transactionID: string | undefined;
+    amount: string | undefined;
+    resolvedDate: string | undefined;
+    Verdict: string | undefined;
+  }[];
+}
+
+export interface DisputeWithContract extends OrbitapayDispute {
+  contract: Contract | undefined;
 }

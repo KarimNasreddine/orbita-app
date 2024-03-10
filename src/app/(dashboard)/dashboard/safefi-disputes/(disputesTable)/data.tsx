@@ -1,5 +1,5 @@
 type Dispute = {
-  merchantName: string;
+  contractName: string;
   transactionID: number;
   amount: string;
   resolvedDate: string;
@@ -9,7 +9,7 @@ type Dispute = {
 
 export const data: Dispute[] = [
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 988,
     amount: "$30 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -17,7 +17,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 987,
     amount: "$80 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -25,7 +25,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 987,
     amount: "$80 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -33,7 +33,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 987,
     amount: "$80 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -41,7 +41,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 987,
     amount: "$80 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -49,7 +49,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 988,
     amount: "$30 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -57,7 +57,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 987,
     amount: "$80 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -65,7 +65,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 988,
     amount: "$30 USDC",
     resolvedDate: "JANUARY 3RD 2025",
@@ -73,7 +73,7 @@ export const data: Dispute[] = [
     Details: "View details",
   },
   {
-    merchantName: "ALIEXPRESS.COM",
+    contractName: "ALIEXPRESS.COM",
     transactionID: 987,
     amount: "$80 USDC",
     resolvedDate: "JANUARY 3RD 2025",

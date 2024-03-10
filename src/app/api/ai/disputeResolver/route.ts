@@ -28,7 +28,7 @@ async function getChatMessages(chatId: string) {
     const reversedMessages = messages.reverse();
 
     reversedMessages.forEach((message) => {
-      if (message.senderId === "12345") {
+      if (message.senderAddress === "12345") {
         chatGptPrompt += `Client: ${message.text}\n`;
       } else {
         chatGptPrompt += `Merchant: ${message.text}\n`;

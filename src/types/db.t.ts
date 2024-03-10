@@ -1,8 +1,6 @@
 interface User {
   name: string;
   publicAddress: string;
-  image: string;
-  id: string;
 }
 
 interface chat {

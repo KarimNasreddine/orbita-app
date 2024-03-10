@@ -4,20 +4,26 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { Space_Grotesk } from "next/font/google";
 import ChatInput from "./ChatInput";
-import { notFound } from "next/navigation";
 import { Message, messageArrayValidator } from "@/lib/validations/message";
 import { fetchRedis } from "@/helpers/redis";
 import { cn, toPusherKey } from "@/lib/utils";
 import { format } from "date-fns";
 import { pusherClient } from "@/lib/pusher";
+import { useAddressContext } from "@/def-hooks/addressContext";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
-interface ChatLayoutProps {}
-
-// FOR TESTING PURPOSES UNTIL KEPLR IS INTEGRATED
-// CURRENT USER ID: 12345
-// MERCHANT ID: 67890
+interface ChatLayoutProps {
+  dispute: {
+    creator: string | undefined;
+    merchant: string | undefined;
+    contractName: string | undefined;
+    transactionID: string | undefined;
+    amount: string | undefined;
+    initiatedDate: string | undefined;
+    daysLeft: string | undefined;
+  };
+}
 
 // Fetches messages from Redis
 async function getChatMessages(chatId: string) {
@@ -37,22 +43,43 @@ async function getChatMessages(chatId: string) {
 
     return messages.reverse();
   } catch (error) {
-    notFound();
+    // notFound();
+    console.log("error", error);
   }
 }
 
-const ChatLayout: FC<ChatLayoutProps> = ({}) => {
+const ChatLayout: FC<ChatLayoutProps> = ({ dispute }) => {
+  const { address } = useAddressContext();
   const initialMessages: Message[] = [];
   const [messages, setMessages] = useState<Message[]>(initialMessages);
 
-  const chatId = "1";
+  const chatId = dispute.transactionID!;
 
-  const chatPartner: User = {
-    name: "John Doe",
-    publicAddress: "0x1234567890",
-    image: "",
-    id: "2",
+  // const chatPartner: User = {
+  //   name: "John Doe",
+  //   publicAddress: "0x1234567890",
+  //   image: "",
+  //   id: "2",
+  // };
+
+  let chatPartner: User = {
+    name: dispute.creator!,
+    publicAddress: dispute.creator!,
   };
+
+  if (address === dispute.creator) {
+    chatPartner = {
+      name: dispute.merchant!,
+      publicAddress: dispute.merchant!,
+    };
+  }
+
+  // if (address === dispute.creator) {
+  //   const chatPartner = {
+  //     name: dispute.merchant,
+  //     publicAddress: dispute.merchant,
+  //   };
+  // }
 
   // Ref to scroll to bottom of chat
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
@@ -64,8 +91,8 @@ const ChatLayout: FC<ChatLayoutProps> = ({}) => {
 
   // Fetch messages from Redis
   useEffect(() => {
-    getChatMessages(chatId).then((messages) => {
-      setMessages(messages);
+    getChatMessages(chatId!).then((messages) => {
+      setMessages(messages || []);
     });
   }, []);
 
@@ -93,9 +120,11 @@ const ChatLayout: FC<ChatLayoutProps> = ({}) => {
     >
       <div className="flex flex-col">
         {messages.map((message, index) => {
-          const isCurrentUser = message.senderId === "12345";
+          const isCurrentUser = message.senderAddress === address;
+          const isClient = message.senderAddress === dispute.creator;
           const hasNextMessageFromSameUser =
-            messages[index - 1]?.senderId === messages[index]?.senderId;
+            messages[index - 1]?.senderAddress ===
+            messages[index]?.senderAddress;
 
           return (
             <div
@@ -113,7 +142,7 @@ const ChatLayout: FC<ChatLayoutProps> = ({}) => {
               >
                 <p>
                   <span className="font-bold">
-                    {isCurrentUser ? "Client: " : "Merchant: "}
+                    {isClient ? "Client: " : "Merchant: "}
                   </span>
                   {message.text}
                 </p>
