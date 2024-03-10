@@ -1,14 +1,37 @@
 // components/ui/MenuOptions.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Space_Grotesk } from "next/font/google";
 import MenuOption from "./MenuOption";
+import { usePathname, useRouter } from "next/navigation";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
+const menuItems = [
+  { name: "Create", href: "/dashboard/create" },
+  { name: "Manage", href: "/dashboard/manage" },
+  { name: "Manual Pay", href: "/dashboard/manual-pay" },
+  { name: "Holdings", href: "/dashboard/holdings" },
+  { name: "Airdrop", href: "/dashboard/airdrop" },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Orbita Alerts", href: "/dashboard/orbita-alerts" },
+  { name: "SafeFi Disputes", href: "/dashboard/safefi-disputes" },
+  { name: "Ecosystem", href: "/dashboard/ecosystem" },
+];
+
 const MenuOptions: React.FC = () => {
-  const [selected, setSelected] = useState("Dashboard");
+  const [selected, setSelected] = useState("");
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Sort menuItems by href length in descending order and find the selected item
+    const selectedItem =
+      [...menuItems]
+        .sort((a, b) => b.href.length - a.href.length)
+        .find((item) => pathname.startsWith(item.href))?.name || "";
+    setSelected(selectedItem);
+  }, [pathname]);
 
   const handleButtonClick = (item: string) => {
     setSelected(item);
