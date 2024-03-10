@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    dirs: ['./src'],
+    dirs: ["./src"],
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "assets-global.website-files.com",
+      },
+    ],
   },
   reactStrictMode: true,
 };

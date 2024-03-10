@@ -5,17 +5,14 @@ export interface Account {
 export type Nullable<T> = T | null;
 
 export type Wallet = {
-  name: string;
-  mnemonic: string | null;
-  HDpath: string | null;
-  password: string | null;
-  prefix: string;
-  pathIncrement: Nullable<number>;
-  accounts: Account[];
+  name: string | null;
+  address: string | null;
+  signature: string | null;
+  publicKey: string | null;
 };
-export type EncodedWallet = {
-  name: string;
-  wallet: string;
+export type WalletDispatch = {
+  connectWithKeplr: () => Promise<void>;
+  signOut: () => void;
 };
 export type Amount = {
   amount: string;

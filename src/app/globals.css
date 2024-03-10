@@ -75,6 +75,13 @@
   }
 }
 
+.acc-dd {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition-delay: 0s;
+}
+
 /* styles/global.css */
 .btn-not-in-your-favour {
   @apply bg-red-500 rounded-full hover:scale-105 transition-transform duration-150 w-full hover:!bg-red-500;
@@ -84,6 +91,6 @@
   @apply bg-green-500 rounded-full hover:scale-105 transition-transform duration-150 w-full  hover:!bg-green-500;
 }
 
-.bg-custom-gradient {
-  @apply bg-gradient-to-t from-custom-pink to-custom-orange;
+.bg-gradient-pink-orange {
+  @apply bg-gradient-to-t from-orbita-pink to-orbita-light-orange;
 }

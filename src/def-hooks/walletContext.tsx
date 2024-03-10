@@ -1,93 +1,124 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 "use client";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useClient } from "../hooks/useClient";
-import type { Wallet, Nullable, EncodedWallet } from "../utils/interfaces";
+import type { Wallet, WalletDispatch } from "../utils/interfaces";
+import useCosmosBaseTendermintV1Beta1 from "@/hooks/useCosmosBaseTendermintV1Beta1";
+import ConnectWalletModal from "@/components/ui/modal/ConnectWalletModal";
+import useKeplr from "./useKeplr";
+import { WalletConnectState } from "@/components/ui/modal/ConnectWalletModal";
 
 interface Props {
   children?: ReactNode;
 }
-const initState = {
-  wallets:
-    (
-      typeof window !== 'undefined' && JSON.parse(
-      window.localStorage.getItem("wallets") ?? "null"
-    ) as Array<EncodedWallet>) || ([] as Array<EncodedWallet>),
-  activeWallet: null as Nullable<Wallet>,
-  activeClient: null as Nullable<ReturnType<typeof useClient>>,
+
+const initialWalletState: Wallet = {
+  name: null,
+  address: null,
+  signature: null,
+  publicKey: null,
 };
-type WalletDispatch = {
-  connectWithKeplr: () => Promise<void>;
-  signOut: () => void;
+
+const initialWalletContext = {
+  activeWallet: initialWalletState,
+  isWalletConnected: false,
 };
-const WalletContext = createContext(initState);
-const WalletDispatchContext = createContext({} as WalletDispatch);
+
+const initialWalletDispatchContext: WalletDispatch = {
+  connectWithKeplr: async () => {},
+  signOut: () => {},
+};
+
+const WalletContext = createContext(initialWalletContext);
+const WalletDispatchContext = createContext(initialWalletDispatchContext);
 export const useWalletContext = () => useContext(WalletContext);
 export const useDispatchWalletContext = () => useContext(WalletDispatchContext);
+
 export default function WalletProvider({ children }: Props) {
-  const [wallets, setWallets] = useState([] as Array<EncodedWallet>);
-  const [activeWallet, setActiveWallet] = useState(null as Nullable<Wallet>);
-  const [activeClient, setActiveClient] = useState(
-    null as Nullable<ReturnType<typeof useClient>>
+  const [activeWallet, setActiveWallet] = useState<Wallet>(initialWalletState);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [walletConnectState, setWalletConnectState] =
+    useState<WalletConnectState>("disconnected");
+  const client = useClient();
+  const query = useCosmosBaseTendermintV1Beta1();
+  const nodeInfo = query.ServiceGetNodeInfo({});
+  const isWalletConnected = useMemo(
+    () => !!activeWallet.address,
+    [activeWallet]
   );
+  const { isKeplrAvailable } = useKeplr();
 
   const connectWithKeplr = async () => {
-    const client = useClient();
-
+    setIsModalVisible(true);
+    setWalletConnectState("disconnected");
     try {
-      const wallet: Wallet = {
-        name: "Keplr Integration",
-        mnemonic: null,
-        HDpath: null,
-        password: null,
-        prefix: client.env.prefix ?? "cosmos",
-        pathIncrement: null,
-        accounts: [],
-      };
       await client.useKeplr();
       const [account] = (await client.signer?.getAccounts()) || [];
-      wallet.accounts.push({ address: account.address, pathIncrement: null });
+      const address = account?.address;
 
-      setActiveWallet(wallet);     
-      window?.localStorage.setItem("lastWallet", wallet.name);
-      if (activeWallet && activeWallet.name && activeWallet.password) {
-        setWallets([
-          ...wallets,
-          {
-            name: activeWallet.name,
-            wallet: CryptoJS.AES.encrypt(
-              JSON.stringify(activeWallet),
-              activeWallet.password
-            ).toString(),
-          },
-        ]);
-      }
-      if (activeWallet?.name == "Keplr Integration" && !activeWallet.password) {
-        setWallets([
-          ...wallets,
-          {
-            name: activeWallet.name,
-            wallet: JSON.stringify(activeWallet),
-          },
-        ]);
-      }
-
-      setActiveClient(client);
+      setWalletConnectState("connecting");
+      const wallet = await signArbitraryData(address);
+      setActiveWallet(wallet);
+      setIsModalVisible(false);
     } catch (e) {
-      console.error(e);
+      console.error("Error connecting to Keplr", e);
+      setWalletConnectState("error");
     }
-    window?.localStorage.setItem("wallets", JSON.stringify(wallets));
   };
+
+  const signArbitraryData = async (address: string): Promise<Wallet> => {
+    if (!isKeplrAvailable) throw new Error("Keplr not found");
+    const message = "Initiate Orbita Session";
+
+    const chainId = nodeInfo.data?.default_node_info?.network ?? "Orbita";
+    const signature = await window.keplr.signArbitrary(
+      chainId,
+      address,
+      message
+    );
+    const { name } = await window.keplr.getKey(chainId);
+    const wallet: Wallet = {
+      name,
+      address,
+      signature: signature.signature,
+      publicKey: signature.pub_key.value,
+    };
+    return wallet;
+  };
+
   const signOut = () => {
-    const client = useClient();
     client.removeSigner();
-    setActiveClient(null);
-    setActiveWallet(null);
+    setActiveWallet(initialWalletState);
+    setWalletConnectState("disconnected");
   };
+
+  useEffect(() => {
+    connectWithKeplr();
+
+    window.addEventListener("keplr_keystorechange", connectWithKeplr);
+
+    return () => {
+      window.removeEventListener("keplr_keystorechange", connectWithKeplr);
+    };
+  }, []);
+
   return (
-    <WalletContext.Provider value={{ wallets, activeWallet, activeClient }}>
+    <WalletContext.Provider value={{ activeWallet, isWalletConnected }}>
       <WalletDispatchContext.Provider value={{ connectWithKeplr, signOut }}>
+        {isModalVisible && (
+          <ConnectWalletModal
+            state={walletConnectState}
+            onClose={() => setIsModalVisible(false)}
+            connectWithKeplr={connectWithKeplr}
+            signOut={signOut}
+          />
+        )}
         {children}
       </WalletDispatchContext.Provider>
     </WalletContext.Provider>

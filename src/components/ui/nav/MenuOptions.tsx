@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { Space_Grotesk } from "next/font/google";
 import Link from "next/link";
+import ConnectWalletButton from "../button/ConnectWalletButton";
 
 const menuItems1 = ["Create", "Manage", "Manual Pay", "Holdings", "Airdrop"];
 
@@ -21,8 +22,9 @@ const MenuOptions = () => {
   };
 
   return (
-    <div className="w-full max-w-[80%] ${spaceGrotesk.className} text-md">
-      <div className={`flex flex-col gap-3 mb-10 mt-5`}>
+    <div className="w-full min-w-[80%] ${spaceGrotesk.className} text-md">
+      <ConnectWalletButton />
+      <div className={`flex flex-col gap-3 mb-10 mt-10`}>
         {menuItems1.map((item) => (
           <Link
             // href={`/dashboard/${item.toLowerCase()}`}
