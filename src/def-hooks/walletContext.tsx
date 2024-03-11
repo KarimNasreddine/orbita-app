@@ -119,7 +119,7 @@ export default function WalletProvider({ children }: Props) {
   useEffect(() => {
     const walletFromLocalStorage = getWalletFromLocalStorage();
     setActiveWallet(walletFromLocalStorage);
-    if (walletFromLocalStorage === null) connectWithKeplr();
+    walletFromLocalStorage === null ? connectWithKeplr() : client.useKeplr();
 
     window.addEventListener("keplr_keystorechange", connectWithKeplr);
 

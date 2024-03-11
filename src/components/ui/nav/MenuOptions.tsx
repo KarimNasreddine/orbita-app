@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Space_Grotesk } from "next/font/google";
 import MenuOption from "./MenuOption";
 import { usePathname, useRouter } from "next/navigation";
+import ConnectWalletButton from "../button/ConnectWalletButton";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ const MenuOptions: React.FC = () => {
 
   return (
     <div className={`w-full max-w-[80%] ${spaceGrotesk.className} text-md`}>
+      <ConnectWalletButton />
       <div className={`flex flex-col gap-3 mb-10 mt-5`}>
         <MenuOption
           href="/dashboard/create"
