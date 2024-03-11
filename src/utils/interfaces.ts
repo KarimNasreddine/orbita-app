@@ -7,10 +7,11 @@ export interface Account {
 export type Nullable<T> = T | null;
 
 export type Wallet = {
-  name: string | null;
-  address: string | null;
-  signature: string | null;
-  publicKey: string | null;
+  name: string;
+  address: string;
+  signature: string;
+  publicKey: string;
+  expiry: number;
 };
 export type WalletDispatch = {
   connectWithKeplr: () => Promise<void>;

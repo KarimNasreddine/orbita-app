@@ -10,7 +10,7 @@ import {
 
 import { Montserrat } from "next/font/google";
 
-import { Button } from "@/components/ui/button/CustomButton";
+import { Button } from "@/components/ui/button/Button";
 
 interface DisputesTableProps {}
 

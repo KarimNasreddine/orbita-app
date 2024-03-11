@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { useClient } from "../hooks/useClient";
-import type { Wallet, WalletDispatch } from "../utils/interfaces";
+import type { Nullable, Wallet, WalletDispatch } from "../utils/interfaces";
 import useCosmosBaseTendermintV1Beta1 from "@/hooks/useCosmosBaseTendermintV1Beta1";
 import ConnectWalletModal from "@/components/ui/modal/ConnectWalletModal";
 import useKeplr from "./useKeplr";
@@ -18,30 +18,40 @@ interface Props {
   children?: ReactNode;
 }
 
-const initialWalletState: Wallet = {
-  name: null,
-  address: null,
-  signature: null,
-  publicKey: null,
-};
+function getWalletFromLocalStorage(): Wallet | null {
+  const key = "wallet";
+  if (typeof window !== "undefined") {
+    const walletStr = window?.localStorage?.getItem(key);
+    if (!walletStr) {
+      return null;
+    }
+    try {
+      const wallet = JSON.parse(walletStr) as Wallet;
+      const now = new Date();
+      if (now.getTime() > wallet.expiry) {
+        window.localStorage.removeItem(key);
+        return null;
+      } else return wallet;
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
 
-const initialWalletContext = {
-  activeWallet: initialWalletState,
-  isWalletConnected: false,
-};
+const WalletContext = createContext(
+  {} as {
+    activeWallet: Nullable<Wallet>;
+    isWalletConnected: boolean;
+  }
+);
+const WalletDispatchContext = createContext({} as WalletDispatch);
 
-const initialWalletDispatchContext: WalletDispatch = {
-  connectWithKeplr: async () => {},
-  signOut: () => {},
-};
-
-const WalletContext = createContext(initialWalletContext);
-const WalletDispatchContext = createContext(initialWalletDispatchContext);
 export const useWalletContext = () => useContext(WalletContext);
 export const useDispatchWalletContext = () => useContext(WalletDispatchContext);
 
 export default function WalletProvider({ children }: Props) {
-  const [activeWallet, setActiveWallet] = useState<Wallet>(initialWalletState);
+  const [activeWallet, setActiveWallet] = useState<Nullable<Wallet>>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [walletConnectState, setWalletConnectState] =
     useState<WalletConnectState>("disconnected");
@@ -49,7 +59,7 @@ export default function WalletProvider({ children }: Props) {
   const query = useCosmosBaseTendermintV1Beta1();
   const nodeInfo = query.ServiceGetNodeInfo({});
   const isWalletConnected = useMemo(
-    () => !!activeWallet.address,
+    () => !!activeWallet?.address,
     [activeWallet]
   );
   const { isKeplrAvailable } = useKeplr();
@@ -64,7 +74,7 @@ export default function WalletProvider({ children }: Props) {
 
       setWalletConnectState("connecting");
       const wallet = await signArbitraryData(address);
-      setActiveWallet(wallet);
+      updateWallet(wallet);
       setIsModalVisible(false);
     } catch (e) {
       console.error("Error connecting to Keplr", e);
@@ -88,18 +98,28 @@ export default function WalletProvider({ children }: Props) {
       address,
       signature: signature.signature,
       publicKey: signature.pub_key.value,
+      expiry: Date.now() + 24 * 60 * 60 * 1000, //24 hours
     };
     return wallet;
   };
 
+  const updateWallet = (wallet: Wallet | null) => {
+    setActiveWallet(wallet);
+    wallet
+      ? window.localStorage.setItem("wallet", JSON.stringify(wallet))
+      : window.localStorage.removeItem("wallet");
+  };
+
   const signOut = () => {
     client.removeSigner();
-    setActiveWallet(initialWalletState);
+    updateWallet(null);
     setWalletConnectState("disconnected");
   };
 
   useEffect(() => {
-    connectWithKeplr();
+    const walletFromLocalStorage = getWalletFromLocalStorage();
+    setActiveWallet(walletFromLocalStorage);
+    if (walletFromLocalStorage === null) connectWithKeplr();
 
     window.addEventListener("keplr_keystorechange", connectWithKeplr);
 
@@ -116,7 +136,6 @@ export default function WalletProvider({ children }: Props) {
             state={walletConnectState}
             onClose={() => setIsModalVisible(false)}
             connectWithKeplr={connectWithKeplr}
-            signOut={signOut}
           />
         )}
         {children}

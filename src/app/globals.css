@@ -75,13 +75,6 @@
   }
 }
 
-.acc-dd {
-  opacity: 1;
-  transform: translateY(0);
-  visibility: visible;
-  transition-delay: 0s;
-}
-
 /* styles/global.css */
 .btn-not-in-your-favour {
   @apply bg-red-500 rounded-full hover:scale-105 transition-transform duration-150 w-full hover:!bg-red-500;

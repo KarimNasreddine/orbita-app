@@ -5,10 +5,6 @@ import useOrbitaPayments from "../hooks/useOrbitaPay";
 import { useAddressContext } from "./addressContext";
 
 export const usePayment = (paymentID: string, checkOutDataValid: boolean) => {
-  if (!paymentID || !checkOutDataValid) {
-    let payment = { payment: undefined, isLoading: false };
-    return payment;
-  }
   const { address } = useAddressContext();
   const { QueryPayment } = useOrbitaPayments();
   const enabled = useMemo(() => {
@@ -17,11 +13,16 @@ export const usePayment = (paymentID: string, checkOutDataValid: boolean) => {
   const query = QueryPayment(paymentID, { enabled });
   const payment = useMemo(() => {
     return {
-      // @ts-ignore
       payment: query.data?.Payment,
       isLoading: query.isLoading,
     };
-  }, [query.data]);
+  }, [query.data, query.isLoading]);
+
+  if (!paymentID || !checkOutDataValid) {
+    const payment = { payment: undefined, isLoading: false };
+    return payment;
+  }
+
   return {
     payment,
   };

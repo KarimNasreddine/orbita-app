@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import ProfileIcon from "../profileIcon/ProfileIcon";
 
 interface IgntAccDropdownProps {
-  wallet: Wallet;
+  wallet: Wallet | null;
   accName: string;
   disconnect: () => void;
   close: () => void;
@@ -58,7 +58,8 @@ export default function IgntAccDropdown(props: IgntAccDropdownProps) {
         ref.current &&
         !ref.current.contains(targetElement) &&
         targetElement.id !== "signInButton1" &&
-        targetElement.id !== "signInButton2"
+        targetElement.id !== "signInButton2" &&
+        targetElement.id !== "Rectangle"
       ) {
         props.close();
         setState((oldState) => ({
@@ -72,17 +73,18 @@ export default function IgntAccDropdown(props: IgntAccDropdownProps) {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, []);
+
   return (
     <div className="relative w-full" ref={ref}>
       {state.currentUIState === UI_STATE.DEFAULT && (
         <div
-          className={`shadow-std bg-black text-white border border-orbita-iris rounded absolute p-7 z-50 min-w-2xl box-border acc-dd`}
+          className={`shadow-std bg-black text-white border border-orbita-iris rounded absolute p-7 z-50 min-w-2xl box-border`}
         >
           <span className="text-sm leading-normal text-gray-660 mb-3 block text-[13px]">
             Connected wallet
           </span>
           <div className="mb-3 flex items-center">
-            <ProfileIcon width={20} address={address} />
+            {/* <ProfileIcon width={20} address={address} /> */}
             <div className="lg:flex flex-wrap flex-col ml-3">
               <span className="text-[13px] font-bold">{props.accName}</span>
               <span

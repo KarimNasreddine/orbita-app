@@ -1,11 +1,9 @@
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import {
   IgntButton,
   IgntExternalArrowIcon,
   IgntKeplrIcon,
   IgntModal,
-  IgntSpinner,
-  IgntWarningIcon,
 } from "@ignt/react-library";
 import useKeplr from "@/def-hooks/useKeplr";
 import Spinner from "../spinner/Spinner";
@@ -17,13 +15,12 @@ type ConnectWalletModalProps = {
   state: WalletConnectState;
   onClose: () => void;
   connectWithKeplr: () => void;
-  signOut: () => void;
 };
 
 const ConnectWalletModal: FC<ConnectWalletModalProps> = (
   props: ConnectWalletModalProps
 ) => {
-  const { state, onClose, connectWithKeplr, signOut } = props;
+  const { state, onClose, connectWithKeplr } = props;
   const { isKeplrAvailable } = useKeplr();
 
   return (
@@ -99,7 +96,6 @@ const ConnectWalletModal: FC<ConnectWalletModalProps> = (
                     type="primary"
                     className="mt-10 p-2 border border-black text-white"
                     onClick={() => {
-                      signOut();
                       onClose();
                     }}
                   >
@@ -141,7 +137,6 @@ const ConnectWalletModal: FC<ConnectWalletModalProps> = (
                     type="secondary"
                     className="border border-black p-2"
                     onClick={() => {
-                      signOut();
                       onClose();
                     }}
                   >

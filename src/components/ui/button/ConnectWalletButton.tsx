@@ -5,7 +5,7 @@ import {
   useDispatchWalletContext,
   useWalletContext,
 } from "@/def-hooks/walletContext";
-import { IgntButton, IgntProfileIcon } from "@ignt/react-library";
+import { IgntButton } from "@ignt/react-library";
 import { FC, useState } from "react";
 import IgntAccDropdown from "../ignt/IgntAccDropdown";
 import ProfileIcon from "../profileIcon/ProfileIcon";
@@ -28,9 +28,9 @@ const ConnectWalletButton: FC = () => {
           }}
           id={"signInButton1"}
         >
-          <ProfileIcon width={32} address={shortAddress} />
+          {/* <ProfileIcon width={32} address={shortAddress} /> */}
           <span className="mx-2" id="signInButton2">
-            {activeWallet.name || ""}
+            {activeWallet?.name || ""}
           </span>
         </button>
       ) : (
@@ -48,7 +48,7 @@ const ConnectWalletButton: FC = () => {
         <div className="relative">
           <IgntAccDropdown
             wallet={activeWallet}
-            accName={activeWallet.name || ""}
+            accName={activeWallet?.name || ""}
             disconnect={signOut}
             close={() => {
               setAccountDropdown(false);
