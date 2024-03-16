@@ -19,7 +19,7 @@ export interface MsgCreatePayment {
   paymentMode: string;
   paymentType: string;
   safetyPeriod: number;
-  id: number;
+  id?: number;
 }
 
 export interface MsgCreatePaymentResponse {

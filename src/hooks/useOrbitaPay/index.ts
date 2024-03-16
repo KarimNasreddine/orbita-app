@@ -6,6 +6,8 @@ import {
   type UseInfiniteQueryOptions,
 } from "@tanstack/react-query";
 import { useClient } from "../useClient";
+import { MsgCreatePayment } from "../../../ts-client/orbita.pay/module";
+import { StdFee } from "@keplr-wallet/types";
 
 export default function useOrbitaPay() {
   const client = useClient();
@@ -314,6 +316,22 @@ export default function useOrbitaPay() {
     );
   };
 
+  const CreatePayment = async (
+    value: MsgCreatePayment,
+    fee?: StdFee,
+    memo?: string
+  ) => {
+    const result = await client.OrbitaPay.tx.sendMsgCreatePayment({
+      value,
+      fee,
+      memo,
+    });
+    if (result.code) {
+      throw new Error(result.rawLog);
+    }
+    return result;
+  };
+
   return {
     QueryParams,
     QueryPayment,
@@ -326,5 +344,6 @@ export default function useOrbitaPay() {
     QuerySubscriptionPaymentAll,
     QueryDispute,
     QueryDisputeAll,
+    CreatePayment
   };
 }

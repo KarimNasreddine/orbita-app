@@ -20,7 +20,7 @@ const MenuOption: React.FC<MenuOptionProps> = ({
       href={href}
       onClick={onClick}
       className={`py-2 px-4 rounded-md transition duration-300 text-center ${
-        isSelected ? "bg-[#6138d1] text-white" : "bg-white text-black"
+        isSelected ? "bg-[#6138d1] text-white" : "bg-transparent text-black"
       }`}
     >
       {children}
