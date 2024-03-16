@@ -51,6 +51,7 @@ export const useClientDisputesInfo = () => {
       amount: string | undefined;
       initiatedDate: string | undefined;
       daysLeft: string | undefined;
+      disputeID: string | undefined;
     }[]
   >([]);
 
@@ -175,6 +176,7 @@ export const useClientDisputesInfo = () => {
               amount: `${d.amount} ${d.contract.priceCurrency}`,
               initiatedDate: d.createdAt,
               daysLeft: daysLeft,
+              disputeID: d.id,
             });
           }
         } else if (d.status === "resolved" && d.contract) {

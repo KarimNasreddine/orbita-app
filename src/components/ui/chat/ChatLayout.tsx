@@ -126,6 +126,24 @@ const ChatLayout: FC<ChatLayoutProps> = ({ dispute }) => {
             messages[index - 1]?.senderAddress ===
             messages[index]?.senderAddress;
 
+          const trimmedMessage = message.text.replace(
+            /^(Client: |Merchant: )/,
+            ""
+          );
+
+          let shortenedAddress = "";
+
+          if (isCurrentUser) {
+            shortenedAddress =
+              address.substring(6, 8) + "..." + address.slice(-2) + ": ";
+          } else {
+            shortenedAddress =
+              chatPartner.publicAddress.substring(6, 8) +
+              "..." +
+              chatPartner.publicAddress.slice(-2) +
+              ": ";
+          }
+
           return (
             <div
               className="flex flex-col"
@@ -142,9 +160,10 @@ const ChatLayout: FC<ChatLayoutProps> = ({ dispute }) => {
               >
                 <p>
                   <span className="font-bold">
-                    {isClient ? "Client: " : "Merchant: "}
+                    {/* {isClient ? "Client: " : "Merchant: "} */}
+                    {shortenedAddress}
                   </span>
-                  {message.text}
+                  {trimmedMessage}
                 </p>
                 {/* If timestamp is needed, uncomment the following line */}
                 {/* <span
@@ -161,7 +180,7 @@ const ChatLayout: FC<ChatLayoutProps> = ({ dispute }) => {
         })}
         <div ref={scrollDownRef} />
       </div>
-      <ChatInput chatPartner={chatPartner} chatId={chatId} />
+      <ChatInput chatPartner={chatPartner} chatId={chatId} dispute={dispute} />
     </div>
   );
 };

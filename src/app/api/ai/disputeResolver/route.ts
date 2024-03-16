@@ -1,9 +1,11 @@
 // CHAT GPT replies with 0 if decision is to refund, and 1 if decision is to proceed
 
-import { env } from "@/env";
+// import { env } from "@/env";
 import { fetchRedis } from "@/helpers/redis";
+import { useClient } from "@/hooks/useClient";
 import { messageArrayValidator } from "@/lib/validations/message";
 import OpenAI from "openai";
+import { env } from "process";
 
 const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
@@ -28,12 +30,9 @@ async function getChatMessages(chatId: string) {
     const reversedMessages = messages.reverse();
 
     reversedMessages.forEach((message) => {
-      if (message.senderAddress === "12345") {
-        chatGptPrompt += `Client: ${message.text}\n`;
-      } else {
-        chatGptPrompt += `Merchant: ${message.text}\n`;
-      }
+      chatGptPrompt += `${message.text}\n`;
     });
+    // console.log(chatGptPrompt);
   } catch (error) {
     console.error(error);
   }
@@ -41,6 +40,12 @@ async function getChatMessages(chatId: string) {
 
 // This function is used to call ChatGPT to resolve the dispute
 export async function POST(req: Request) {
+  const client = useClient();
+  const sendMsgUpdateDisputeAutoSign =
+    client.OrbitaPay.tx.sendMsgUpdateDisputeAutoSign;
+
+  const safefiAddress = env.safefiAddress;
+
   const { chatId } = await req.json();
   await getChatMessages(chatId);
   if (chatGptPrompt === "") {
@@ -62,6 +67,52 @@ export async function POST(req: Request) {
     });
 
     console.log("Decision: ", completion.choices[0].message.content);
+
+    const decision = completion.choices[0].message.content;
+
+    console.log("Decision: ", decision);
+
+    const fee = [
+      {
+        amount: "0",
+        denom: "uatom",
+      },
+    ];
+
+    const memo = "";
+
+    if (decision === "0") {
+      // If decision is to refund
+      const payload = {
+        creator: safefiAddress!,
+        id: chatId,
+        verdict: "client",
+      };
+
+      await sendMsgUpdateDisputeAutoSign({
+        value: payload,
+        fee: { amount: fee, gas: "200000" },
+        memo,
+      });
+
+      return new Response(completion.choices[0].message.content);
+    } else if (decision === "1") {
+      // If decision is to proceed
+      const payload = {
+        creator: safefiAddress!,
+        id: chatId,
+        verdict: "merchant",
+      };
+
+      await sendMsgUpdateDisputeAutoSign({
+        value: payload,
+        fee: { amount: fee, gas: "200000" },
+        memo,
+      });
+
+      return new Response(completion.choices[0].message.content);
+    }
+
     return new Response(completion.choices[0].message.content);
   }
 }

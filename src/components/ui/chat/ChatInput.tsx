@@ -7,21 +7,42 @@ import { useAddressContext } from "@/def-hooks/addressContext";
 interface ChatInputProps {
   chatPartner: User;
   chatId: string;
+  dispute: {
+    creator: string | undefined;
+    merchant: string | undefined;
+    contractName: string | undefined;
+    transactionID: string | undefined;
+    amount: string | undefined;
+    initiatedDate: string | undefined;
+    daysLeft: string | undefined;
+  };
 }
 
-const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
+const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, dispute }) => {
   const { address } = useAddressContext();
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
 
+  let userRole: "Client" | "Merchant" | undefined;
+
+  if (dispute.creator === address) {
+    userRole = "Client";
+  }
+
+  if (dispute.merchant === address) {
+    userRole = "Merchant";
+  }
+
   // This function is used to send a message to the chat
   const sendMessage = async () => {
     if (!input) return;
     setIsLoading(true);
+    let value = userRole + ": " + input;
+
     try {
       await axios.post("/api/message/send", {
-        text: input,
+        text: value,
         chatId: chatId,
         senderAddress: address,
       });

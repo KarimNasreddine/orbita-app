@@ -306,6 +306,7 @@ export interface DisputesInterface {
     amount: string | undefined;
     initiatedDate: string | undefined;
     daysLeft: string | undefined;
+    disputeID: string | undefined;
   }[];
   resolved: {
     creator: string | undefined;

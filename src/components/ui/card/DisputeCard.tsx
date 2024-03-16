@@ -1,5 +1,8 @@
+import { useAddressContext } from "@/def-hooks/addressContext";
+import { useClient } from "@/hooks/useClient";
 import { chatHrefConstructor, cn } from "@/lib/utils";
 import { dateTransformer } from "@/utils/dateTransfromer";
+import { Amount } from "@/utils/interfaces";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { FC } from "react";
@@ -15,11 +18,67 @@ interface DisputeCardProps {
     amount: string | undefined;
     initiatedDate: string | undefined;
     daysLeft: string | undefined;
+    disputeID: string | undefined;
   };
   account: "client" | "merchant";
 }
 
 const DisputeCard: FC<DisputeCardProps> = ({ disputesOpened, account }) => {
+  const { address } = useAddressContext();
+  const client = useClient();
+  const sendMsgUpdateDispute = client.OrbitaPay.tx.sendMsgUpdateDispute;
+
+  const handleClick = async () => {
+    const fee: Amount[] = [
+      {
+        amount: "0",
+        denom: "uatom",
+      },
+    ];
+
+    const memo = "";
+
+    if (account === "merchant") {
+      // refund to client
+      let payload: any = {
+        creator: address, // the merchant address
+        id: disputesOpened.disputeID,
+        verdict: "client",
+      };
+
+      let send = () =>
+        sendMsgUpdateDispute({
+          value: payload,
+          fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+          memo,
+        });
+
+      const txResult = await send();
+      if (txResult.code !== 0) {
+        throw new Error();
+      }
+    } else if (account === "client") {
+      // cancel dispute
+      const sendMsgCancelDispute = client.OrbitaPay.tx.sendMsgCancelDispute;
+
+      let payload: any = {
+        creator: address, // the client address
+        id: Number(disputesOpened.disputeID),
+      };
+
+      let send = () =>
+        sendMsgCancelDispute({
+          value: payload,
+          fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+          memo,
+        });
+      const txResult = await send();
+      if (txResult.code !== 0) {
+        throw new Error();
+      }
+    }
+  };
+
   const dateInitiated = dateTransformer(disputesOpened.initiatedDate!);
   return (
     <div
@@ -50,6 +109,7 @@ const DisputeCard: FC<DisputeCardProps> = ({ disputesOpened, account }) => {
           "bg-[#f2a904]": account === "client",
           "bg-[#1bd082]": account === "merchant",
         })}
+        onClick={handleClick}
       >
         {account === "client" ? "Cancel Dispute" : "Refund to Client"}
       </button>
