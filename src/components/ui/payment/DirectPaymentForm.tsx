@@ -4,10 +4,14 @@ import {
 } from "@/def-hooks/CreatePaymentContext";
 
 const DirectPaymentForm: React.FC = () => {
-  const { mode, paymentName, paymentAmount, paymentAddress } =
+  const { mode, paymentName, paymentAmount, paymentAddress, paymentCurrency } =
     useCreatePaymentContext();
-  const { setPaymentName, setPaymentAmount, setPaymentAddress } =
-    useCreatePaymentDispatchContext();
+  const {
+    setPaymentName,
+    setPaymentAmount,
+    setPaymentAddress,
+    setPaymentCurrency,
+  } = useCreatePaymentDispatchContext();
 
   const handlePaymentNameChange = (e) => {
     e.preventDefault();
@@ -28,6 +32,12 @@ const DirectPaymentForm: React.FC = () => {
     e.preventDefault();
     const paymentAddress = e.target.value;
     setPaymentAddress(paymentAddress);
+  };
+
+  const handlePaymentCurrencyChange = (e) => {
+    e.preventDefault();
+    const paymentCurrency = e.target.value;
+    setPaymentCurrency(paymentCurrency);
   };
 
   return (
@@ -52,27 +62,46 @@ const DirectPaymentForm: React.FC = () => {
         />
       </div>
 
-      <div>
-        <label className="block mb-2 font-semibold" htmlFor="paymentAmount">
-          Payment Amount (USD)
-        </label>
-        <input
-          type="text"
-          id="paymentAmount"
-          name="paymentAmount"
-          value={paymentAmount}
-          onChange={handlePaymentAmountChange}
-          placeholder={`${
-            mode === "business"
-              ? "Calculated at Client Checkout"
-              : "Example: $100"
-          }`}
-          className={`mb-4 w-full px-3 py-2 border rounded rounded-lg ${
-            mode === "business" &&
-            " text-center text-black bg-gray-100 cursor-not-allowed"
-          }`}
-          disabled={mode === "business"}
-        />
+      <div
+        className={`grid grid-cols-${
+          mode === "basic" ? "[2fr,1fr]" : "1"
+        } items-end gap-2`}
+      >
+        <div>
+          <label className="block mb-2 font-semibold" htmlFor="paymentAmount">
+            {`Payment Amount ${mode === "basic" ? "(USD)" : ""}`}
+          </label>
+          <input
+            type="text"
+            id="paymentAmount"
+            name="paymentAmount"
+            value={paymentAmount}
+            onChange={handlePaymentAmountChange}
+            placeholder={`${
+              mode === "business"
+                ? "Calculated at Client Checkout"
+                : "Example: $100"
+            }`}
+            className={`mb-4 w-full px-3 py-2 border rounded rounded-lg ${
+              mode === "business" &&
+              " text-center text-black bg-gray-100 cursor-not-allowed"
+            }`}
+            disabled={mode === "business"}
+          />
+        </div>
+        {mode === "basic" && (
+          <div>
+            <select
+              className="mb-4 w-full px-3 py-2 border rounded-lg"
+              value={paymentCurrency}
+              onChange={handlePaymentCurrencyChange}
+            >
+              <option value={"USD"}>USD</option>
+              <option value={"CAD"}>CAD</option>
+              <option value={"BTC"}>BTC</option>
+            </select>
+          </div>
+        )}
       </div>
 
       <div>

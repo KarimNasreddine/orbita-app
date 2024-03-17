@@ -143,20 +143,18 @@ export const useCreatePayment = () => {
   };
 
   const isValidDirectTx = (payment: Payment) => {
-    const paymentCurrency = "USD";
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
-    isValidPriceAmount(payment.mode, payment.paymentAmount, paymentCurrency);
-    isValidPriceCurrency(paymentCurrency);
+    isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
+    isValidPriceCurrency(payment.paymentCurrency);
     isValidMerchantPayoutAddress(payment.paymentAddress);
     isValidPaymentName(payment.paymentName);
     return { success: true, error: "" };
   };
 
   const isValidSubscriptionTx = (payment: Payment) => {
-    const paymentCurrency = "USD";
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
-    isValidPriceAmount(payment.mode, payment.paymentAmount, paymentCurrency);
-    isValidPriceCurrency(paymentCurrency);
+    isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
+    isValidPriceCurrency(payment.paymentCurrency);
     isValidMerchantPayoutAddress(payment.paymentAddress);
     isValidPaymentName(payment.paymentName);
     isValidRecurringTimeFrameAmount(payment.recurringTimeFrame);
@@ -168,10 +166,9 @@ export const useCreatePayment = () => {
   };
 
   const isValidSafefiTx = (payment: Payment) => {
-    const paymentCurrency = "USD";
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
-    isValidPriceAmount(payment.mode, payment.paymentAmount, paymentCurrency);
-    isValidPriceCurrency(paymentCurrency);
+    isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
+    isValidPriceCurrency(payment.paymentCurrency);
     isValidMerchantPayoutAddress(payment.paymentAddress);
     isValidPaymentName(payment.paymentName);
     if (payment.mode === "basic") {
@@ -218,7 +215,7 @@ export const useCreatePayment = () => {
         .join(","),
       name: payment.paymentName,
       priceAmount: payment.paymentAmount,
-      priceCurrency: "USD",
+      priceCurrency: payment.paymentCurrency,
       merchantPayoutAddress: payment.paymentAddress,
       paymentMode: payment.mode,
       paymentType: payment.paymentType,

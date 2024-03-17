@@ -7,13 +7,9 @@ import {
   PaymentMode,
   PaymentType,
   AcceptedCurrency,
+  PaymentCurrency,
 } from "@/types/payment";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 interface Props {
   mode: PaymentMode;
@@ -47,6 +43,7 @@ export default function CreatePaymentProvider({
     paymentAmount: "",
     paymentName: "",
     paymentAddress: "",
+    paymentCurrency: PaymentCurrency.USD,
     acceptedCurrencies: acceptedCurrencies,
     recurringTimeFrame: "",
     recurringTimeFrameInterval: "days",
@@ -87,8 +84,8 @@ export default function CreatePaymentProvider({
     setCreatePaymentState((prev) => ({ ...prev, leniencyAmount: leniency }));
   };
 
-  const onLeniencyIntervalChange = (leniencyInterval: string) => {
-    setCreatePaymentState((prev) => ({ ...prev, leniencyInterval }));
+  const onPaymentCurrencyChange = (paymentCurrency: PaymentCurrency) => {
+    setCreatePaymentState((prev) => ({ ...prev, paymentCurrency }));
   };
 
   const onSafetyPeriodAmountChange = (safetyPeriod: string) => {
@@ -98,10 +95,6 @@ export default function CreatePaymentProvider({
     }));
   };
 
-  const onSafetyPeriodIntervalChange = (safetyPeriodInterval: string) => {
-    setCreatePaymentState((prev) => ({ ...prev, safetyPeriodInterval }));
-  };
-
   return (
     <CreatePaymentContext.Provider value={createPaymentState}>
       <CreatePaymentDispatchContext.Provider
@@ -109,6 +102,7 @@ export default function CreatePaymentProvider({
           setPaymentAddress: onPaymentAddressChange,
           setPaymentAmount: onPaymentAmountChange,
           setPaymentName: onPaymentNameChange,
+          setPaymentCurrency: onPaymentCurrencyChange,
           setAcceptedCurrencies: onAcceptedCurrenciesChange,
           setRecurringTimeFrame: onRecurringTimeFrameChange,
           setRecurringTimeFrameInterval: onRecurringTimeFrameIntervalChange,

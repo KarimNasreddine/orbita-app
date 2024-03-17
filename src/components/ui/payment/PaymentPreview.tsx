@@ -12,6 +12,7 @@ const PaymentPreview: React.FC = () => {
     paymentName,
     paymentAmount,
     paymentAddress,
+    paymentCurrency,
     acceptedCurrencies,
     recurringTimeFrame,
     recurringTimeFrameInterval,
@@ -80,14 +81,14 @@ const PaymentPreview: React.FC = () => {
         <h1 className="font-bold text-2xl mb-2 text-center ">{paymentName}</h1>
       </div>
       <div className="grid grid-rows row-auto  gap-3">
-        {paymentAmount && (
+        {paymentAmount && paymentCurrency && (
           <div className="grid grid-cols-2 items-end justify-between">
             <h1 className="font-bold text-lg">{`${
               paymentType === "subscription" ? "Subscription Price:" : "Price:"
             }`}</h1>
 
             <p className="whitespace-normal break-words text-orbita-iris text-lg font-bold">
-              ${paymentAmount}
+              {`${paymentAmount} ${paymentCurrency}`}
             </p>
           </div>
         )}

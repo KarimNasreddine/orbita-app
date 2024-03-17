@@ -15,12 +15,19 @@ export type AcceptedCurrency = {
   selected: boolean;
 };
 
+export enum PaymentCurrency {
+  USD = "USD",
+  CAD = "CAD",
+  BTC = "BTC",
+}
+
 export type Payment = {
   mode: PaymentMode;
   paymentType: PaymentType;
   paymentAmount: string;
   paymentName: string;
   paymentAddress: string;
+  paymentCurrency: PaymentCurrency;
   acceptedCurrencies: AcceptedCurrency[];
   recurringTimeFrame?: string;
   recurringTimeFrameInterval?: string;
@@ -32,6 +39,7 @@ export type PaymentDispatch = {
   setPaymentAmount: (paymentAmount: string) => void;
   setPaymentName: (paymentName: string) => void;
   setPaymentAddress: (paymentAddress: string) => void;
+  setPaymentCurrency: (paymentCurrency: PaymentCurrency) => void;
   setAcceptedCurrencies: (selected: AcceptedCurrency[]) => void;
   setRecurringTimeFrame: (recurringTimeFrame: string) => void;
   setRecurringTimeFrameInterval: (recurringTimeFrameInterval: string) => void;
