@@ -3,7 +3,7 @@ import CurrencyLogo from "./CurrencyLogo";
 import {
   useCreatePaymentContext,
   useCreatePaymentDispatchContext,
-} from "@/def-hooks/CreatePaymentContext";
+} from "@/def-hooks/createPaymentContext";
 
 type CurrencySelectionProps = {
   className?: string;

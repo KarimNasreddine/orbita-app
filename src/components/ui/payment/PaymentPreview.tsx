@@ -1,6 +1,6 @@
 import { useCreatePayment } from "@/def-hooks/useCreatePayment";
 import CurrencyLogo from "../currency/CurrencyLogo";
-import { useCreatePaymentContext } from "@/def-hooks/CreatePaymentContext";
+import { useCreatePaymentContext } from "@/def-hooks/createPaymentContext";
 import { useMemo, useState } from "react";
 import Spinner from "../spinner/Spinner";
 
@@ -25,7 +25,8 @@ const PaymentPreview: React.FC = () => {
   const [success, setSuccess] = useState(false);
 
   const isValid = useMemo(() => {
-    return isValidTx(payment);
+    const valid = isValidTx(payment);
+    return valid;
   }, [isValidTx, payment]);
 
   const handleCreatePayment = async () => {
@@ -66,10 +67,16 @@ const PaymentPreview: React.FC = () => {
             <Spinner width={10} height={10} />
           </div>
         )}
-        {error && (
-          <p className="text-red-500 text-center font-bold whitespace-normal break-words mt-6">
-            {error}
+        {isValid.error ? (
+          <p className="text-red-500 text-start font-bold whitespace-normal break-words mt-6">
+            {isValid.error}
           </p>
+        ) : (
+          error && (
+            <p className="text-red-500 text-start font-bold whitespace-normal break-words mt-6">
+              {error}
+            </p>
+          )
         )}
         {success && (
           <p className="text-green-500 text-center font-bold whitespace-normal break-words mt-6">

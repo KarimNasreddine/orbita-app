@@ -48,7 +48,7 @@ export default function CreatePaymentProvider({
     recurringTimeFrame: "",
     recurringTimeFrameInterval: "days",
     safetyPeriodAmount: "",
-    leniencyAmount: "3",
+    leniencyAmount: "",
   });
 
   const onPaymentAmountChange = (paymentAmount: string) => {

@@ -54,9 +54,9 @@ const Page: FC<pageProps> = ({}) => {
         <div className="flex gap-4">
           {disputesOpened.map((dispute) => {
             if (dispute.creator === address) {
-              return <DisputeCard disputesOpened={dispute} account="client" />;
+              return <DisputeCard key={dispute.disputeID} disputesOpened={dispute} account="client" />;
             }
-            return <DisputeCard disputesOpened={dispute} account="merchant" />;
+            return <DisputeCard key={dispute.disputeID} disputesOpened={dispute} account="merchant" />;
           })}
         </div>
         <h2 className={`${montserrat.className} font-bold text-2xl`}>
