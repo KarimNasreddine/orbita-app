@@ -1,6 +1,6 @@
 "use client";
 
-import { AcceptedCurrency, Currency } from "@/types/payment";
+import { AcceptedCurrency, Currency, PaymentCurrency } from "@/types/currency";
 import CurrencyLogo from "../currency/CurrencyLogo";
 import { useMemo, useState } from "react";
 import { usePayment } from "@/def-hooks/usePayment";
@@ -111,7 +111,7 @@ const CreateContract: React.FC<Props> = ({ paymentId, price }) => {
           paymentID: Number(id),
           payWithCurrency: selectedCurrency,
           totalAmount: validatedPrice || priceAmount || "",
-          totalAmountCurrency: priceCurrency,
+          totalAmountCurrency: priceCurrency as PaymentCurrency,
         });
         console.log(result);
         if (result.code) {

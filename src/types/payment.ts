@@ -1,25 +1,10 @@
+import { AcceptedCurrency, PaymentCurrency } from "./currency";
+
 export type PaymentMode = "basic" | "business";
 
 export type PaymentType = "direct" | "subscription" | "safefi";
 
-export enum Currency {
-  ORBT = "ORBT",
-  USDC = "USDC",
-  NBTC = "NBTC",
-  AKT = "AKT",
-  ATOM = "ATOM",
-}
 
-export type AcceptedCurrency = {
-  currency: Currency;
-  selected: boolean;
-};
-
-export enum PaymentCurrency {
-  USD = "USD",
-  CAD = "CAD",
-  BTC = "BTC",
-}
 
 export type CreatePayment = {
   mode: PaymentMode;

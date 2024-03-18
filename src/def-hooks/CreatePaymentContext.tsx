@@ -3,12 +3,10 @@
 import {
   CreatePaymentDispatch,
   CreatePayment,
-  Currency,
   PaymentMode,
   PaymentType,
-  AcceptedCurrency,
-  PaymentCurrency,
 } from "@/types/payment";
+import { AcceptedCurrency, Currency, PaymentCurrency } from "@/types/currency";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface Props {

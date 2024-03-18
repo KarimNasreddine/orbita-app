@@ -2,9 +2,10 @@ import useOrbitaPay from "../hooks/useOrbitaPay";
 import { fromBech32 } from "@cosmjs/encoding";
 import { StdFee } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
-import { AcceptedCurrency, CreatePayment, PaymentMode } from "@/types/payment";
+import { CreatePayment, PaymentMode } from "@/types/payment";
 import { MsgCreatePayment } from "../../ts-client/orbita.pay/module";
 import { useAddressContext } from "./addressContext";
+import { AcceptedCurrency,  PaymentCurrency } from "@/types/currency";
 
 export const useCreatePayment = () => {
   const { address } = useAddressContext();
@@ -43,10 +44,9 @@ export const useCreatePayment = () => {
   };
 
   const isValidPriceCurrency = (paymentCurrency: string) => {
-    const valid =
-      paymentCurrency === "BTC" ||
-      paymentCurrency === "USD" ||
-      paymentCurrency === "CAD";
+    const valid = Object.values(PaymentCurrency as any).includes(
+      paymentCurrency
+    );
     if (!valid) {
       throw new Error("Payment currency must be BTC, USD, or CAD");
     }
@@ -144,7 +144,11 @@ export const useCreatePayment = () => {
 
   const isValidDirectTx = (payment: CreatePayment) => {
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
-    isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
+    isValidPriceAmount(
+      payment.mode,
+      payment.paymentAmount,
+      payment.paymentCurrency
+    );
     isValidPriceCurrency(payment.paymentCurrency);
     isValidMerchantPayoutAddress(payment.paymentAddress);
     isValidPaymentName(payment.paymentName);
@@ -153,7 +157,11 @@ export const useCreatePayment = () => {
 
   const isValidSubscriptionTx = (payment: CreatePayment) => {
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
-    isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
+    isValidPriceAmount(
+      payment.mode,
+      payment.paymentAmount,
+      payment.paymentCurrency
+    );
     isValidPriceCurrency(payment.paymentCurrency);
     isValidMerchantPayoutAddress(payment.paymentAddress);
     isValidPaymentName(payment.paymentName);
@@ -167,7 +175,11 @@ export const useCreatePayment = () => {
 
   const isValidSafefiTx = (payment: CreatePayment) => {
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
-    isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
+    isValidPriceAmount(
+      payment.mode,
+      payment.paymentAmount,
+      payment.paymentCurrency
+    );
     isValidPriceCurrency(payment.paymentCurrency);
     isValidMerchantPayoutAddress(payment.paymentAddress);
     isValidPaymentName(payment.paymentName);
@@ -223,7 +235,7 @@ export const useCreatePayment = () => {
         payment.recurringTimeFrameInterval?.toUpperCase() || "",
       recurringTimeFrameAmount: Number(payment.recurringTimeFrame || "0"),
       paymentLeniency: Number(payment.leniencyAmount || "3"), //Default to 3
-      safetyPeriod: Number(payment.safetyPeriodAmount || "0"), //Default to 1?
+      safetyPeriod: Number(payment.safetyPeriodAmount || "10"), //Default to 10
     };
 
     const fees = fee || { amount: [], gas: "200000" };

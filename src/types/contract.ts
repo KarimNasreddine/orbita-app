@@ -1,7 +1,8 @@
+import { Currency, PaymentCurrency } from "./currency";
+
 export interface CreateContract {
-    paymentID: number;
-    payWithCurrency: string;
-    totalAmount: string;
-    totalAmountCurrency: string;
-  }
-  
+  paymentID: number;
+  payWithCurrency: Currency;
+  totalAmount: string;
+  totalAmountCurrency: PaymentCurrency;
+}

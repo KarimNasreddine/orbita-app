@@ -1,5 +1,5 @@
 import CreateContract from "@/components/ui/contract/CreateContract";
-import { PaymentCurrency } from "@/types/payment";
+import { PaymentCurrency } from "@/types/currency";
 import BigNumber from "bignumber.js";
 
 

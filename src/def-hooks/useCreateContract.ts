@@ -5,6 +5,7 @@ import BigNumber from "bignumber.js";
 import { MsgCreateContract } from "../../ts-client/orbita.pay/module";
 import { useAddressContext } from "./addressContext";
 import { CreateContract } from "@/types/contract";
+import { Currency, PaymentCurrency } from "@/types/currency";
 
 export const useCreateContract = () => {
   const { address } = useAddressContext();
@@ -28,16 +29,14 @@ export const useCreateContract = () => {
         ((paymentCurrency === "USD" || paymentCurrency === "CAD") &&
           parsedAmount.isGreaterThanOrEqualTo(1)));
     if (!valid) {
-      console.log(paymentCurrency, paymentAmount)
       throw new Error("Payment amount must be a positive number");
     }
   };
 
   const isValidTotalAmountCurrency = (paymentCurrency: string) => {
-    const valid =
-      paymentCurrency === "BTC" ||
-      paymentCurrency === "USD" ||
-      paymentCurrency === "CAD";
+    const valid = Object.values(PaymentCurrency as any).includes(
+      paymentCurrency
+    );
     if (!valid) {
       throw new Error("Payment currency must be BTC, USD, or CAD");
     }
@@ -45,7 +44,7 @@ export const useCreateContract = () => {
   };
 
   const isValidPayWithCurrency = (payWithCurrency: string) => {
-    const valid = payWithCurrency === "BTC" || payWithCurrency === "USDC";
+    const valid = Object.values(Currency as any).includes(payWithCurrency);
     if (!valid) {
       throw new Error("At least one currency must be selected");
     }
