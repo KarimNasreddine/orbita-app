@@ -2,7 +2,7 @@ import useOrbitaPay from "../hooks/useOrbitaPay";
 import { fromBech32 } from "@cosmjs/encoding";
 import { StdFee } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
-import { AcceptedCurrency, Payment, PaymentMode } from "@/types/payment";
+import { AcceptedCurrency, CreatePayment, PaymentMode } from "@/types/payment";
 import { MsgCreatePayment } from "../../ts-client/orbita.pay/module";
 import { useAddressContext } from "./addressContext";
 
@@ -142,7 +142,7 @@ export const useCreatePayment = () => {
     return valid;
   };
 
-  const isValidDirectTx = (payment: Payment) => {
+  const isValidDirectTx = (payment: CreatePayment) => {
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
     isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
     isValidPriceCurrency(payment.paymentCurrency);
@@ -151,7 +151,7 @@ export const useCreatePayment = () => {
     return { success: true, error: "" };
   };
 
-  const isValidSubscriptionTx = (payment: Payment) => {
+  const isValidSubscriptionTx = (payment: CreatePayment) => {
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
     isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
     isValidPriceCurrency(payment.paymentCurrency);
@@ -165,7 +165,7 @@ export const useCreatePayment = () => {
     return { success: true, error: "" };
   };
 
-  const isValidSafefiTx = (payment: Payment) => {
+  const isValidSafefiTx = (payment: CreatePayment) => {
     isValidAcceptedCurrencies(payment.acceptedCurrencies);
     isValidPriceAmount(payment.mode, payment.paymentAmount, payment.paymentCurrency);
     isValidPriceCurrency(payment.paymentCurrency);
@@ -178,7 +178,7 @@ export const useCreatePayment = () => {
     return { success: true, error: "" };
   };
 
-  const isValidTx = (payment: Payment) => {
+  const isValidTx = (payment: CreatePayment) => {
     const { paymentType } = payment;
     try {
       switch (paymentType) {
@@ -197,7 +197,7 @@ export const useCreatePayment = () => {
   };
 
   const createPayment = async (
-    payment: Payment,
+    payment: CreatePayment,
     fee?: StdFee,
     memo?: string
   ) => {
@@ -223,7 +223,7 @@ export const useCreatePayment = () => {
         payment.recurringTimeFrameInterval?.toUpperCase() || "",
       recurringTimeFrameAmount: Number(payment.recurringTimeFrame || "0"),
       paymentLeniency: Number(payment.leniencyAmount || "3"), //Default to 3
-      safetyPeriod: Number(payment.safetyPeriodAmount || "0"),
+      safetyPeriod: Number(payment.safetyPeriodAmount || "0"), //Default to 1?
     };
 
     const fees = fee || { amount: [], gas: "200000" };

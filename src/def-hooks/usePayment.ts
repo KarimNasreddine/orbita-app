@@ -15,15 +15,14 @@ export const usePayment = (paymentID: string, checkOutDataValid: boolean) => {
     return {
       payment: query.data?.Payment,
       isLoading: query.isLoading,
+      error: query.isError
     };
-  }, [query.data, query.isLoading]);
+  }, [query.data, query.isLoading, query.isError]);
 
   if (!paymentID || !checkOutDataValid) {
-    const payment = { payment: undefined, isLoading: false };
+    const payment = { payment: undefined, isLoading: false, error: false};
     return payment;
   }
 
-  return {
-    payment,
-  };
+  return payment;
 };

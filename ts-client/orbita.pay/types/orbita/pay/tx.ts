@@ -27,12 +27,12 @@ export interface MsgCreatePaymentResponse {
 }
 
 export interface MsgCreateContract {
-  id: number;
+  id?: number;
   creator: string;
   paymentID: number;
   clientWalletAddress: string;
   payWithCurrency: string;
-  paymentLeniencyCounter: number;
+  paymentLeniencyCounter?: number;
   totalAmount: string;
   totalAmountCurrency: string;
 }

@@ -7,7 +7,6 @@ import Spinner from "../spinner/Spinner";
 const PaymentPreview: React.FC = () => {
   const payment = useCreatePaymentContext();
   const {
-    mode,
     paymentType,
     paymentName,
     paymentAmount,
@@ -49,19 +48,11 @@ const PaymentPreview: React.FC = () => {
     }
   };
 
-  const title =
-    paymentType === "direct"
-      ? "Direct Irreversible Payment"
-      : paymentType === "subscription"
-      ? "Recurring Irreversible Payment (Subscription)"
-      : "SafeFi Reversible Payment";
 
   return (
     <div className="rounded-xl border text-black bg-white min-h-[40rem] grid grid-rows-[1fr,auto,auto,1fr,auto] gap-4 p-6">
       <div>
-        <h1 className="font-bold text-2xl mb-2">{`${title} ${
-          mode === "business" ? "- Business" : ""
-        }`}</h1>
+        <h1 className="font-bold text-2xl text-center mb-2">{`Payment Preview`}</h1>
         {isLoading && (
           <div className="mt-10">
             <Spinner width={10} height={10} />

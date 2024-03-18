@@ -21,7 +21,7 @@ export enum PaymentCurrency {
   BTC = "BTC",
 }
 
-export type Payment = {
+export type CreatePayment = {
   mode: PaymentMode;
   paymentType: PaymentType;
   paymentAmount: string;
@@ -35,7 +35,7 @@ export type Payment = {
   leniencyAmount?: string;
 };
 
-export type PaymentDispatch = {
+export type CreatePaymentDispatch = {
   setPaymentAmount: (paymentAmount: string) => void;
   setPaymentName: (paymentName: string) => void;
   setPaymentAddress: (paymentAddress: string) => void;
@@ -47,41 +47,21 @@ export type PaymentDispatch = {
   setSafetyPeriodAmount: (safetyPeriod: string) => void;
 };
 
-
-export type DirectPayment = {
-  mode: PaymentMode;
-  paymentType: "direct";
-  paymentAmount: string;
-  paymentName: string;
-  paymentAddress: string;
-  acceptedCurrencies: AcceptedCurrency[];
-};
-
-export type SubscriptionPayment = {
-  mode: PaymentMode;
-  paymentType: "subscription";
+export type Payment = {
+  id: string;
+  creator: string;
   subscriptionType: string;
-  paymentAmount: string;
-  paymentName: string;
-  paymentAddress: string;
-  acceptedCurrencies: AcceptedCurrency[];
+  acceptedPaymentType: string;
+  name: string;
+  priceAmount: string;
+  priceCurrency: string;
   recurringTimeFrame: string;
-  recurringTimeFrameInterval: string;
-  leniencyAmount?: string;
-  leniencyInterval?: string;
+  recurringTimeFrameAmount: string;
+  merchantPayoutAddress: string;
+  paymentLeniency: number;
+  clientCounts: number;
+  paymentMode: string;
+  paymentType: string;
+  safetyPeriod: number;
+  createdAt: string;
 };
-
-export type SafefiPayment = {
-  mode: PaymentMode;
-  paymentType: "safefi";
-  paymentAmount: string;
-  paymentName: string;
-  paymentAddress: string;
-  acceptedCurrencies: AcceptedCurrency[];
-  safetyPeriodAmount: string;
-  safetyPeriodInterval: string;
-  leniencyAmount?: string;
-  leniencyInterval?: string;
-};
-
-

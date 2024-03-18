@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  PaymentDispatch,
-  Payment,
+  CreatePaymentDispatch,
+  CreatePayment,
   Currency,
   PaymentMode,
   PaymentType,
@@ -25,10 +25,10 @@ const acceptedCurrencies = [
   { currency: Currency.ATOM, selected: false },
 ] as AcceptedCurrency[];
 
-const CreatePaymentContext = createContext({} as Payment);
+const CreatePaymentContext = createContext({} as CreatePayment);
 export const useCreatePaymentContext = () => useContext(CreatePaymentContext);
 
-const CreatePaymentDispatchContext = createContext({} as PaymentDispatch);
+const CreatePaymentDispatchContext = createContext({} as CreatePaymentDispatch);
 export const useCreatePaymentDispatchContext = () =>
   useContext(CreatePaymentDispatchContext);
 
@@ -37,7 +37,7 @@ export default function CreatePaymentProvider({
   mode,
   paymentType,
 }: Props) {
-  const [createPaymentState, setCreatePaymentState] = useState<Payment>({
+  const [createPaymentState, setCreatePaymentState] = useState<CreatePayment>({
     mode: mode,
     paymentType: paymentType,
     paymentAmount: "",
