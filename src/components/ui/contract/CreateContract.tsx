@@ -43,9 +43,13 @@ const CreateContract: React.FC<Props> = ({ paymentId, price }) => {
     setSelectedCurrencies(newSelection);
   };
 
-  const isValidTx = useMemo(() => {
+  const isCurrencySelected = useMemo(() => {
     return selectedCurrencies.some((c) => c.selected);
   }, [selectedCurrencies]);
+
+  const isPriceAvailable = useMemo(() => {
+    return !!payment?.priceAmount || !!price;
+  }, [payment, price]);
 
   if (paymentError) {
     throw new Error("Cannot find Payment ID");
@@ -71,51 +75,60 @@ const CreateContract: React.FC<Props> = ({ paymentId, price }) => {
   } else if (!payment) {
     throw new Error("Cannot find Payment ID");
   } else {
-    const { id, name, priceAmount, priceCurrency } = payment;
+    const {
+      id,
+      name,
+      priceAmount,
+      priceCurrency,
+      recurringTimeFrame,
+      recurringTimeFrameAmount,
+      paymentMode,
+      paymentType,
+      paymentLeniency,
+      safetyPeriod,
+    } = payment;
     if (!price && !priceAmount) {
       throw new Error("Invalid price data");
     }
 
-    const validatePrice = (price?: string) => {
-        const priceArray = price?.trim().match(/([\d+.*]+)([A-Z]*)/);
-        if (priceArray) {
-          try {
-            const totalAmount = Number(priceArray[1]).toFixed(2);
-            return totalAmount;
-          } catch (e) {
-            throw new Error("Invalid price data");
-          }
-        } else throw new Error("Invalid price data");
-      };
+    const formatUrlPrice = (price?: string) => {
+      const priceArray = price?.trim().match(/([\d+.*]+)([A-Z]*)/);
+      if (priceArray) {
+        try {
+          const totalAmount = Number(priceArray[1]).toFixed(2);
+          return totalAmount;
+        } catch (e) {
+          return "";
+        }
+      } else return "";
+    };
 
     const handleCreateContract = async () => {
-      if (!id || !priceCurrency) {
-        setError("Invalid payment data");
-        return;
-      }
-      const selectedCurrency = selectedCurrencies.find(
-        (c) => c.selected
-      )?.currency;
-      if (!selectedCurrency) {
-        setError("Please select at least one currency");
-        return;
-      }
-
-      const validatedPrice = validatePrice(price);
-
+      setLoading(true);
+      setError("");
+      setSuccess(false);
       try {
-        setLoading(true);
-        setError("");
-        setSuccess(false);
+        if (!id || !priceCurrency) {
+          throw new Error("Unexpected Error. Invalid payment data");
+        }
+        const selectedCurrency = selectedCurrencies.find(
+          (c) => c.selected
+        )?.currency;
+        if (!selectedCurrency) {
+          throw new Error("Please select at least one currency");
+        }
+
+        const formattedUrlPrice = formatUrlPrice(price);
+
         const result = await createContract({
           paymentID: Number(id),
           payWithCurrency: selectedCurrency,
-          totalAmount: validatedPrice || priceAmount || "",
+          totalAmount: formattedUrlPrice || priceAmount || "",
           totalAmountCurrency: priceCurrency as PaymentCurrency,
         });
         console.log(result);
         if (result.code) {
-          setError("Unexpected error occurred. Please try again");
+          setError("Unexpected Error. Please try again");
         } else {
           setSuccess(true);
         }
@@ -135,7 +148,13 @@ const CreateContract: React.FC<Props> = ({ paymentId, price }) => {
             <div className="mt-10">
               <Spinner width={10} height={10} />
             </div>
-          ) : !isValidTx ? (
+          ) : !isPriceAvailable ? (
+            <div className="mt-10 text-center font-bold text-red-500">
+              {
+                "This Payment is a Variable Payment and can only be processed via Merchant Checkout."
+              }
+            </div>
+          ) : !isCurrencySelected ? (
             <div className="mt-10 text-center font-bold text-red-500">
               {"Please select at least one currency"}
             </div>
@@ -153,9 +172,29 @@ const CreateContract: React.FC<Props> = ({ paymentId, price }) => {
         </div>
         <div className="border-y border-divider-lines py-2 grid grid-rows-1 justify-center items-center">
           <h1 className="font-bold text-2xl mb-2 text-center text-orbita-iris">
-            <span className="text-black">Total:</span>{" "}
-            {price ? price : `"${priceAmount}" "${priceCurrency}"`}
+            <span className="text-black">Total:</span>
+            {price
+              ? price
+              : priceAmount
+              ? ` ${Number(priceAmount)?.toFixed(2)} ${priceCurrency}`
+              : "Variable Price"}
           </h1>
+          {recurringTimeFrame && recurringTimeFrameAmount && (
+            <p className="mt-2 whitespace-normal  break-words">
+              {`Subscription: Every ${recurringTimeFrameAmount} ${recurringTimeFrame}`}
+            </p>
+          )}
+          {((paymentMode === "business" && paymentType === "subscription") ||
+            (paymentMode === "basic" && paymentType === "safefi")) && (
+            <p className="mt-2 whitespace-normal  break-words">
+              {`Leniency: ${paymentLeniency} days`}
+            </p>
+          )}
+          {paymentType === "safefi" && (
+            <p className="mt-2 whitespace-normal  break-words">
+              {`Safety Period: ${safetyPeriod} days`}
+            </p>
+          )}
         </div>
         <div className="mb-4">
           <h1 className="font-bold text-xl">Pay With:</h1>
@@ -184,7 +223,7 @@ const CreateContract: React.FC<Props> = ({ paymentId, price }) => {
           <button
             className={`max-w-sm w-full py-2 px-4 rounded  bg-orbita-iris hover:bg-purple-700 text-white`}
             onClick={handleCreateContract}
-            disabled={!isValidTx}
+            disabled={!isCurrencySelected && isPriceAvailable}
           >
             {"Pay"}
           </button>

@@ -1,4 +1,4 @@
-import { Currency } from "@/types/payment";
+import { Currency } from "@/types/currency";
 
 
 const ORBTLogoURL =
