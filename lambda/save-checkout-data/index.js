@@ -95,7 +95,7 @@ export async function handler(event) {
     await dynamoDb.put(params).promise();
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Data saved successfully!" }),
+      body: JSON.stringify({ checkoutId: checkoutId }),
     };
   } catch (error) {
     console.error(error);
@@ -105,35 +105,3 @@ export async function handler(event) {
     };
   }
 }
-
-//Example:
-
-// const data = {
-//     paymentId: 123,
-//     checkoutId: 456,
-//     items: [
-//       {
-//         itemName: "Item 1",
-//         itemPriceAmount: "10.00",
-//         itemPriceCurrency: "USD",
-//         itemQuantity: 1
-//       },
-//       {
-//         itemName: "Item 2",
-//         itemPriceAmount: "15.00",
-//         itemPriceCurrency: "USD",
-//         itemQuantity: 2
-//       }
-//     ]
-//   };
-
-//   fetch('https://your-api-endpoint.com/checkout', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(data),
-//   })
-//   .then(response => response.json())
-//   .then(data => console.log('Success:', data))
-//   .catch((error) => console.error('Error:', error));
