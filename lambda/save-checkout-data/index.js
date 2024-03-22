@@ -9,10 +9,29 @@ export async function handler(event) {
 
   console.log("Request body: ", requestBody);
 
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
+      body: null,
+    };
+  }
+
   // Validation checks
   if (!paymentId || typeof paymentId !== "number") {
     return {
       statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
       body: JSON.stringify({
         message: "paymentId is required and must be a number.",
       }),
@@ -22,6 +41,12 @@ export async function handler(event) {
   if (!checkoutId || typeof checkoutId !== "string") {
     return {
       statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
       body: JSON.stringify({
         message: "checkoutId is required and must be a string.",
       }),
@@ -31,6 +56,12 @@ export async function handler(event) {
   if (!items || !Array.isArray(items) || items.length === 0) {
     return {
       statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
       body: JSON.stringify({
         message: "items is required and must be a non-empty array.",
       }),
@@ -48,6 +79,12 @@ export async function handler(event) {
   ) {
     return {
       statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
       body: JSON.stringify({
         message: "currency is required and must be a string.",
       }),
@@ -68,6 +105,12 @@ export async function handler(event) {
   if (!isValidItems) {
     return {
       statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
       body: JSON.stringify({
         message:
           "Each item in items array must have a valid itemName, itemPriceAmount, itemPriceCurrency, and itemQuantity.",
@@ -95,12 +138,24 @@ export async function handler(event) {
     await dynamoDb.put(params).promise();
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
       body: JSON.stringify({ checkoutId: checkoutId }),
     };
   } catch (error) {
     console.error(error);
     return {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers":
+          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
       body: JSON.stringify({ message: "Failed to save data" }),
     };
   }
