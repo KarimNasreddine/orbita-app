@@ -20,6 +20,7 @@
     "@tanstack/react-table": "^8.11.7",
     "@types/crypto-js": "^4.2.2",
     "@upstash/redis": "^1.28.2",
+    "aws-sdk": "^2.1582.0",
     "axios": "^1.6.7",
     "bignumber.js": "^9.1.2",
     "class-variance-authority": "^0.7.0",

@@ -1,7 +1,7 @@
 import CreateContract from "@/components/ui/contract/CreateContract";
-import { PaymentCurrency } from "@/types/currency";
+import { CheckoutData } from "@/types/checkout";
+import { PaymentCurrency, isValidPaymentCurrency } from "@/types/currency";
 import BigNumber from "bignumber.js";
-
 
 const validateTotalPriceAndCurrency = (
   totalAmount: string,
@@ -13,44 +13,50 @@ const validateTotalPriceAndCurrency = (
     const totalAmountNumber = new BigNumber(totalAmount);
     if (!totalAmountNumber.isPositive() || totalAmountNumber.isZero()) {
       return false;
-    } else if (
-      !Object.values(PaymentCurrency as any).includes(totalAmountCurrency)
-    ) {
+    } else if (!isValidPaymentCurrency(totalAmountCurrency)) {
       return false;
     }
   }
   return true;
 };
 
-const validatePrice = (price?: string) => {
-  const priceArray = price?.trim().match(/([\d+.*]+)([A-Z]*)/);
+const validatePrice = (price: string) => {
+  const priceArray = price.trim().match(/([\d+.*]+)([A-Z]*)/);
   if (priceArray) {
     try {
-      const totalAmount = Number(priceArray[1]).toFixed(2);
+      const totalAmount = Number(priceArray[1]).toString();
       const totalAmountCurrency = priceArray[2];
       const isPriceValid = validateTotalPriceAndCurrency(
         totalAmount,
         totalAmountCurrency
       );
-      return isPriceValid;
+      if (!isPriceValid) throw new Error("Invalid price value");
+      return {
+        price: totalAmount,
+        currency: totalAmountCurrency as PaymentCurrency,
+      };
     } catch (e) {
-      return false;
+      throw new Error("Invalid price value");
     }
-  } else return true;
+  } else throw new Error("Invalid price value");
 };
 
 const validateSearchParams = (searchParams: {
   [key: string]: string | string[] | undefined;
 }) => {
-  if (
-    !searchParams.payment_id ||
-    !searchParams.return_url
-  ) {
+  if (!searchParams.payment_id || !searchParams.return_url) {
     throw new Error("Missing required parameters");
   }
-  if (!validatePrice(searchParams.price as string)) {
-    throw new Error("Invalid price value");
+  const payment_id = searchParams.payment_id as string;
+  const return_url = searchParams.return_url as string;
+  let price: string | undefined;
+  let currency: PaymentCurrency | undefined;
+  if (searchParams.price) {
+    ({ price, currency } = validatePrice(searchParams.price as string));
   }
+
+  const checkout_id = searchParams.checkout_id as string;
+  return { payment_id, price, currency, return_url, checkout_id };
 };
 
 const Page = async ({
@@ -58,18 +64,39 @@ const Page = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  validateSearchParams(searchParams);
-  const paymentId: string = searchParams.payment_id as string;
-  const price: string | undefined = searchParams.price as string;
-  const return_url: string = searchParams.return_url as string;
+  const {
+    payment_id: paymentId,
+    price,
+    return_url,
+    currency,
+    checkout_id,
+  } = validateSearchParams(searchParams);
 
+  const getCheckoutData = async (checkoutId: string): Promise<CheckoutData> => {
+    "use server";
+    const response = await fetch(
+      `${process.env.URL}/api/checkout/${checkoutId}`,
+      { cache: "no-store" }
+    );
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const checkoutData = (await response.json()) as CheckoutData;
+    return checkoutData;
+  };
+
+  const checkoutData = checkout_id
+    ? await getCheckoutData(checkout_id)
+    : undefined;
   return (
     <div className="w-full">
       <div className="mx-auto max-w-screen-lg grid grid-cols-1 justify-center items-center mt-12">
         <CreateContract
           paymentId={paymentId}
           price={price}
+          priceCurrency={currency}
           return_url={return_url}
+          checkoutData={checkoutData}
         />
       </div>
     </div>

@@ -5,7 +5,6 @@ import {
   useDispatchWalletContext,
   useWalletContext,
 } from "@/def-hooks/walletContext";
-import { IgntButton } from "@ignt/react-library";
 import { FC, useState } from "react";
 import IgntAccDropdown from "../ignt/IgntAccDropdown";
 import ProfileIcon from "../profileIcon/ProfileIcon";
@@ -34,15 +33,14 @@ const ConnectWalletButton: FC = () => {
           </span>
         </button>
       ) : (
-        <IgntButton
-          className="bg-gradient-pink-orange transform transition border-none duration-300 hover:scale-101 rounded cursor-pointer p-3 w-full"
-          type="primary"
+        <button
+          className="bg-gradient-pink-orange transform transition border-none duration-300 hover:scale-101 rounded-lg cursor-pointer p-2 w-full"
           onClick={connectWithKeplr}
         >
           <span className="text-l text-white text-center whitespace-nowrap">
             Connect Wallet
           </span>
-        </IgntButton>
+        </button>
       )}
       {accountDropdown && (
         <div className="relative">

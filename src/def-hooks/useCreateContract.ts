@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js";
 import { MsgCreateContract } from "../../ts-client/orbita.pay/module";
 import { useAddressContext } from "./addressContext";
 import { CreateContract } from "@/types/contract";
-import { Currency, PaymentCurrency } from "@/types/currency";
+import { isValidCurrency, isValidPaymentCurrency } from "@/types/currency";
 
 export const useCreateContract = () => {
   const { address } = useAddressContext();
@@ -34,7 +34,7 @@ export const useCreateContract = () => {
   };
 
   const isValidTotalAmountCurrency = (paymentCurrency: string) => {
-    const valid = Object.values(PaymentCurrency as any).includes(
+    const valid = isValidPaymentCurrency(
       paymentCurrency
     );
     if (!valid) {
@@ -44,7 +44,7 @@ export const useCreateContract = () => {
   };
 
   const isValidPayWithCurrency = (payWithCurrency: string) => {
-    const valid = Object.values(Currency as any).includes(payWithCurrency);
+    const valid = isValidCurrency(payWithCurrency);
     if (!valid) {
       throw new Error("At least one currency must be selected");
     }

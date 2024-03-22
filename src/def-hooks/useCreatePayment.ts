@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js";
 import { CreatePayment, PaymentMode } from "@/types/payment";
 import { MsgCreatePayment } from "../../ts-client/orbita.pay/module";
 import { useAddressContext } from "./addressContext";
-import { AcceptedCurrency,  PaymentCurrency } from "@/types/currency";
+import { AcceptedCurrency, isValidPaymentCurrency } from "@/types/currency";
 
 export const useCreatePayment = () => {
   const { address } = useAddressContext();
@@ -44,7 +44,7 @@ export const useCreatePayment = () => {
   };
 
   const isValidPriceCurrency = (paymentCurrency: string) => {
-    const valid = Object.values(PaymentCurrency as any).includes(
+    const valid = isValidPaymentCurrency(
       paymentCurrency
     );
     if (!valid) {
