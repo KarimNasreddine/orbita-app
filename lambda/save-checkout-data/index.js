@@ -1,11 +1,12 @@
 import AWS from "aws-sdk";
 const { DynamoDB } = AWS;
+import { v4 as uuidv4 } from 'uuid';
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
 export async function handler(event) {
   const requestBody = JSON.parse(event.body);
-  const { paymentId, checkoutId, items, currency } = requestBody;
+  const { paymentId, items, currency } = requestBody;
 
   console.log("Request body: ", requestBody);
 
@@ -34,21 +35,6 @@ export async function handler(event) {
       },
       body: JSON.stringify({
         message: "paymentId is required and must be a number.",
-      }),
-    };
-  }
-
-  if (!checkoutId || typeof checkoutId !== "string") {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
-        "Access-Control-Allow-Headers":
-          "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-      },
-      body: JSON.stringify({
-        message: "checkoutId is required and must be a string.",
       }),
     };
   }
@@ -117,7 +103,27 @@ export async function handler(event) {
       }),
     };
   }
+
+  //TODO: Deprecate itemPriceCurrency eventually?
+  const allCurrenciesMatch = items.every((item) => item.itemPriceCurrency.trim().toUpperCase() === currency.trim().toUpperCase());
+
+  if (!allCurrenciesMatch) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE",
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      },
+      body: JSON.stringify({
+        message: "All item currencies must match the currency specified in the request.",
+      }),
+    };
+  }
+  
+
   try {
+    const checkoutId = encodeURIComponent(uuidv4());
     const totalAmount = items
       .reduce((total, item) => {
         return total + parseFloat(item.itemPriceAmount) * item.itemQuantity;
@@ -156,7 +162,7 @@ export async function handler(event) {
         "Access-Control-Allow-Headers":
           "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
       },
-      body: JSON.stringify({ message: "Failed to save data" }),
+      body: JSON.stringify({ message: "Failed to parse and save checkout data" }),
     };
   }
 }

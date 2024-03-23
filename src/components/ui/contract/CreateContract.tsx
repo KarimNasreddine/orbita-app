@@ -44,6 +44,14 @@ const CreateContract: React.FC<Props> = ({
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState(false);
 
+  // const acceptedCurrencies = useMemo(() => {
+  //   if (payment) {
+  //     return payment.acceptedPaymentType?.map((c) => {
+  //       return { currency: c, selected: false }});
+  //   }
+  //   return [];
+  // }, [payment]);
+
   const toggleSelection = (currency: Currency) => {
     let newSelection: { currency: Currency; selected: boolean }[] = [];
 
