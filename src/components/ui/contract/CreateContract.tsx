@@ -117,6 +117,9 @@ const CreateContract: React.FC<Props> = ({
       console.log(checkoutPaymentId, id);
       throw new Error("Invalid payment data");
     }
+    if (paymentMode !== "business") {
+      throw new Error("Invalid payment data");
+    }
     if (!totalAmount || !totalAmountCurrency) {
       throw new Error("Invalid price data");
     }
@@ -214,8 +217,7 @@ const CreateContract: React.FC<Props> = ({
                 {`Subscription: Every ${recurringTimeFrameAmount} ${recurringTimeFrame}`}
               </p>
             )}
-            {((paymentMode === "business" && paymentType === "subscription") ||
-              (paymentMode === "basic" && paymentType === "safefi")) && (
+            {paymentMode === "business" && paymentType === "subscription" && (
               <p className="mb-2 whitespace-normal  break-words">
                 {`Leniency: ${paymentLeniency} days`}
               </p>
@@ -277,6 +279,10 @@ const CreateContract: React.FC<Props> = ({
     if (!id) {
       throw new Error("Unexpected Error. Invalid payment data");
     }
+    if (paymentMode !== "basic") {
+      throw new Error("Invalid payment data");
+    }
+
     let currency: PaymentCurrency;
     try {
       currency = (priceCurrency || priceCurrencyOnChain) as PaymentCurrency;
@@ -363,8 +369,7 @@ const CreateContract: React.FC<Props> = ({
               {`Subscription: Every ${recurringTimeFrameAmount} ${recurringTimeFrame}`}
             </p>
           )}
-          {((paymentMode === "business" && paymentType === "subscription") ||
-            (paymentMode === "basic" && paymentType === "safefi")) && (
+          {paymentMode === "basic" && paymentType === "safefi" && (
             <p className="mt-2 whitespace-normal  break-words">
               {`Leniency: ${paymentLeniency} days`}
             </p>
