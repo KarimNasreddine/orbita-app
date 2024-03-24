@@ -85,16 +85,16 @@ const ChatLayout: FC<ChatLayoutProps> = ({ dispute }) => {
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
 
   // Format timestamp to HH:mm
-  const formatTimestamp = (timestamp: number) => {
-    return format(timestamp, "HH:mm");
-  };
+  // const formatTimestamp = (timestamp: number) => {
+  //   return format(timestamp, "HH:mm");
+  // };
 
   // Fetch messages from Redis
   useEffect(() => {
     getChatMessages(chatId!).then((messages) => {
       setMessages(messages || []);
     });
-  }, []);
+  }, [chatId]);
 
   // Handler for incoming messages
   const messageHandler = (message: Message) => {
@@ -121,10 +121,10 @@ const ChatLayout: FC<ChatLayoutProps> = ({ dispute }) => {
       <div className="flex flex-col">
         {messages.map((message, index) => {
           const isCurrentUser = message.senderAddress === address;
-          const isClient = message.senderAddress === dispute.creator;
-          const hasNextMessageFromSameUser =
-            messages[index - 1]?.senderAddress ===
-            messages[index]?.senderAddress;
+          // const isClient = message.senderAddress === dispute.creator;
+          // const hasNextMessageFromSameUser =
+          //   messages[index - 1]?.senderAddress ===
+          //   messages[index]?.senderAddress;
 
           const trimmedMessage = message.text.replace(
             /^(Client: |Merchant: )/,

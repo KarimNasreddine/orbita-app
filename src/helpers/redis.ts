@@ -5,13 +5,13 @@ const authToken =
 // const uptashRedisRestUrl = process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_URL;
 // const authToken = process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN;
 
-type Command = "zrange" | "sismember" | "get" | "smembers";
+type Command = "zrange" | "sismember" | "get" | "smembers" | "del";
 
 export async function fetchRedis(
   command: Command,
   ...args: (string | number)[]
 ) {
-  console.log("fetchRedis", command, args);
+  // console.log("fetchRedis", command, args);
   const commandUrl = `${uptashRedisRestUrl}/${command}/${args.join("/")}`;
 
   console.log("commandUrl", commandUrl);

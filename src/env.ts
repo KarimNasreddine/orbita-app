@@ -32,6 +32,7 @@ export const env = {
   NEXT_PUBLIC_PUSHER_APP_KEY,
   PUSHER_APP_SECRET,
   NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+  OPENAI_API_KEY,
   safefiAddress,
   safefiPrivKey,
 };

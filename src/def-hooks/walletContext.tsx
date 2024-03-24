@@ -72,6 +72,9 @@ export default function WalletProvider({ children }: Props) {
       const [account] = (await client.signer?.getAccounts()) || [];
       const address = account?.address;
 
+      // Set wallet address in cookie
+      document.cookie = `walletAddress=${address}; path=/;`;
+
       setWalletConnectState("connecting");
       const wallet = await signArbitraryData(address);
       updateWallet(wallet);
@@ -108,11 +111,19 @@ export default function WalletProvider({ children }: Props) {
     wallet
       ? window.localStorage.setItem("wallet", JSON.stringify(wallet))
       : window.localStorage.removeItem("wallet");
+
+    // Set wallet address in cookie
+    document.cookie = `walletAddress=${wallet?.address}; path=/;`;
   };
 
   const signOut = () => {
     client.removeSigner();
     updateWallet(null);
+
+    // Remove wallet address from cookie
+    document.cookie =
+      "walletAddress=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
     setWalletConnectState("disconnected");
   };
 

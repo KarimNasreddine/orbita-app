@@ -3,14 +3,11 @@
 import { FC } from "react";
 import { Montserrat } from "next/font/google";
 import DisputeCard from "@/components/ui/card/DisputeCard";
-import DisputeCardMerchant from "@/components/ui/card/DisputeCardMerchant";
 import { DataTable } from "@/components/ui/table/DataTable";
 import { Dispute, columns } from "./(disputesTable)/columns";
-// import { data } from "./(disputesTable)/data";
 import { useAddressContext } from "@/def-hooks/addressContext";
 import { useClientDisputesInfo } from "@/def-hooks/useClientDisputesInfo";
 import { dateTransformer } from "@/utils/dateTransfromer";
-import { useMerchantDisputesInfo } from "@/def-hooks/useMerchantDisputesInfo";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -54,9 +51,21 @@ const Page: FC<pageProps> = ({}) => {
         <div className="flex gap-4">
           {disputesOpened.map((dispute) => {
             if (dispute.creator === address) {
-              return <DisputeCard key={dispute.disputeID} disputesOpened={dispute} account="client" />;
+              return (
+                <DisputeCard
+                  key={dispute.disputeID}
+                  disputesOpened={dispute}
+                  account="client"
+                />
+              );
             }
-            return <DisputeCard key={dispute.disputeID} disputesOpened={dispute} account="merchant" />;
+            return (
+              <DisputeCard
+                key={dispute.disputeID}
+                disputesOpened={dispute}
+                account="merchant"
+              />
+            );
           })}
         </div>
         <h2 className={`${montserrat.className} font-bold text-2xl`}>

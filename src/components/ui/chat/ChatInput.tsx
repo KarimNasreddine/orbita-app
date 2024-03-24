@@ -61,22 +61,53 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, dispute }) => {
   // Just replace the onClick function with callDisputeResolver() to test this feature
   const callDisputeResolver = async () => {
     try {
+      setInput("Loading...");
       const response = await axios.post("/api/ai/disputeResolver", {
         chatId,
       });
       console.log("response: ", response.data);
-      if (response.data === 0) {
-        console.log("Money will be refunded to the client");
-        setInput("Money will be refunded to the client");
-      } else if (response.data === 1) {
-        console.log("Money will be proceeded to the merchant");
-        setInput("Money will be proceeded to the merchant");
-      }
+
+      // Split the response into lines
+      const lines = response.data.split("\n");
+      // Update each line based on the last digit
+      const updatedLines = lines.map((line) => {
+        if (line.endsWith(": 0")) {
+          return line.replace(": 0", ": refund");
+        } else if (line.endsWith(": 1")) {
+          return line.replace(": 1", ": proceed");
+        }
+        return line;
+      });
+      // Join the updated lines back into a single string
+      const updatedResponse = updatedLines.join("\n");
+
+      // if (response.data === 0) {
+      //   console.log("Money will be refunded to the client");
+      //   setInput("Money will be refunded to the client");
+      // } else if (response.data === 1) {
+      //   console.log("Money will be proceeded to the merchant");
+      //   setInput("Money will be proceeded to the merchant");
+      // }
+
+      setInput(updatedResponse);
       toast.success("Decision sent successfully");
     } catch (error) {
       toast.error("Something went wrong. Please try again later.");
     }
   };
+
+  // const callDeleteRoute = async () => {
+  //   try {
+  //     await axios.post("/api/deleteProofFiles", {
+  //       disputeId: dispute.transactionID,
+  //       merchantAddress: dispute.merchant,
+  //       clientAddress: dispute.creator,
+  //     });
+  //     toast.success("Proof files deleted successfully");
+  //   } catch (error) {
+  //     toast.error("Something went wrong. Please try again later.");
+  //   }
+  // };
 
   return (
     <div className="sticky bottom-0 w-full">

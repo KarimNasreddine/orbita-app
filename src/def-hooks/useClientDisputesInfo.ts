@@ -11,6 +11,7 @@ import {
   DisputesInterface,
 } from "@/utils/interfaces";
 import { useContractsFromAccountAddress } from "./useContractsFromAccountAddress";
+import isEqual from "lodash/isEqual";
 
 export const useClientDisputesInfo = () => {
   const { address } = useAddressContext();
@@ -43,27 +44,11 @@ export const useClientDisputesInfo = () => {
   */
 
   const [disputesOpened, setDisputesOpened] = useState<
-    {
-      creator: string | undefined;
-      merchant: string | undefined;
-      contractName: string | undefined;
-      transactionID: string | undefined;
-      amount: string | undefined;
-      initiatedDate: string | undefined;
-      daysLeft: string | undefined;
-      disputeID: string | undefined;
-    }[]
+    DisputesInterface["opened"]
   >([]);
 
   const [disputesResolved, setDisputesResolved] = useState<
-    {
-      creator: string | undefined;
-      contractName: string | undefined;
-      transactionID: string | undefined;
-      amount: string | undefined;
-      resolvedDate: string | undefined;
-      Verdict: string | undefined;
-    }[]
+    DisputesInterface["resolved"]
   >([]);
 
   const { disputes: disputesRaw } = useDisputes();
@@ -84,8 +69,8 @@ export const useClientDisputesInfo = () => {
     0
   );
 
-  console.log("contractsClientRaw:", contractsClientRaw);
-  console.log("contractsMerchantRaw:", contractsMerchantRaw);
+  // console.log("contractsClientRaw:", contractsClientRaw);
+  // console.log("contractsMerchantRaw:", contractsMerchantRaw);
 
   useEffect(() => {
     const dispute = disputesRaw.disputeAllData?.pages[0]?.Dispute;
@@ -94,12 +79,12 @@ export const useClientDisputesInfo = () => {
       return dispute?.some((c) => c.merchant === address);
     };
 
-    console.log("isMerchant:", isMerchant(address));
+    // console.log("isMerchant:", isMerchant(address));
 
     let contract: Record<string, OrbitapayPayment> | undefined = {};
 
     if (isMerchant(address)) {
-      console.log("dispute:", dispute);
+      // console.log("dispute:", dispute);
       // console.log("paymentsRaw:", paymentsRaw);
       // loop through the disputes and return the contract associated with each dispute in a map where the key is the dispute ID
       contract = dispute?.reduce((acc, d) => {
@@ -127,8 +112,8 @@ export const useClientDisputesInfo = () => {
         return acc;
       }, {} as Record<string, OrbitapayPayment>);
 
-      console.log("dispute:", dispute);
-      console.log("contract:", contract);
+      // console.log("dispute:", dispute);
+      // console.log("contract:", contract);
     }
 
     const disputeWithContract: DisputeWithContract[] = (dispute || []).map(
@@ -198,8 +183,8 @@ export const useClientDisputesInfo = () => {
     // disputesResolved.current = disputesAll.resolved;
 
     if (
-      JSON.stringify(disputesOpened) !== JSON.stringify(disputesAll.opened) ||
-      JSON.stringify(disputesResolved) !== JSON.stringify(disputesAll.resolved)
+      !isEqual(disputesOpened, disputesAll.opened) ||
+      !isEqual(disputesResolved, disputesAll.resolved)
     ) {
       setDisputesOpened(disputesAll.opened);
       setDisputesResolved(disputesAll.resolved);

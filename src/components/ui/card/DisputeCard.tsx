@@ -6,6 +6,7 @@ import { Amount } from "@/utils/interfaces";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { FC } from "react";
+import { useRouter } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -28,6 +29,12 @@ const DisputeCard: FC<DisputeCardProps> = ({ disputesOpened, account }) => {
   const client = useClient();
   const sendMsgUpdateDispute = client.OrbitaPay.tx.sendMsgUpdateDispute;
 
+  const router = useRouter();
+
+  const refreshPage = () => {
+    router.refresh();
+  };
+
   const handleClick = async () => {
     const fee: Amount[] = [
       {
@@ -38,44 +45,50 @@ const DisputeCard: FC<DisputeCardProps> = ({ disputesOpened, account }) => {
 
     const memo = "";
 
-    if (account === "merchant") {
-      // refund to client
-      let payload: any = {
-        creator: address, // the merchant address
-        id: disputesOpened.disputeID,
-        verdict: "client",
-      };
+    try {
+      if (account === "merchant") {
+        // refund to client
+        const payload: any = {
+          creator: address, // the merchant address
+          id: disputesOpened.disputeID,
+          verdict: "client",
+        };
 
-      let send = () =>
-        sendMsgUpdateDispute({
-          value: payload,
-          fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
-          memo,
-        });
+        const send = () =>
+          sendMsgUpdateDispute({
+            value: payload,
+            fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+            memo,
+          });
 
-      const txResult = await send();
-      if (txResult.code !== 0) {
-        throw new Error();
+        const txResult = await send();
+        if (txResult.code !== 0) {
+          throw new Error();
+        }
+        refreshPage();
+      } else if (account === "client") {
+        // cancel dispute
+        const sendMsgCancelDispute = client.OrbitaPay.tx.sendMsgCancelDispute;
+
+        const payload: any = {
+          creator: address, // the client address
+          id: Number(disputesOpened.disputeID),
+        };
+
+        const send = () =>
+          sendMsgCancelDispute({
+            value: payload,
+            fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+            memo,
+          });
+        const txResult = await send();
+        if (txResult.code !== 0) {
+          throw new Error();
+        }
+        refreshPage();
       }
-    } else if (account === "client") {
-      // cancel dispute
-      const sendMsgCancelDispute = client.OrbitaPay.tx.sendMsgCancelDispute;
-
-      let payload: any = {
-        creator: address, // the client address
-        id: Number(disputesOpened.disputeID),
-      };
-
-      let send = () =>
-        sendMsgCancelDispute({
-          value: payload,
-          fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
-          memo,
-        });
-      const txResult = await send();
-      if (txResult.code !== 0) {
-        throw new Error();
-      }
+    } catch (error) {
+      console.error("Transaction error:", error);
     }
   };
 

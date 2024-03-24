@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Montserrat } from "next/font/google";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
@@ -15,6 +15,7 @@ import { useClient } from "@/hooks/useClient";
 import { Amount } from "@/utils/interfaces";
 import MerchantProof from "@/components/ui/uploadProofDispute/MerchantProof";
 import ClientProof from "@/components/ui/uploadProofDispute/ClientProof";
+import { db } from "@/lib/db";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
@@ -31,13 +32,9 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
   const { disputesOpened } = useClientDisputesInfo();
   const igniteClient = useClient();
 
-  console.log("disputeId:", disputeId);
+  // console.log("disputeId:", disputeId);
 
   const [transactionID, merchant, client] = disputeId.split("--");
-
-  if (merchant !== address && client !== address) {
-    return notFound();
-  }
 
   const dispute = disputesOpened.find(
     (dispute) =>
@@ -45,6 +42,33 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
       dispute.merchant === merchant &&
       dispute.creator === client
   );
+
+  // This useEffect is used to send the dispute details to Upstash Redis for AI to process
+  useEffect(() => {
+    if (!dispute) {
+      return;
+    }
+    const today = new Date();
+    const daysLeft = Number(dispute.daysLeft);
+    console.log("daysLeft:", daysLeft);
+    const expiryDate = new Date(today.setDate(today.getDate() + daysLeft))
+      .toISOString()
+      .split("T")[0];
+
+    const sendDisputeToUpstashRedis = async () => {
+      await db.hset(`dispute:${transactionID}`, {
+        merchantAddress: merchant,
+        clientAddress: client,
+        expiryDate: expiryDate,
+      });
+    };
+
+    sendDisputeToUpstashRedis();
+  });
+
+  if (merchant !== address && client !== address) {
+    return notFound();
+  }
 
   const account = merchant === address ? "merchant" : "client";
 
@@ -61,45 +85,45 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
     const sendMsgUpdateDispute = igniteClient.OrbitaPay.tx.sendMsgUpdateDispute;
     const sendMsgCancelDispute = igniteClient.OrbitaPay.tx.sendMsgCancelDispute;
 
-    if (account === "merchant") {
-      // refund to client
-      let payload: any = {
-        creator: address, // the merchant address
-        id: dispute?.disputeID,
-        verdict: "client",
-      };
+    try {
+      if (account === "merchant") {
+        // refund to client
+        const payload: any = {
+          creator: address, // the merchant address
+          id: dispute?.disputeID,
+          verdict: "client",
+        };
 
-      let send = () =>
-        sendMsgUpdateDispute({
-          value: payload,
-          fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
-          memo,
-        });
+        const send = () =>
+          sendMsgUpdateDispute({
+            value: payload,
+            fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+            memo,
+          });
 
-      const txResult = await send();
-      if (txResult.code !== 0) {
-        throw new Error();
+        const txResult = await send();
+        if (txResult.code !== 0) {
+          throw new Error();
+        }
+      } else if (account === "client") {
+        const payload: any = {
+          creator: address, // the client address
+          id: Number(dispute?.disputeID),
+        };
+
+        const send = () =>
+          sendMsgCancelDispute({
+            value: payload,
+            fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
+            memo,
+          });
+        const txResult = await send();
+        if (txResult.code !== 0) {
+          throw new Error();
+        }
       }
-    } else if (account === "client") {
-      // cancel dispute
-      const sendMsgCancelDispute =
-        igniteClient.OrbitaPay.tx.sendMsgCancelDispute;
-
-      let payload: any = {
-        creator: address, // the client address
-        id: Number(dispute?.disputeID),
-      };
-
-      let send = () =>
-        sendMsgCancelDispute({
-          value: payload,
-          fee: { amount: fee as Readonly<Amount[]>, gas: "200000" },
-          memo,
-        });
-      const txResult = await send();
-      if (txResult.code !== 0) {
-        throw new Error();
-      }
+    } catch (error) {
+      console.error("Transaction error:", error);
     }
   };
 
@@ -147,7 +171,11 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
         </div>
         {dispute?.transactionID && <ChatLayout dispute={dispute} />}
       </div>
-      {account === "merchant" ? <MerchantProof /> : <ClientProof />}
+      {account === "merchant" ? (
+        <MerchantProof disputeId={disputeId} />
+      ) : (
+        <ClientProof disputeId={disputeId} />
+      )}
     </div>
   );
 };
