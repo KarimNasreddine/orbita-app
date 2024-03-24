@@ -1,4 +1,4 @@
-import { OrbitapayDispute } from "../../ts-client/orbita.pay/rest";
+import { OrbitapayDispute } from "ts-client/orbita.pay/rest";
 
 export interface Account {
   address: string;

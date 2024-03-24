@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { useAddressContext } from "./addressContext";
 import { useDisputes } from "./useDisputes";
 import { useContracts } from "./useContracts";
-import { useContractsFromPaymentId } from "./useContractsFromPaymentId";
-import { usePayments } from "./usePayments";
-import { OrbitapayPayment } from "../../ts-client/orbita.pay/rest";
+import { OrbitapayPayment } from "ts-client/orbita.pay/rest";
 import {
   Contract,
   DisputeWithContract,

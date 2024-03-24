@@ -50,6 +50,7 @@
     "react-textarea-autosize": "^8.5.3",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
+    "ts-client": "file:./ts-client",
     "zod": "^3.22.4"
   },
   "devDependencies": {

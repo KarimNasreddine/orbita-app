@@ -1,4 +1,4 @@
-import { Client } from "../../ts-client";
+import { Client } from "ts-client";
 import { env } from "../env";
 
 // Singleton

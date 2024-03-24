@@ -2,7 +2,7 @@ import useOrbitaPay from "../hooks/useOrbitaPay";
 import { fromBech32 } from "@cosmjs/encoding";
 import { StdFee } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
-import { MsgCreateContract } from "../../ts-client/orbita.pay/module";
+import { MsgCreateContract } from "ts-client/orbita.pay/module";
 import { useAddressContext } from "./addressContext";
 import { CreateContract } from "@/types/contract";
 import { isValidCurrency, isValidPaymentCurrency } from "@/types/currency";

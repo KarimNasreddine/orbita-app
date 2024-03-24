@@ -6,7 +6,7 @@ import {
   type UseInfiniteQueryOptions,
 } from "@tanstack/react-query";
 import { useClient } from "../useClient";
-import { MsgCreateContract, MsgCreatePayment } from "../../../ts-client/orbita.pay/module";
+import { MsgCreateContract, MsgCreatePayment } from "ts-client/orbita.pay/module";
 import { StdFee } from "@keplr-wallet/types";
 
 export default function useOrbitaPay() {
