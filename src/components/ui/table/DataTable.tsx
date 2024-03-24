@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button/Button";
 
 import { Montserrat } from "next/font/google";
-import { Dispute } from "@/app/(dashboard)/dashboard/safefi-disputes/(disputesTable)/columns";
+import { Dispute } from "@/app/(app)/safefi-disputes/(disputesTable)/columns";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 

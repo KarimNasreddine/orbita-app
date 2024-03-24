@@ -4,7 +4,7 @@ import { useState } from "react";
 import StepIndicator from "@/components/ui/stepIndicator/StepIndicator";
 import CreateStepOne from "./CreateStepOne";
 
-import { PaymentType, PaymentMode } from "../../../../types/payment";
+import { PaymentType, PaymentMode } from "../../../types/payment";
 import CreateStepTwo from "./CreateStepTwo";
 import CreateStepThree from "./CreateStepThree";
 

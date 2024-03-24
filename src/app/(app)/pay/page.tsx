@@ -75,7 +75,7 @@ const Page = async ({
   const getCheckoutData = async (checkoutId: string): Promise<CheckoutData> => {
     "use server";
     const response = await fetch(
-      `${process.env.URL}/api/checkout/${checkoutId}`,
+      `${process.env.NEXTAUTH_URL}/api/checkout/${checkoutId}`,
       { cache: "no-store" }
     );
     if (!response.ok) {

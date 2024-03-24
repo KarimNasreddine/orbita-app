@@ -3,6 +3,7 @@ import CurrencyLogo from "../currency/CurrencyLogo";
 import { useCreatePaymentContext } from "@/def-hooks/createPaymentContext";
 import { useMemo, useState } from "react";
 import Spinner from "../spinner/Spinner";
+import { formatPaymentPrice } from "@/types/currency";
 
 const PaymentPreview: React.FC = () => {
   const payment = useCreatePaymentContext();
@@ -86,7 +87,7 @@ const PaymentPreview: React.FC = () => {
             }`}</h1>
 
             <p className="whitespace-normal break-words text-orbita-iris text-lg font-bold">
-              {`${paymentAmount} ${paymentCurrency}`}
+              {`${formatPaymentPrice(paymentAmount, paymentCurrency)}`}
             </p>
           </div>
         )}

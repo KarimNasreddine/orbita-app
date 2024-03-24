@@ -28,7 +28,7 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, dispute }) => {
   const router = useRouter();
 
   const handleRefresh = () => {
-    router.push("/dashboard/safefi-disputes");
+    router.push("/safefi-disputes");
   };
 
   let userRole: "Client" | "Merchant" | undefined;

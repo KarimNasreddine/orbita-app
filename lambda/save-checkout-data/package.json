@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf orbita-save-checkout-data.zip && zip -r orbita-save-checkout-data.zip . -x *.git*",
-    "deploy": "aws lambda update-function-code --function-name orbita-save-checkout-data --zip-file fileb://orbita-save-checkout-data.zip --profile orbita"
+    "deploy": "aws lambda update-function-code --function-name orbita-save-checkout-data --zip-file fileb://orbita-save-checkout-data.zip --profile safefi-orbita"
   },
   "author": "",
   "license": "ISC",

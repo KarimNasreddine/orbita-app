@@ -78,7 +78,7 @@ const PaymentAmountInput = () => {
     <div className={`grid grid-rows-${paymentType === "direct" ? "1" : "2"}`}>
       <div
         className={`grid grid-cols-${
-          mode === "basic" ? "[2fr,1fr]" : "1"
+          mode === "basic" ? "2" : "1"
         } items-end gap-2`}
       >
         <div>

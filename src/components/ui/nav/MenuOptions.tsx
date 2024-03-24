@@ -9,17 +9,21 @@ import ConnectWalletButton from "../button/ConnectWalletButton";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
-const menuItems = [
-  { name: "Create", href: "/dashboard/create" },
-  { name: "Manage", href: "/dashboard/manage" },
-  { name: "Manual Pay", href: "/dashboard/manual-pay" },
-  { name: "Holdings", href: "/dashboard/holdings" },
-  { name: "Airdrop", href: "/dashboard/airdrop" },
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Orbita Alerts", href: "/dashboard/orbita-alerts" },
-  { name: "SafeFi Disputes", href: "/dashboard/safefi-disputes" },
-  { name: "Ecosystem", href: "/dashboard/ecosystem" },
+const menuItems1 = [
+  { name: "Create", href: "/create" },
+  { name: "Manage", href: "/manage" },
+  { name: "Manual Pay", href: "/manual-pay" },
+  { name: "Holdings", href: "/holdings" },
+  { name: "Airdrop", href: "/airdrop" },
 ];
+
+const menuItems2 = [
+  { name: "Dashboard", href: "/" },
+  { name: "Orbita Alerts", href: `${process.env.alertAppURL}` },
+  { name: "SafeFi Disputes", href: "/safefi-disputes" },
+];
+
+const menuItems3 = [{ name: "Ecosystem", href: "/ecosystem" }];
 
 const MenuOptions: React.FC = () => {
   const [selected, setSelected] = useState("");
@@ -28,7 +32,7 @@ const MenuOptions: React.FC = () => {
   useEffect(() => {
     // Sort menuItems by href length in descending order and find the selected item
     const selectedItem =
-      [...menuItems]
+      [...menuItems1, ...menuItems2, ...menuItems3]
         .sort((a, b) => b.href.length - a.href.length)
         .find((item) => pathname.startsWith(item.href))?.name || "";
     setSelected(selectedItem);
@@ -42,73 +46,40 @@ const MenuOptions: React.FC = () => {
     <div className={`w-full max-w-[80%] ${spaceGrotesk.className} text-md`}>
       <ConnectWalletButton />
       <div className={`flex flex-col gap-3 mb-10 mt-5`}>
-        <MenuOption
-          href="/dashboard/create"
-          onClick={() => handleButtonClick("Create")}
-          isSelected={selected === "Create"}
-        >
-          Create
-        </MenuOption>
-        <MenuOption
-          href="/dashboard/manage"
-          onClick={() => handleButtonClick("Manage")}
-          isSelected={selected === "Manage"}
-        >
-          Manage
-        </MenuOption>
-        <MenuOption
-          href="/dashboard/manual-pay"
-          onClick={() => handleButtonClick("Manual Pay")}
-          isSelected={selected === "Manual Pay"}
-        >
-          Manual Pay
-        </MenuOption>
-        <MenuOption
-          href="/dashboard/holdings"
-          onClick={() => handleButtonClick("Holdings")}
-          isSelected={selected === "Holdings"}
-        >
-          Holdings
-        </MenuOption>
-        <MenuOption
-          href="/dashboard/airdrop"
-          onClick={() => handleButtonClick("Airdrop")}
-          isSelected={selected === "Airdrop"}
-        >
-          Airdrop
-        </MenuOption>
+        {menuItems1.map((item) => (
+          <MenuOption
+            key={item.name}
+            href={item.href}
+            onClick={() => handleButtonClick(item.name)}
+            isSelected={selected === item.name}
+          >
+            {item.name}
+          </MenuOption>
+        ))}
       </div>
       <div className={`flex flex-col gap-3 mb-10`}>
-        <MenuOption
-          href="/dashboard"
-          onClick={() => handleButtonClick("Dashboard")}
-          isSelected={selected === "Dashboard"}
-        >
-          Dashboard
-        </MenuOption>
-        <MenuOption
-          href="/dashboard/orbita-alerts"
-          onClick={() => handleButtonClick("Orbita Alerts")}
-          isSelected={selected === "Orbita Alerts"}
-        >
-          Orbita Alerts
-        </MenuOption>
-        <MenuOption
-          href="/dashboard/safefi-disputes"
-          onClick={() => handleButtonClick("SafeFi Disputes")}
-          isSelected={selected === "SafeFi Disputes"}
-        >
-          SafeFi Disputes
-        </MenuOption>
+        {menuItems2.map((item) => (
+          <MenuOption
+            key={item.name}
+            href={item.href}
+            onClick={() => handleButtonClick(item.name)}
+            isSelected={selected === item.name}
+          >
+            {item.name}
+          </MenuOption>
+        ))}
       </div>
       <div className={`flex flex-col gap-3`}>
-        <MenuOption
-          href="/dashboard/ecosystem"
-          onClick={() => handleButtonClick("Ecosystem")}
-          isSelected={selected === "Ecosystem"}
-        >
-          Ecosystem
-        </MenuOption>
+        {menuItems3.map((item) => (
+          <MenuOption
+            key={item.name}
+            href={item.href}
+            onClick={() => handleButtonClick(item.name)}
+            isSelected={selected === item.name}
+          >
+            {item.name}
+          </MenuOption>
+        ))}
       </div>
     </div>
   );

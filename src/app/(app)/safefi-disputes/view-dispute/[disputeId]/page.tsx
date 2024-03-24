@@ -36,7 +36,7 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
   const router = useRouter();
 
   const handleRefresh = () => {
-    router.push("/dashboard/safefi-disputes");
+    router.push("/safefi-disputes");
   };
 
   // console.log("disputeId:", disputeId);
@@ -143,7 +143,7 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
           <div>
             <div className="flex">
               <Link
-                href="/dashboard/safefi-disputes"
+                href="/safefi-disputes"
                 className="-ml-3 hover:transition-all hover:scale-105 hover:duration-150"
               >
                 <X size={54} strokeWidth={2} color="#b2b2b2" />

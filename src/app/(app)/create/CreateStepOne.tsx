@@ -1,5 +1,5 @@
 import CTACard from "@/components/ui/card/CTACard";
-import { PaymentMode } from "../../../../types/payment";
+import { PaymentMode } from "../../../types/payment";
 
 type Props = {
   handleModeSelection: (mode: PaymentMode) => void;

@@ -108,7 +108,7 @@ const DisputeCard: FC<DisputeCardProps> = ({ disputesOpened, account }) => {
       </h3>
       <h4 className="font-bold text-lg">{disputesOpened.amount}</h4>
       <Link
-        href={`/dashboard/safefi-disputes/view-dispute/${chatHrefConstructor(
+        href={`/safefi-disputes/view-dispute/${chatHrefConstructor(
           disputesOpened.transactionID!,
           disputesOpened.merchant!,
           disputesOpened.creator!
