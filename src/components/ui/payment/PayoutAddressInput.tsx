@@ -1,7 +1,7 @@
 import {
   useCreatePaymentContext,
   useCreatePaymentDispatchContext,
-} from "@/def-hooks/createPaymentContext";
+} from "@/def-hooks/CreatePaymentContext";
 
 const PayoutAddressInput = () => {
   const { paymentAddress } = useCreatePaymentContext();

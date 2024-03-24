@@ -1,6 +1,6 @@
 import { useCreatePayment } from "@/def-hooks/useCreatePayment";
 import CurrencyLogo from "../currency/CurrencyLogo";
-import { useCreatePaymentContext } from "@/def-hooks/createPaymentContext";
+import { useCreatePaymentContext } from "@/def-hooks/CreatePaymentContext";
 import { useMemo, useState } from "react";
 import Spinner from "../spinner/Spinner";
 import { formatPaymentPrice } from "@/types/currency";
@@ -48,7 +48,6 @@ const PaymentPreview: React.FC = () => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="rounded-xl border text-black bg-white min-h-[40rem] grid grid-rows-[1fr,auto,auto,1fr,auto] gap-4 p-6">

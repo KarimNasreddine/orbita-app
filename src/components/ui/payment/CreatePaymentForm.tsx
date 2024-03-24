@@ -1,8 +1,9 @@
-import { useCreatePaymentContext } from "../../../def-hooks/createPaymentContext";
 import AcceptedCurrencyInput from "./AcceptedCurrencyInput";
 import PaymentNameInput from "./PaymentNameInput";
 import PaymentAmountInput from "./PaymentAmountInput";
 import PayoutAddressInput from "./PayoutAddressInput";
+import { useCreatePaymentContext } from "@/def-hooks/CreatePaymentContext";
+
 
 const CreatePaymentForm: React.FC = () => {
   const { paymentType, mode } = useCreatePaymentContext();

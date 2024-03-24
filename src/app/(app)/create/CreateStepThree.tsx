@@ -1,5 +1,5 @@
 import CreatePaymentForm from "@/components/ui/payment/CreatePaymentForm";
-import CreatePaymentProvider from "@/def-hooks/createPaymentContext";
+import CreatePaymentProvider from "@/def-hooks/CreatePaymentContext";
 import PaymentPreview from "@/components/ui/payment/PaymentPreview";
 import { PaymentMode, PaymentType } from "@/types/payment";
 
