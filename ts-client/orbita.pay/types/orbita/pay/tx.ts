@@ -89,8 +89,7 @@ export interface MsgCancelDispute {
   id: number;
 }
 
-export interface MsgCancelDisputeResponse {
-}
+export interface MsgCancelDisputeResponse {}
 
 function createBaseMsgCreatePayment(): MsgCreatePayment {
   return {
@@ -112,7 +111,10 @@ function createBaseMsgCreatePayment(): MsgCreatePayment {
 }
 
 export const MsgCreatePayment = {
-  encode(message: MsgCreatePayment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreatePayment,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -153,7 +155,7 @@ export const MsgCreatePayment = {
       writer.uint32(104).uint32(message.safetyPeriod);
     }
     if (message.id !== 0) {
-      writer.uint32(112).uint64(message.id);
+      writer.uint32(112).uint64(message.id || 0);
     }
     return writer;
   },
@@ -187,7 +189,9 @@ export const MsgCreatePayment = {
           message.recurringTimeFrame = reader.string();
           break;
         case 8:
-          message.recurringTimeFrameAmount = longToNumber(reader.uint64() as Long);
+          message.recurringTimeFrameAmount = longToNumber(
+            reader.uint64() as Long
+          );
           break;
         case 9:
           message.merchantPayoutAddress = reader.string();
@@ -218,18 +222,34 @@ export const MsgCreatePayment = {
   fromJSON(object: any): MsgCreatePayment {
     return {
       creator: isSet(object.creator) ? String(object.creator) : "",
-      subscriptionType: isSet(object.subscriptionType) ? String(object.subscriptionType) : "",
-      acceptedPaymentType: isSet(object.acceptedPaymentType) ? String(object.acceptedPaymentType) : "",
+      subscriptionType: isSet(object.subscriptionType)
+        ? String(object.subscriptionType)
+        : "",
+      acceptedPaymentType: isSet(object.acceptedPaymentType)
+        ? String(object.acceptedPaymentType)
+        : "",
       name: isSet(object.name) ? String(object.name) : "",
       priceAmount: isSet(object.priceAmount) ? String(object.priceAmount) : "",
-      priceCurrency: isSet(object.priceCurrency) ? String(object.priceCurrency) : "",
-      recurringTimeFrame: isSet(object.recurringTimeFrame) ? String(object.recurringTimeFrame) : "",
-      recurringTimeFrameAmount: isSet(object.recurringTimeFrameAmount) ? Number(object.recurringTimeFrameAmount) : 0,
-      merchantPayoutAddress: isSet(object.merchantPayoutAddress) ? String(object.merchantPayoutAddress) : "",
-      paymentLeniency: isSet(object.paymentLeniency) ? Number(object.paymentLeniency) : 0,
+      priceCurrency: isSet(object.priceCurrency)
+        ? String(object.priceCurrency)
+        : "",
+      recurringTimeFrame: isSet(object.recurringTimeFrame)
+        ? String(object.recurringTimeFrame)
+        : "",
+      recurringTimeFrameAmount: isSet(object.recurringTimeFrameAmount)
+        ? Number(object.recurringTimeFrameAmount)
+        : 0,
+      merchantPayoutAddress: isSet(object.merchantPayoutAddress)
+        ? String(object.merchantPayoutAddress)
+        : "",
+      paymentLeniency: isSet(object.paymentLeniency)
+        ? Number(object.paymentLeniency)
+        : 0,
       paymentMode: isSet(object.paymentMode) ? String(object.paymentMode) : "",
       paymentType: isSet(object.paymentType) ? String(object.paymentType) : "",
-      safetyPeriod: isSet(object.safetyPeriod) ? Number(object.safetyPeriod) : 0,
+      safetyPeriod: isSet(object.safetyPeriod)
+        ? Number(object.safetyPeriod)
+        : 0,
       id: isSet(object.id) ? Number(object.id) : 0,
     };
   },
@@ -237,24 +257,38 @@ export const MsgCreatePayment = {
   toJSON(message: MsgCreatePayment): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.subscriptionType !== undefined && (obj.subscriptionType = message.subscriptionType);
-    message.acceptedPaymentType !== undefined && (obj.acceptedPaymentType = message.acceptedPaymentType);
+    message.subscriptionType !== undefined &&
+      (obj.subscriptionType = message.subscriptionType);
+    message.acceptedPaymentType !== undefined &&
+      (obj.acceptedPaymentType = message.acceptedPaymentType);
     message.name !== undefined && (obj.name = message.name);
-    message.priceAmount !== undefined && (obj.priceAmount = message.priceAmount);
-    message.priceCurrency !== undefined && (obj.priceCurrency = message.priceCurrency);
-    message.recurringTimeFrame !== undefined && (obj.recurringTimeFrame = message.recurringTimeFrame);
-    message.recurringTimeFrameAmount !== undefined
-      && (obj.recurringTimeFrameAmount = Math.round(message.recurringTimeFrameAmount));
-    message.merchantPayoutAddress !== undefined && (obj.merchantPayoutAddress = message.merchantPayoutAddress);
-    message.paymentLeniency !== undefined && (obj.paymentLeniency = Math.round(message.paymentLeniency));
-    message.paymentMode !== undefined && (obj.paymentMode = message.paymentMode);
-    message.paymentType !== undefined && (obj.paymentType = message.paymentType);
-    message.safetyPeriod !== undefined && (obj.safetyPeriod = Math.round(message.safetyPeriod));
+    message.priceAmount !== undefined &&
+      (obj.priceAmount = message.priceAmount);
+    message.priceCurrency !== undefined &&
+      (obj.priceCurrency = message.priceCurrency);
+    message.recurringTimeFrame !== undefined &&
+      (obj.recurringTimeFrame = message.recurringTimeFrame);
+    message.recurringTimeFrameAmount !== undefined &&
+      (obj.recurringTimeFrameAmount = Math.round(
+        message.recurringTimeFrameAmount
+      ));
+    message.merchantPayoutAddress !== undefined &&
+      (obj.merchantPayoutAddress = message.merchantPayoutAddress);
+    message.paymentLeniency !== undefined &&
+      (obj.paymentLeniency = Math.round(message.paymentLeniency));
+    message.paymentMode !== undefined &&
+      (obj.paymentMode = message.paymentMode);
+    message.paymentType !== undefined &&
+      (obj.paymentType = message.paymentType);
+    message.safetyPeriod !== undefined &&
+      (obj.safetyPeriod = Math.round(message.safetyPeriod));
     message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreatePayment>, I>>(object: I): MsgCreatePayment {
+  fromPartial<I extends Exact<DeepPartial<MsgCreatePayment>, I>>(
+    object: I
+  ): MsgCreatePayment {
     const message = createBaseMsgCreatePayment();
     message.creator = object.creator ?? "";
     message.subscriptionType = object.subscriptionType ?? "";
@@ -279,14 +313,20 @@ function createBaseMsgCreatePaymentResponse(): MsgCreatePaymentResponse {
 }
 
 export const MsgCreatePaymentResponse = {
-  encode(message: MsgCreatePaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreatePaymentResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePaymentResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreatePaymentResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreatePaymentResponse();
@@ -314,7 +354,9 @@ export const MsgCreatePaymentResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreatePaymentResponse>, I>>(object: I): MsgCreatePaymentResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCreatePaymentResponse>, I>>(
+    object: I
+  ): MsgCreatePaymentResponse {
     const message = createBaseMsgCreatePaymentResponse();
     message.id = object.id ?? 0;
     return message;
@@ -335,9 +377,12 @@ function createBaseMsgCreateContract(): MsgCreateContract {
 }
 
 export const MsgCreateContract = {
-  encode(message: MsgCreateContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreateContract,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
-      writer.uint32(8).uint64(message.id);
+      writer.uint32(8).uint64(message.id || 0);
     }
     if (message.creator !== "") {
       writer.uint32(18).string(message.creator);
@@ -352,7 +397,7 @@ export const MsgCreateContract = {
       writer.uint32(42).string(message.payWithCurrency);
     }
     if (message.paymentLeniencyCounter !== 0) {
-      writer.uint32(48).uint32(message.paymentLeniencyCounter);
+      writer.uint32(48).uint32(message.paymentLeniencyCounter || 0);
     }
     if (message.totalAmount !== "") {
       writer.uint32(58).string(message.totalAmount);
@@ -407,11 +452,19 @@ export const MsgCreateContract = {
       id: isSet(object.id) ? Number(object.id) : 0,
       creator: isSet(object.creator) ? String(object.creator) : "",
       paymentID: isSet(object.paymentID) ? Number(object.paymentID) : 0,
-      clientWalletAddress: isSet(object.clientWalletAddress) ? String(object.clientWalletAddress) : "",
-      payWithCurrency: isSet(object.payWithCurrency) ? String(object.payWithCurrency) : "",
-      paymentLeniencyCounter: isSet(object.paymentLeniencyCounter) ? Number(object.paymentLeniencyCounter) : 0,
+      clientWalletAddress: isSet(object.clientWalletAddress)
+        ? String(object.clientWalletAddress)
+        : "",
+      payWithCurrency: isSet(object.payWithCurrency)
+        ? String(object.payWithCurrency)
+        : "",
+      paymentLeniencyCounter: isSet(object.paymentLeniencyCounter)
+        ? Number(object.paymentLeniencyCounter)
+        : 0,
       totalAmount: isSet(object.totalAmount) ? String(object.totalAmount) : "",
-      totalAmountCurrency: isSet(object.totalAmountCurrency) ? String(object.totalAmountCurrency) : "",
+      totalAmountCurrency: isSet(object.totalAmountCurrency)
+        ? String(object.totalAmountCurrency)
+        : "",
     };
   },
 
@@ -419,17 +472,24 @@ export const MsgCreateContract = {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.creator !== undefined && (obj.creator = message.creator);
-    message.paymentID !== undefined && (obj.paymentID = Math.round(message.paymentID));
-    message.clientWalletAddress !== undefined && (obj.clientWalletAddress = message.clientWalletAddress);
-    message.payWithCurrency !== undefined && (obj.payWithCurrency = message.payWithCurrency);
-    message.paymentLeniencyCounter !== undefined
-      && (obj.paymentLeniencyCounter = Math.round(message.paymentLeniencyCounter));
-    message.totalAmount !== undefined && (obj.totalAmount = message.totalAmount);
-    message.totalAmountCurrency !== undefined && (obj.totalAmountCurrency = message.totalAmountCurrency);
+    message.paymentID !== undefined &&
+      (obj.paymentID = Math.round(message.paymentID));
+    message.clientWalletAddress !== undefined &&
+      (obj.clientWalletAddress = message.clientWalletAddress);
+    message.payWithCurrency !== undefined &&
+      (obj.payWithCurrency = message.payWithCurrency);
+    message.paymentLeniencyCounter !== undefined &&
+      (obj.paymentLeniencyCounter = Math.round(message.paymentLeniencyCounter));
+    message.totalAmount !== undefined &&
+      (obj.totalAmount = message.totalAmount);
+    message.totalAmountCurrency !== undefined &&
+      (obj.totalAmountCurrency = message.totalAmountCurrency);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateContract>, I>>(object: I): MsgCreateContract {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateContract>, I>>(
+    object: I
+  ): MsgCreateContract {
     const message = createBaseMsgCreateContract();
     message.id = object.id ?? 0;
     message.creator = object.creator ?? "";
@@ -448,14 +508,20 @@ function createBaseMsgCreateContractResponse(): MsgCreateContractResponse {
 }
 
 export const MsgCreateContractResponse = {
-  encode(message: MsgCreateContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreateContractResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateContractResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateContractResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateContractResponse();
@@ -483,7 +549,9 @@ export const MsgCreateContractResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateContractResponse>, I>>(object: I): MsgCreateContractResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateContractResponse>, I>>(
+    object: I
+  ): MsgCreateContractResponse {
     const message = createBaseMsgCreateContractResponse();
     message.id = object.id ?? 0;
     return message;
@@ -495,7 +563,10 @@ function createBaseMsgCreateSubscriptionPayment(): MsgCreateSubscriptionPayment 
 }
 
 export const MsgCreateSubscriptionPayment = {
-  encode(message: MsgCreateSubscriptionPayment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreateSubscriptionPayment,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -503,7 +574,10 @@ export const MsgCreateSubscriptionPayment = {
       writer.uint32(16).uint64(message.contractID);
     }
     if (message.nextPaymentAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.nextPaymentAt), writer.uint32(26).fork()).ldelim();
+      Timestamp.encode(
+        toTimestamp(message.nextPaymentAt),
+        writer.uint32(26).fork()
+      ).ldelim();
     }
     if (message.id !== 0) {
       writer.uint32(32).uint64(message.id);
@@ -511,7 +585,10 @@ export const MsgCreateSubscriptionPayment = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateSubscriptionPayment {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateSubscriptionPayment {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateSubscriptionPayment();
@@ -525,7 +602,9 @@ export const MsgCreateSubscriptionPayment = {
           message.contractID = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.nextPaymentAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.nextPaymentAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         case 4:
           message.id = longToNumber(reader.uint64() as Long);
@@ -542,7 +621,9 @@ export const MsgCreateSubscriptionPayment = {
     return {
       creator: isSet(object.creator) ? String(object.creator) : "",
       contractID: isSet(object.contractID) ? Number(object.contractID) : 0,
-      nextPaymentAt: isSet(object.nextPaymentAt) ? fromJsonTimestamp(object.nextPaymentAt) : undefined,
+      nextPaymentAt: isSet(object.nextPaymentAt)
+        ? fromJsonTimestamp(object.nextPaymentAt)
+        : undefined,
       id: isSet(object.id) ? Number(object.id) : 0,
     };
   },
@@ -550,13 +631,17 @@ export const MsgCreateSubscriptionPayment = {
   toJSON(message: MsgCreateSubscriptionPayment): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.contractID !== undefined && (obj.contractID = Math.round(message.contractID));
-    message.nextPaymentAt !== undefined && (obj.nextPaymentAt = message.nextPaymentAt.toISOString());
+    message.contractID !== undefined &&
+      (obj.contractID = Math.round(message.contractID));
+    message.nextPaymentAt !== undefined &&
+      (obj.nextPaymentAt = message.nextPaymentAt.toISOString());
     message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateSubscriptionPayment>, I>>(object: I): MsgCreateSubscriptionPayment {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateSubscriptionPayment>, I>>(
+    object: I
+  ): MsgCreateSubscriptionPayment {
     const message = createBaseMsgCreateSubscriptionPayment();
     message.creator = object.creator ?? "";
     message.contractID = object.contractID ?? 0;
@@ -571,14 +656,20 @@ function createBaseMsgCreateSubscriptionPaymentResponse(): MsgCreateSubscription
 }
 
 export const MsgCreateSubscriptionPaymentResponse = {
-  encode(message: MsgCreateSubscriptionPaymentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreateSubscriptionPaymentResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateSubscriptionPaymentResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateSubscriptionPaymentResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateSubscriptionPaymentResponse();
@@ -606,9 +697,9 @@ export const MsgCreateSubscriptionPaymentResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateSubscriptionPaymentResponse>, I>>(
-    object: I,
-  ): MsgCreateSubscriptionPaymentResponse {
+  fromPartial<
+    I extends Exact<DeepPartial<MsgCreateSubscriptionPaymentResponse>, I>
+  >(object: I): MsgCreateSubscriptionPaymentResponse {
     const message = createBaseMsgCreateSubscriptionPaymentResponse();
     message.id = object.id ?? 0;
     return message;
@@ -620,7 +711,10 @@ function createBaseMsgDeleteContract(): MsgDeleteContract {
 }
 
 export const MsgDeleteContract = {
-  encode(message: MsgDeleteContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgDeleteContract,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -665,7 +759,9 @@ export const MsgDeleteContract = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeleteContract>, I>>(object: I): MsgDeleteContract {
+  fromPartial<I extends Exact<DeepPartial<MsgDeleteContract>, I>>(
+    object: I
+  ): MsgDeleteContract {
     const message = createBaseMsgDeleteContract();
     message.creator = object.creator ?? "";
     message.id = object.id ?? 0;
@@ -678,14 +774,20 @@ function createBaseMsgDeleteContractResponse(): MsgDeleteContractResponse {
 }
 
 export const MsgDeleteContractResponse = {
-  encode(message: MsgDeleteContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgDeleteContractResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteContractResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteContractResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgDeleteContractResponse();
@@ -713,7 +815,9 @@ export const MsgDeleteContractResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeleteContractResponse>, I>>(object: I): MsgDeleteContractResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgDeleteContractResponse>, I>>(
+    object: I
+  ): MsgDeleteContractResponse {
     const message = createBaseMsgDeleteContractResponse();
     message.id = object.id ?? 0;
     return message;
@@ -725,7 +829,10 @@ function createBaseMsgCreateDispute(): MsgCreateDispute {
 }
 
 export const MsgCreateDispute = {
-  encode(message: MsgCreateDispute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreateDispute,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
@@ -788,13 +895,16 @@ export const MsgCreateDispute = {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.creator !== undefined && (obj.creator = message.creator);
-    message.contractID !== undefined && (obj.contractID = Math.round(message.contractID));
+    message.contractID !== undefined &&
+      (obj.contractID = Math.round(message.contractID));
     message.merchant !== undefined && (obj.merchant = message.merchant);
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateDispute>, I>>(object: I): MsgCreateDispute {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateDispute>, I>>(
+    object: I
+  ): MsgCreateDispute {
     const message = createBaseMsgCreateDispute();
     message.id = object.id ?? 0;
     message.creator = object.creator ?? "";
@@ -810,14 +920,20 @@ function createBaseMsgCreateDisputeResponse(): MsgCreateDisputeResponse {
 }
 
 export const MsgCreateDisputeResponse = {
-  encode(message: MsgCreateDisputeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCreateDisputeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateDisputeResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateDisputeResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCreateDisputeResponse();
@@ -845,7 +961,9 @@ export const MsgCreateDisputeResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateDisputeResponse>, I>>(object: I): MsgCreateDisputeResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateDisputeResponse>, I>>(
+    object: I
+  ): MsgCreateDisputeResponse {
     const message = createBaseMsgCreateDisputeResponse();
     message.id = object.id ?? 0;
     return message;
@@ -857,7 +975,10 @@ function createBaseMsgUpdateDispute(): MsgUpdateDispute {
 }
 
 export const MsgUpdateDispute = {
-  encode(message: MsgUpdateDispute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgUpdateDispute,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -910,7 +1031,9 @@ export const MsgUpdateDispute = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateDispute>, I>>(object: I): MsgUpdateDispute {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateDispute>, I>>(
+    object: I
+  ): MsgUpdateDispute {
     const message = createBaseMsgUpdateDispute();
     message.creator = object.creator ?? "";
     message.id = object.id ?? 0;
@@ -924,14 +1047,20 @@ function createBaseMsgUpdateDisputeResponse(): MsgUpdateDisputeResponse {
 }
 
 export const MsgUpdateDisputeResponse = {
-  encode(message: MsgUpdateDisputeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgUpdateDisputeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateDisputeResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateDisputeResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateDisputeResponse();
@@ -959,7 +1088,9 @@ export const MsgUpdateDisputeResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateDisputeResponse>, I>>(object: I): MsgUpdateDisputeResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateDisputeResponse>, I>>(
+    object: I
+  ): MsgUpdateDisputeResponse {
     const message = createBaseMsgUpdateDisputeResponse();
     message.id = object.id ?? 0;
     return message;
@@ -971,7 +1102,10 @@ function createBaseMsgCancelDispute(): MsgCancelDispute {
 }
 
 export const MsgCancelDispute = {
-  encode(message: MsgCancelDispute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgCancelDispute,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1016,7 +1150,9 @@ export const MsgCancelDispute = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCancelDispute>, I>>(object: I): MsgCancelDispute {
+  fromPartial<I extends Exact<DeepPartial<MsgCancelDispute>, I>>(
+    object: I
+  ): MsgCancelDispute {
     const message = createBaseMsgCancelDispute();
     message.creator = object.creator ?? "";
     message.id = object.id ?? 0;
@@ -1029,11 +1165,17 @@ function createBaseMsgCancelDisputeResponse(): MsgCancelDisputeResponse {
 }
 
 export const MsgCancelDisputeResponse = {
-  encode(_: MsgCancelDisputeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: MsgCancelDisputeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCancelDisputeResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCancelDisputeResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgCancelDisputeResponse();
@@ -1057,7 +1199,9 @@ export const MsgCancelDisputeResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCancelDisputeResponse>, I>>(_: I): MsgCancelDisputeResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgCancelDisputeResponse>, I>>(
+    _: I
+  ): MsgCancelDisputeResponse {
     const message = createBaseMsgCancelDisputeResponse();
     return message;
   },
@@ -1066,10 +1210,16 @@ export const MsgCancelDisputeResponse = {
 /** Msg defines the Msg service. */
 export interface Msg {
   CreatePayment(request: MsgCreatePayment): Promise<MsgCreatePaymentResponse>;
-  CreateContract(request: MsgCreateContract): Promise<MsgCreateContractResponse>;
-  CreateSubscriptionPayment(request: MsgCreateSubscriptionPayment): Promise<MsgCreateSubscriptionPaymentResponse>;
+  CreateContract(
+    request: MsgCreateContract
+  ): Promise<MsgCreateContractResponse>;
+  CreateSubscriptionPayment(
+    request: MsgCreateSubscriptionPayment
+  ): Promise<MsgCreateSubscriptionPaymentResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  DeleteContract(request: MsgDeleteContract): Promise<MsgDeleteContractResponse>;
+  DeleteContract(
+    request: MsgDeleteContract
+  ): Promise<MsgDeleteContractResponse>;
   CreateDispute(request: MsgCreateDispute): Promise<MsgCreateDisputeResponse>;
   UpdateDispute(request: MsgUpdateDispute): Promise<MsgUpdateDisputeResponse>;
   CancelDispute(request: MsgCancelDispute): Promise<MsgCancelDisputeResponse>;
@@ -1090,48 +1240,76 @@ export class MsgClientImpl implements Msg {
   CreatePayment(request: MsgCreatePayment): Promise<MsgCreatePaymentResponse> {
     const data = MsgCreatePayment.encode(request).finish();
     const promise = this.rpc.request("orbita.pay.Msg", "CreatePayment", data);
-    return promise.then((data) => MsgCreatePaymentResponse.decode(new _m0.Reader(data)));
+    return promise.then((data) =>
+      MsgCreatePaymentResponse.decode(new _m0.Reader(data))
+    );
   }
 
-  CreateContract(request: MsgCreateContract): Promise<MsgCreateContractResponse> {
+  CreateContract(
+    request: MsgCreateContract
+  ): Promise<MsgCreateContractResponse> {
     const data = MsgCreateContract.encode(request).finish();
     const promise = this.rpc.request("orbita.pay.Msg", "CreateContract", data);
-    return promise.then((data) => MsgCreateContractResponse.decode(new _m0.Reader(data)));
+    return promise.then((data) =>
+      MsgCreateContractResponse.decode(new _m0.Reader(data))
+    );
   }
 
-  CreateSubscriptionPayment(request: MsgCreateSubscriptionPayment): Promise<MsgCreateSubscriptionPaymentResponse> {
+  CreateSubscriptionPayment(
+    request: MsgCreateSubscriptionPayment
+  ): Promise<MsgCreateSubscriptionPaymentResponse> {
     const data = MsgCreateSubscriptionPayment.encode(request).finish();
-    const promise = this.rpc.request("orbita.pay.Msg", "CreateSubscriptionPayment", data);
-    return promise.then((data) => MsgCreateSubscriptionPaymentResponse.decode(new _m0.Reader(data)));
+    const promise = this.rpc.request(
+      "orbita.pay.Msg",
+      "CreateSubscriptionPayment",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateSubscriptionPaymentResponse.decode(new _m0.Reader(data))
+    );
   }
 
-  DeleteContract(request: MsgDeleteContract): Promise<MsgDeleteContractResponse> {
+  DeleteContract(
+    request: MsgDeleteContract
+  ): Promise<MsgDeleteContractResponse> {
     const data = MsgDeleteContract.encode(request).finish();
     const promise = this.rpc.request("orbita.pay.Msg", "DeleteContract", data);
-    return promise.then((data) => MsgDeleteContractResponse.decode(new _m0.Reader(data)));
+    return promise.then((data) =>
+      MsgDeleteContractResponse.decode(new _m0.Reader(data))
+    );
   }
 
   CreateDispute(request: MsgCreateDispute): Promise<MsgCreateDisputeResponse> {
     const data = MsgCreateDispute.encode(request).finish();
     const promise = this.rpc.request("orbita.pay.Msg", "CreateDispute", data);
-    return promise.then((data) => MsgCreateDisputeResponse.decode(new _m0.Reader(data)));
+    return promise.then((data) =>
+      MsgCreateDisputeResponse.decode(new _m0.Reader(data))
+    );
   }
 
   UpdateDispute(request: MsgUpdateDispute): Promise<MsgUpdateDisputeResponse> {
     const data = MsgUpdateDispute.encode(request).finish();
     const promise = this.rpc.request("orbita.pay.Msg", "UpdateDispute", data);
-    return promise.then((data) => MsgUpdateDisputeResponse.decode(new _m0.Reader(data)));
+    return promise.then((data) =>
+      MsgUpdateDisputeResponse.decode(new _m0.Reader(data))
+    );
   }
 
   CancelDispute(request: MsgCancelDispute): Promise<MsgCancelDisputeResponse> {
     const data = MsgCancelDispute.encode(request).finish();
     const promise = this.rpc.request("orbita.pay.Msg", "CancelDispute", data);
-    return promise.then((data) => MsgCancelDisputeResponse.decode(new _m0.Reader(data)));
+    return promise.then((data) =>
+      MsgCancelDisputeResponse.decode(new _m0.Reader(data))
+    );
   }
 }
 
 interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+  request(
+    service: string,
+    method: string,
+    data: Uint8Array
+  ): Promise<Uint8Array>;
 }
 
 declare var self: any | undefined;
@@ -1153,16 +1331,31 @@ var globalThis: any = (() => {
   throw "Unable to locate global object";
 })();
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = date.getTime() / 1_000;

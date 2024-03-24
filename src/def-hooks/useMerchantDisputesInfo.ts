@@ -147,6 +147,7 @@ export const useMerchantDisputesInfo = () => {
               amount: `${d.amount} ${d.contract.priceCurrency}`,
               initiatedDate: d.createdAt,
               daysLeft: daysLeft,
+              disputeID: undefined,
             });
           }
         } else if (d.status === "resolved" && d.contract) {

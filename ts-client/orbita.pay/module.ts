@@ -196,6 +196,9 @@ export const txClient = ({ signer, prefix, addr, safefiPrivKey }: TxClientOption
 
 		async sendMsgUpdateDisputeAutoSign({ value, fee, memo }: sendMsgUpdateDisputeParams): Promise<DeliverTxResponse> {
 			try {
+				if (!safefiPrivKey) {	
+					throw new Error('TxClient:sendMsgUpdateDisputeAutoSign: Unable to sign Tx. SafeFi Private Key is not present.')
+				}
 				const safefiSigner: OfflineDirectSigner = await getSafeFiSignerFromPriKey(safefiPrivKey);
 				const { address } = (await safefiSigner.getAccounts())[0];
 				const signingClient = await SigningStargateClient.connectWithSigner(addr,safefiSigner,{registry, prefix});
