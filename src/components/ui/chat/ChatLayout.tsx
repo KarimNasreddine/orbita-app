@@ -7,7 +7,6 @@ import ChatInput from "./ChatInput";
 import { Message, messageArrayValidator } from "@/lib/validations/message";
 import { fetchRedis } from "@/helpers/redis";
 import { cn, toPusherKey } from "@/lib/utils";
-import { format } from "date-fns";
 import { pusherClient } from "@/lib/pusher";
 import { useAddressContext } from "@/def-hooks/addressContext";
 

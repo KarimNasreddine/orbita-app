@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
 import { useAddressContext } from "@/def-hooks/addressContext";
+import { useRouter } from "next/navigation";
 
 interface ChatInputProps {
   chatPartner: User;
@@ -23,6 +24,12 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, dispute }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
+
+  const router = useRouter();
+
+  const handleRefresh = () => {
+    router.push("/dashboard/safefi-disputes");
+  };
 
   let userRole: "Client" | "Merchant" | undefined;
 
@@ -91,6 +98,7 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, dispute }) => {
 
       setInput(updatedResponse);
       toast.success("Decision sent successfully");
+      handleRefresh();
     } catch (error) {
       toast.error("Something went wrong. Please try again later.");
     }

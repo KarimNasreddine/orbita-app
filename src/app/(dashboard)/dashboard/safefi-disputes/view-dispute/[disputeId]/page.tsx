@@ -16,6 +16,7 @@ import { Amount } from "@/utils/interfaces";
 import MerchantProof from "@/components/ui/uploadProofDispute/MerchantProof";
 import ClientProof from "@/components/ui/uploadProofDispute/ClientProof";
 import { db } from "@/lib/db";
+import { useRouter } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
@@ -31,6 +32,12 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
   const { address } = useAddressContext();
   const { disputesOpened } = useClientDisputesInfo();
   const igniteClient = useClient();
+
+  const router = useRouter();
+
+  const handleRefresh = () => {
+    router.push("/dashboard/safefi-disputes");
+  };
 
   // console.log("disputeId:", disputeId);
 
@@ -105,6 +112,7 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
         if (txResult.code !== 0) {
           throw new Error();
         }
+        handleRefresh();
       } else if (account === "client") {
         const payload: any = {
           creator: address, // the client address
@@ -122,6 +130,7 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
           throw new Error();
         }
       }
+      handleRefresh();
     } catch (error) {
       console.error("Transaction error:", error);
     }
