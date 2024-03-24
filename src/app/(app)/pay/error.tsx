@@ -13,7 +13,7 @@ export default function Error({
           Something went wrong!
         </h1>
         <div className="mt-10 text-center font-bold text-red-500">
-          {error.message}
+          {"Unexpected Error Occured. Please Try Again."}
         </div>
       </div>
 
