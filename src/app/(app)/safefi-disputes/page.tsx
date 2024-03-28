@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Montserrat } from "next/font/google";
 import DisputeCard from "@/components/ui/card/DisputeCard";
 import { DataTable } from "@/components/ui/table/DataTable";
@@ -8,6 +8,7 @@ import { Dispute, columns } from "./(disputesTable)/columns";
 import { useAddressContext } from "@/def-hooks/addressContext";
 import { useClientDisputesInfo } from "@/def-hooks/useClientDisputesInfo";
 import { dateTransformer } from "@/utils/dateTransfromer";
+import { db } from "@/lib/db";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -42,13 +43,13 @@ const Page: FC<pageProps> = ({}) => {
   const data: Dispute[] = disputesResolvedData;
 
   return (
-    <div className="w-full p-10 rounded-[2rem] shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]">
+    <div className="xl:max-w-[80vw] p-10 rounded-[2rem] shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]">
       {/* <div className="w-full h-full p-10 rounded-[2rem] flex flex-col gap-10 shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px]"> */}
       <div className={"flex flex-col gap-10"}>
         <h2 className={`${montserrat.className} font-bold text-2xl`}>
           Your Active Disputes
         </h2>
-        <div className="flex gap-4">
+        <div className="flex overflow-x-auto gap-4">
           {disputesOpened.map((dispute) => {
             if (dispute.creator === address) {
               return (

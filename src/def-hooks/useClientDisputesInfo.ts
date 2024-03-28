@@ -10,6 +10,7 @@ import {
 } from "@/utils/interfaces";
 import { useContractsFromAccountAddress } from "./useContractsFromAccountAddress";
 import isEqual from "lodash/isEqual";
+import { db } from "@/lib/db";
 
 export const useClientDisputesInfo = () => {
   const { address } = useAddressContext();
@@ -73,6 +74,8 @@ export const useClientDisputesInfo = () => {
   useEffect(() => {
     const dispute = disputesRaw.disputeAllData?.pages[0]?.Dispute;
 
+    console.log("dispute:", dispute);
+
     const isMerchant = (address: string) => {
       return dispute?.some((c) => c.merchant === address);
     };
@@ -110,8 +113,8 @@ export const useClientDisputesInfo = () => {
         return acc;
       }, {} as Record<string, OrbitapayPayment>);
 
-      // console.log("dispute:", dispute);
-      // console.log("contract:", contract);
+      console.log("dispute:", dispute);
+      console.log("contract:", contract);
     }
 
     const disputeWithContract: DisputeWithContract[] = (dispute || []).map(
@@ -191,6 +194,20 @@ export const useClientDisputesInfo = () => {
     console.log("disputesOpened:", disputesOpened);
     console.log("disputesResolved:", disputesResolved);
   }, [disputesRaw, contractsClientRaw, address]);
+
+  disputesOpened.forEach(async (dispute) => {
+    const today = new Date();
+    const daysLeft = Number(dispute.daysLeft);
+    const expiryDate = new Date(today.setDate(today.getDate() + daysLeft))
+      .toISOString()
+      .split("T")[0];
+
+    await db.hset(`dispute:${dispute.transactionID}`, {
+      merchantAddress: dispute.merchant,
+      clientAddress: dispute.creator,
+      expiryDate: expiryDate,
+    });
+  });
 
   return { disputesOpened, disputesResolved };
 };

@@ -29,7 +29,7 @@ const Layout: FC<layoutProps> = ({ children }: layoutProps) => {
           <DenomProvider>
             <div className={`w-full flex ${spaceGrotesk.className} relative`}>
               {!isDrawerOpen && (
-                <div className="absolute md:hidden top-0 left-0 sticky z-50">
+                <div className="lg:hidden top-0 left-0 sticky z-50">
                   <button
                     className="p-5 text-black"
                     onClick={() => setIsDrawerOpen(!isDrawerOpen)}
@@ -43,11 +43,11 @@ const Layout: FC<layoutProps> = ({ children }: layoutProps) => {
                 <div
                   className={`absolute top-0 left-0 min-w-[15rem] w-[15rem] bg-white bg-opacity-95 border-r border-divider-lines min-h-screen h-full p-5 bg-opacity-120 z-40 transform ${
                     isDrawerOpen ? "translate-x-0" : "-translate-x-full"
-                  } transition-transform duration-300 md:hidden`}
+                  } transition-transform duration-300 lg:hidden`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
-                    className="md:hidden mb-5 text-black"
+                    className="lg:hidden mb-5 text-black"
                     onClick={() => setIsDrawerOpen(!isDrawerOpen)}
                   >
                     X
@@ -56,11 +56,13 @@ const Layout: FC<layoutProps> = ({ children }: layoutProps) => {
                 </div>
               )}
 
-              <div className="hidden md:flex sticky top-0 items-center h-screen w-[20rem] grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-red px-6">
+              <div className="hidden lg:flex sticky top-0 items-center h-screen max-w-[20vw] grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-red px-6">
                 <OrbitaLogo className="mt-6 mb-4" />
                 <MenuOptions />
               </div>
-              <aside className="container pl-0 mr-2 md:p-8 my-12">{children}</aside>
+              <aside className="container pl-0 mr-2 lg:p-8 my-12">
+                {children}
+              </aside>
             </div>
           </DenomProvider>
         </WalletProvider>

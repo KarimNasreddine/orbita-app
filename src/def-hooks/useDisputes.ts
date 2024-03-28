@@ -15,7 +15,7 @@ export const useDisputes = () => {
     address: address,
   };
   const options = { enabled: enabled }; // UseQueryOptions or UseInfiniteQueryOptions based on your needs
-  const perPage = 10; // Number of disputes to fetch per page
+  const perPage = 0; // Number of disputes to fetch per page
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage } =
     QueryDisputeAll(queryParams, options, perPage);

@@ -45,7 +45,7 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, dispute }) => {
   const sendMessage = async () => {
     if (!input) return;
     setIsLoading(true);
-    let value = userRole + ": " + input;
+    const value = userRole + ": " + input;
 
     try {
       await axios.post("/api/message/send", {

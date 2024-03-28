@@ -1,5 +1,4 @@
 import useCosmosBaseTendermintV1Beta1 from "../hooks/useCosmosBaseTendermintV1Beta1";
-import { env } from "../env";
 import { useEffect, useState } from "react";
 
 export const useConnectionStatus = () => {
@@ -14,7 +13,7 @@ export const useConnectionStatus = () => {
 
   const rpcCheck = async () => {
     try {
-      await fetch(env.rpcURL);
+      await fetch(process.env.NEXT_PUBLIC_rpcURL as string);
       setRpcConnected(true);
       setWsConnected(true);
     } catch (e) {

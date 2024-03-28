@@ -1,20 +1,16 @@
-const uptashRedisRestUrl = "https://eu2-settling-polliwog-31027.upstash.io";
-const authToken =
-  "AXkzASQgMWRkOGNkNWItMTA5NS00ZjNlLWIzODctYTI1Mjk2MjUyMGQ3ZDkzYTNlZmM3NTZjNDZlMTgxM2JkMjhiYjQyZTEwN2I=";
-
-// const uptashRedisRestUrl = process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_URL;
-// const authToken = process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN;
-
 type Command = "zrange" | "sismember" | "get" | "smembers" | "del";
 
 export async function fetchRedis(
   command: Command,
   ...args: (string | number)[]
 ) {
+  const uptashRedisRestUrl = process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_URL;
+  const authToken = process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN;
+
   // console.log("fetchRedis", command, args);
   const commandUrl = `${uptashRedisRestUrl}/${command}/${args.join("/")}`;
 
-  console.log("commandUrl", commandUrl);
+  // console.log("commandUrl", commandUrl);
 
   const response = await fetch(commandUrl, {
     headers: {

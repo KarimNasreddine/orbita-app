@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Montserrat } from "next/font/google";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button/Button";
@@ -15,8 +15,8 @@ import { useClient } from "@/hooks/useClient";
 import { Amount } from "@/utils/interfaces";
 import MerchantProof from "@/components/ui/uploadProofDispute/MerchantProof";
 import ClientProof from "@/components/ui/uploadProofDispute/ClientProof";
-import { db } from "@/lib/db";
 import { useRouter } from "next/navigation";
+// import { useCookies } from "cookies-next";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
@@ -29,17 +29,24 @@ interface PageProps {
 
 const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
   const { disputeId } = params;
-  const { address } = useAddressContext();
+  let { address } = useAddressContext();
   const { disputesOpened } = useClientDisputesInfo();
   const igniteClient = useClient();
+
+  function getCookie(name) {
+    if (typeof window !== "undefined") {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(";")?.shift();
+    }
+    return null;
+  }
 
   const router = useRouter();
 
   const handleRefresh = () => {
     router.push("/safefi-disputes");
   };
-
-  // console.log("disputeId:", disputeId);
 
   const [transactionID, merchant, client] = disputeId.split("--");
 
@@ -50,31 +57,13 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
       dispute.creator === client
   );
 
-  // This useEffect is used to send the dispute details to Upstash Redis for AI to process
-  useEffect(() => {
-    if (!dispute) {
-      return;
-    }
-    const today = new Date();
-    const daysLeft = Number(dispute.daysLeft);
-    console.log("daysLeft:", daysLeft);
-    const expiryDate = new Date(today.setDate(today.getDate() + daysLeft))
-      .toISOString()
-      .split("T")[0];
-
-    const sendDisputeToUpstashRedis = async () => {
-      await db.hset(`dispute:${transactionID}`, {
-        merchantAddress: merchant,
-        clientAddress: client,
-        expiryDate: expiryDate,
-      });
-    };
-
-    sendDisputeToUpstashRedis();
-  });
-
   if (merchant !== address && client !== address) {
-    return notFound();
+    const walletAddress = getCookie("walletAddress");
+    address = walletAddress || ""; // Assign a default value if walletAddress is undefined
+
+    if (merchant !== address && client !== address) {
+      return notFound();
+    }
   }
 
   const account = merchant === address ? "merchant" : "client";
@@ -136,7 +125,7 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
     }
   };
 
-  return (
+  return dispute?.transactionID ? (
     <div className={cn("flex flex-col gap-12")}>
       <div className={`${montserrat.className} flex gap-8 h-[25rem]`}>
         <div className="w-[40%] h-full flex flex-col justify-between">
@@ -178,15 +167,12 @@ const ViewDispute: FC<PageProps> = ({ params }: PageProps) => {
             </div>
           </div>
         </div>
-        {dispute?.transactionID && <ChatLayout dispute={dispute} />}
+        <ChatLayout dispute={dispute} />
       </div>
-      {account === "merchant" ? (
-        <MerchantProof disputeId={disputeId} />
-      ) : (
-        <ClientProof disputeId={disputeId} />
-      )}
+      {account === "merchant" && <MerchantProof disputeId={disputeId} />}
+      {account === "client" && <ClientProof disputeId={disputeId} />}
     </div>
-  );
+  ) : null;
 };
 
 export default ViewDispute;

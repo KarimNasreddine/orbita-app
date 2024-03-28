@@ -14,7 +14,7 @@ export async function GET() {
 
   for (const key of keys) {
     const dispute: redisDispute | null = await db.hgetall(key);
-    if (dispute!.expiryDate < today) {
+    if (true) {
       expiredDisputes.push({ ...dispute!, disputeId: key.split(":")[1] }); // Push the modified dispute object with the disputeId property into the expiredDisputes array
     }
   }

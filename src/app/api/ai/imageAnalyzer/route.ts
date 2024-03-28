@@ -1,7 +1,6 @@
 import { OpenAI } from "openai";
-import { env } from "process";
 
-const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   const { imageUrl } = await req.json();

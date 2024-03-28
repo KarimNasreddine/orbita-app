@@ -1,14 +1,12 @@
 // CHAT GPT replies with 0 if decision is to refund, and 1 if decision is to proceed
 
-// import { env } from "@/env";
 import { fetchRedis } from "@/helpers/redis";
 import { useClient } from "@/hooks/useClient";
 import { messageArrayValidator } from "@/lib/validations/message";
 import axios from "axios";
 import OpenAI from "openai";
-import { env } from "process";
 
-const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 let chatGptPrompt = "";
 
@@ -75,28 +73,43 @@ async function analyzeProofs(proofTypes, dispute, party) {
 
   const proofs: any = [];
 
+  let flag = true;
+
+  const providedProofTypes: string[] = [];
+
   for (const proofType of proofTypes) {
     const imageUrl = `https://orbita-disputes-proof-files-local.s3.eu-north-1.amazonaws.com/${
       dispute.disputeId
     }--${dispute.merchantAddress}--${
       dispute.clientAddress
     }--${party}--${proofType.replace(/\s/g, "-").toLowerCase()}.jpeg`;
+    // console.log("imageUrl: ", imageUrl);
     if (await checkImageUrl(imageUrl)) {
-      proofs.push({
-        type: "text",
-        text: `Describe this image where you analyze a ${proofType} provided by a ${party} in an opened dispute. If it doesn't resemble a ${proofType}, please state that it's not a ${proofType} without explaining it further.`,
-      });
+      if (flag) {
+        proofs.push({
+          type: "text",
+          text: `Describe the images only if they indicate whether each is a proper proof document provided by a ${party} in an opened dispute. If not, only mention that they are irrelevant. Start the statement with the image number even if only one image is provided (ex: Image 1: ...).`,
+        });
+        flag = false;
+      }
       proofs.push({
         type: "image_url",
-        image_url: imageUrl,
+        image_url: {
+          url: imageUrl,
+        },
       });
-      analysis += `${proofType}: ${imageUrl}\n`;
+      // analysis += `${proofType}: ${imageUrl}\n`;
+      providedProofTypes.push(proofType);
     } else {
       analysis += `No ${proofType} provided by the ${party}.\n`;
     }
   }
+  // console.log("analysis: ", analysis);
+
+  // console.log("providedProofTypes: ", providedProofTypes);
 
   if (proofs.length > 0) {
+    // console.log("proofs: ", proofs);
     const response = await openai.chat.completions.create({
       model: "gpt-4-vision-preview",
       messages: [
@@ -107,12 +120,23 @@ async function analyzeProofs(proofTypes, dispute, party) {
 
         {
           role: "user",
-          content: JSON.stringify(proofs),
+          content: proofs,
         },
       ],
     });
 
-    analysis += `ChatGPT's analysis:\n${response.choices[0].message.content}\n`;
+    let imageDescriptions = response.choices[0].message.content;
+
+    if (imageDescriptions) {
+      providedProofTypes.forEach((proofType, index) => {
+        imageDescriptions = imageDescriptions!.replace(
+          `Image ${index + 1}`,
+          proofType
+        );
+      });
+
+      analysis += `ChatGPT's analysis:\n${imageDescriptions}\n`;
+    }
   }
 
   return analysis;
@@ -120,13 +144,21 @@ async function analyzeProofs(proofTypes, dispute, party) {
 
 const handleDeleteDispute = async (transactionID, merchant, creator) => {
   try {
-    await axios.post("/api/deleteProofFiles", {
-      disputeId: transactionID,
-      merchantAddress: merchant,
-      clientAddress: creator,
-    });
+    const response = await axios.post(
+      "http://localhost:3000/api/deleteProofFilesAndChat",
+      {
+        disputeId: transactionID,
+        merchantAddress: merchant,
+        clientAddress: creator,
+      }
+    );
+    // console.log("response: ", response.data);
     return `Proof files for Dispute #${transactionID} were deleted successfully.`;
   } catch (error) {
+    console.error(
+      `Error deleting proof files for Dispute #${transactionID}:`,
+      error
+    );
     return `Something went wrong. Proof files for Dispute #${transactionID} were not deleted.`;
   }
 };
@@ -136,7 +168,7 @@ export async function POST(req: Request) {
   const client = useClient();
   const sendMsgUpdateDisputeAutoSign =
     client.OrbitaPay.tx.sendMsgUpdateDisputeAutoSign;
-  const safefiAddress = env.safefiAddress;
+  const safefiAddress = process.env.safefiAddress;
 
   const response = await axios.get(
     "http://localhost:3000/api/getExpiredDisputes"
@@ -168,7 +200,7 @@ export async function POST(req: Request) {
       "Chat Between Client and Merchant:\n" +
       chatGptPrompt;
 
-    console.log("finalPrompt: ", finalPrompt);
+    console.log("finalPrompt: \n", finalPrompt);
 
     if (finalPrompt.trim() === "") {
       console.log(`No data found for dispute ${dispute.disputeId}`);
@@ -176,6 +208,7 @@ export async function POST(req: Request) {
     }
 
     const completion = await openai.chat.completions.create({
+      model: "gpt-4-0125-preview",
       messages: [
         {
           role: "system",
@@ -187,12 +220,15 @@ export async function POST(req: Request) {
           content: finalPrompt,
         },
       ],
-      model: "gpt-4-vision-preview",
     });
 
     const decision = completion.choices[0].message.content;
 
     console.log(`Decision for dispute ${dispute.disputeId}: `, decision);
+
+    console.log("\n");
+    console.log("______________________________________________");
+    console.log("\n");
 
     responseMessage += `Decision for dispute ${dispute.disputeId}: ${decision}\n`;
 
@@ -206,23 +242,23 @@ export async function POST(req: Request) {
 
     // Uncomment the following line to send the decision to the blockchain
 
-    // await sendMsgUpdateDisputeAutoSign({
-    //   value: payload,
-    //   fee: { amount: fee, gas: "200000" },
-    //   memo,
-    // });
+    await sendMsgUpdateDisputeAutoSign({
+      value: payload,
+      fee: { amount: fee, gas: "200000" },
+      memo,
+    });
 
     // Uncomment the following block to delete proof files and chat messages after resolving the dispute
 
-    // try {
-    //   responseMessage += await handleDeleteDispute(
-    //     dispute.disputeId,
-    //     dispute.merchantAddress,
-    //     dispute.clientAddress
-    //   );
-    // } catch (error) {
-    //   responseMessage += `Something went wrong. Files and chat messages for Dispute #${dispute.disputeId} were not deleted.`;
-    // }
+    try {
+      responseMessage += await handleDeleteDispute(
+        dispute.disputeId,
+        dispute.merchantAddress,
+        dispute.clientAddress
+      );
+    } catch (error) {
+      responseMessage += `Something went wrong. Files and chat messages for Dispute #${dispute.disputeId} were not deleted.`;
+    }
   }
 
   return new Response(responseMessage, { status: 200 });

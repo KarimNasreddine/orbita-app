@@ -6,7 +6,6 @@ import { Amount } from "@/utils/interfaces";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { FC } from "react";
-import { useRouter } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -29,10 +28,8 @@ const DisputeCard: FC<DisputeCardProps> = ({ disputesOpened, account }) => {
   const client = useClient();
   const sendMsgUpdateDispute = client.OrbitaPay.tx.sendMsgUpdateDispute;
 
-  const router = useRouter();
-
   const refreshPage = () => {
-    router.refresh();
+    window.location.reload();
   };
 
   const handleClick = async () => {

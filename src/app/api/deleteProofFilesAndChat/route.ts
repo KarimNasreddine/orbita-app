@@ -5,14 +5,19 @@ import { NextRequest } from "next/server";
 const s3 = new S3Client({
   region: process.env.AWS_BUCKET_REGION!,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
-async function deleteChatMessages(chatId: string) {
+async function deleteDisputeAndChatMessages(chatId: string) {
   try {
-    await fetchRedis("del", `chat:${chatId}:messages`);
+    const responseMessages = await fetchRedis("del", `chat:${chatId}:messages`);
+    const responseDispute = await fetchRedis("del", `dispute:${chatId}`);
+
+    console.log("responseMessages:", responseMessages);
+    console.log("responseDispute", responseDispute);
+
     console.log(`Chat for ${chatId} deleted successfully.`);
   } catch (error) {
     console.error(`Error deleting chat for ${chatId}:`, error);
@@ -66,8 +71,7 @@ async function deleteProofFiles(
 
 export async function POST(req: NextRequest) {
   try {
-    // Your existing logic for resolving disputes...
-
+    console.log("Request body:", req.body);
     const { disputeId, merchantAddress, clientAddress } = await req.json();
 
     if (!disputeId || !merchantAddress || !clientAddress) {
@@ -80,22 +84,20 @@ export async function POST(req: NextRequest) {
     console.log("Merchant Address:", merchantAddress);
     console.log("Client Address:", clientAddress);
 
-    // Example dispute object, adjust according to your application logic
     const dispute = {
       disputeId: disputeId,
       merchantAddress: merchantAddress,
       clientAddress: clientAddress,
     };
 
-    // Resolve the dispute here and get the decision...
-
-    // After resolving the dispute, delete chat messages and proof files
-    await deleteChatMessages(dispute.disputeId);
+    await deleteDisputeAndChatMessages(dispute.disputeId);
     await deleteProofFiles(
       dispute.disputeId,
       dispute.merchantAddress,
       dispute.clientAddress
     );
+
+    console.log("Dispute resolved and data cleaned up successfully.");
 
     // Respond with success
     return new Response(
